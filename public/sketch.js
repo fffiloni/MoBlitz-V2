@@ -110,7 +110,8 @@ function preload() {
   //console.log("This sketch will only fire essential logs in the console. For a more verbose one, please replace your sketch with the 'sketchVerbose' one.");
 
   // socket = io.connect('https://magmanin.nanomenta.com/');
-  socket = io.connect('http://localhost:4000');
+  // socket = io.connect('http://localhost:4000');
+	socket = io.connect('https://mb-duo.herokuapp.com/');
   // Initialize Firebase
   socket.on('getdb', (config) => {
     firebase.initializeApp(config);

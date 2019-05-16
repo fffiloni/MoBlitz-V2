@@ -741,7 +741,7 @@ function startPath() {
 
         if (showDrawingLayer == true) {
           drawing.push(currentPath);
-					socket.broadcast.emit('startToDuo');
+					socket.emit('startToDuo');
           currentPath.splice(0, 1);
         } else {
           return;

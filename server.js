@@ -77,7 +77,7 @@ function newConnection(socket){
   })
 
   socket.on('sendPoint', function(points){
-    socket.broadcast.to(socket.room).emit('pushPointFromDuo',points);
+    socket.broadcast.volatile.to(socket.room).emit('pushPointFromDuo',points);
     //console.log(data);
   })
 

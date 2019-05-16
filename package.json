@@ -1,0 +1,18 @@
+{
+  "name": "drawings-node-sockets",
+  "version": "1.0.0",
+  "description": "animation collaborative",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "sylvainfiloni",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "firebase": "^5.8.3",
+    "socket.io": "^2.0.4"
+  }
+}

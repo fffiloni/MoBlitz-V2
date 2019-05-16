@@ -1,0 +1,22 @@
+version: "3"
+networks:
+  proxy:
+    external: true
+  internal:
+    external: false
+services:
+  app:
+    container_name: moblitz-solo
+    restart: always
+    networks:
+      - internal
+      - proxy
+    build: ./
+    labels:
+      - traefik.backend=app
+      - traefik.frontend.rule=Host:magmanim.nanomenta.fr
+      - traefik.docker.network=proxy
+      - traefik.port=4000
+    volumes:
+      - .:/app
+      - /app/node_modules

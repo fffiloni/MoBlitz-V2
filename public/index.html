@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>MoBlitz</title>
+	<link rel="stylesheet" href="./style.css">
+	<link rel="stylesheet" href="./ui.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<script src="https://unpkg.com/current-device/umd/current-device.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pressure/2.1.2/jquery.pressure.min.js"></script>
+	<script src="libraries/gpu-browser.min.js"></script>
+
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script> -->
+	<script src="libraries/p5.js"></script>
+
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.js"></script> -->
+	<script src="libraries/p5.dom.js"></script>
+	<script src="sketch.js"></script>
+	<script src="libraries/p5gif.min.js"></script>
+	<script src="components/consoleMessage.js"></script>
+	<script src="components/tools.js"></script>
+	<script src="components/colors.js"></script>
+	<script src="components/frames.js"></script>
+	<script src="components/dbTalk.js"></script>
+	<script src="components/play.js"></script>
+	<script src="components/tracer.js"></script>
+
+</head>
+
+<body>
+	<div id="splash">
+		<div id="splash-main">
+			<h1>Moblitz.</h1>
+			<h4>
+				Learning traditional animation is hard but, <br> practicing should be easy, free and fun for everyone.<br>
+			 </h4>
+			 <!-- <h5 class="h5-black">But it could be challenging and collaborative too, right?<br>
+			  Giving you the possibility to work or play together in real-time <br>
+				is on my mind since the very beginning of this project.</h5>
+			 <h5 class="h5-black">That's why i'm developing <b>MoBlitz</b>, the core system behind my<br>
+				 online animation pad, made for quick and simple animation sessions.<br></h5>
+			<h5>Wanna help me to build this?<br> Why don't you SCROLL DOWN and give it a try: </h5> -->
+		</div>
+	</div>
+	<main>
+		<div style="display: flex;flex-direction: row-reverse;">
+
+			<div id="aside">
+				<div id="sessionHandler">
+					<div id="folder-container">
+						<p><button class="project-folder" id="createDBBtn" class="controlBtns" ontouchstart="dbTalkClass.createNewDB()" onclick="dbTalkClass.createNewDB()"><i class="fas fa-folder-plus" style="font-size: 30px;"></i></button></p>
+					</div>
+					<div id="keyEnsemble"></div>
+				</div>
+
+
+				<div id="blankspace" style="flex:1;">
+					<div id="colors">
+						<div id="currentColor"></div>
+						<div id="rvb" style="color: white;"><span>R</span><span>V</span><span>B</span></div>
+						<div id="colorCtrls"></div>
+						<button id="colButton" class="controlBtns" ontouchstart="colorClass.storeColor()" onclick="colorClass.storeColor()"><i class="fas fa-fill-drip" style="font-size: 20px;"></i><br>Keep Color</button>
+					</div>
+					<div id="yourPalette"></div>
+				</div>
+
+				<div id="console">
+				</div>
+
+				<div id="mainCtrls">
+					<button id="playButton" class="controlBtns" ontouchstart="playClass.togglePlay()" onclick="playClass.togglePlay()"><i class="fas fa-play" style="font-size: 20px;"></i><br> Play Animation</button>
+					<button id="gifButton" class="controlBtns" ontouchstart="playClass.chooseGifFormat()" onclick="playClass.chooseGifFormat()"><i class="fas fa-magic" style="font-size: 20px;"></i> <i class="fas fa-layer-group" style="font-size: 20px;"></i><br>Create GIF</button>
+				</div>
+
+			</div>
+
+			<div id="leftToolHandler"></div>
+
+			<div id="bigbox">
+				<div id="topwindow" class="flexy">
+					<span class="titlewindow">Moblitz solo version alpha | Web Animation Pad | </span>
+					<input type="text" id="animatorName" placeholder="Enter your animator name" />
+				</div>
+				<div id="canvascontainer" class="flexy">
+					<div id="controlscontainer">
+						<span class="waitingText hide">Nickel, attendons l'image suivante ...</span>
+						<input id="onionkey" type="hidden" />
+						<input id="postonionkey" type="hidden" />
+					</div>
+				</div>
+				<div id="canvasFooter">
+					<div id="frames"></div>
+					<div id="onionControls"></div>
+					<div id="inbetween">
+<div id="displayLoop"></div>
+					</div>
+
+					<div id="fps">
+
+						<div id="fpsm" class="fpsCursor"> ‹ </div>
+						<div id="displayFPS"></div>
+						<div id="fpsp" class="fpsCursor"> › </div>
+					</div>
+				</div>
+				<div class="flexy1">
+					<button id="clearButton" class="controlBtns"><i class="fas fa-chess-board" style="font-size: 20px;"></i><br> Clear Pad
+					</button>
+					<button id="clearOnion" class="controlBtns" ontouchstart="framesClass.clearOnion()" onclick="framesClass.clearOnion()"><i class="far fa-star-half" style="font-size: 20px;"></i><i class="fas fa-star" style="font-size: 20px;"></i><br> onion : ON
+					</button>
+					<button id="showOnion" class="controlBtns hide" ontouchstart="framesClass.showOnion()" onclick="framesClass.showOnion()"><i class="far fa-star-half" style="font-size: 20px;"></i><i class="fas fa-star" style="font-size: 20px;margin-left: -8px;"></i><br> onion : OFF
+					</button>
+					<span style="font-size: 30px;color: white;"> | </span>
+					<button id="delButton" class="controlBtns changeBtn" ontouchstart="framesClass.deleteFrame()" onclick="framesClass.deleteFrame()"><i class="fas fa-trash-alt" style="font-size: 20px;"></i> <br>Delete Frame</button>
+					<button id="insertButton" class="controlBtns changeBtn" ontouchstart="framesClass.newInsertFrame()" onclick="framesClass.newInsertFrame()"><i class="fas fa-caret-right" style="font-size: 20px;"></i><i class="fas fa-level-down-alt" style="font-size: 20px;"></i><br> Insert
+						Frame</button>
+						<button id="duplicateButton" class="controlBtns changeBtn" ontouchstart="framesClass.duplicateFrame()" onclick="framesClass.duplicateFrame()"><i class="far fa-clone" style="font-size: 20px;"></i><br> Duplicate </button>
+					<button id="updateButton" class="controlBtns changeBtn" ontouchstart="framesClass.updateFrame()" onclick="framesClass.updateFrame()"><i class="fas fa-retweet" style="font-size: 20px;"></i><br> Update Frame</button>
+					<span style="font-size: 30px;color: white;"> | </span>
+					<button id="saveButton" class="controlBtns saveButton show" ontouchstart="framesClass.saveDrawing()" onclick="framesClass.saveDrawing()"><i class="fab fa-jira" style="font-size: 20px;"></i><i class="fa fa-step-forward" aria-hidden="true" style="font-size: 20px;"></i><br>
+						save & next
+					</button>
+				</div>
+				<div class="flexy">
+					<div id="drawinglist">
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</main>
+	<div id="shortcuts">
+		<div id="shortcut-content">
+			<h2>Shortcuts</h2>
+			<div id="shortcut-box">
+				<div class="instructions">
+					<h3>Essentials</h3>
+					<p>
+						Save the current drawing and go for the next blank frame: <b>ctrl+ S</b><br>
+						Undo your last pencil move:  <b>ctrl+ Z</b><br>
+						Play the animation: <b>SPACEBAR</b><br>
+						Toggle Onion Skin: <b>O</b>
+					</p>
+					<h3>Tools</h3>
+					<p>
+						Select the pen tool: <b>V</b><br>
+						Select the brush tool: <b>B</b><br>
+						Select the rough pencil tool: <b>R</b><br>
+						Toggle the eraser: <b>E</b><br>
+						Select the line tool: <b>L</b><br>
+						Change tool size: <b>Up and Down arrows</b>
+					</p>
+				</div>
+				<div class="instructions">
+					<h3>Timeline & Frames</h3>
+					<p>
+						Display a frame: <b>click on a white rounded rectangle</b><br>
+						Go one frame forward: <b>Right arrow</b><br>
+						Go one frame backward: <b>Left arrow</b><br>
+						Fly hover the timeline: <b>Alt+ mouse hover frames</b>
+					</p>
+					<h3>Actions on frames</h3>
+					<p>
+						Duplicate a frame: <b>ctrl + D</b><br>
+						Update a frame: <b>U</b><br>
+						Insert a frame: <b>I</b><br>
+						Delete a frame: <b>ctrl+E</b><br>
+						Throw current drawing and go to blank ahead: <b>X</b>
+					</p>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+	<div id="support">
+		<div id="support-content">
+
+			<div id="FAQContent">
+				<h2>FAQ</h2>
+				<div id="faq-elements">
+
+					<div class="faq-element">
+						<h4>How do i create another layer ?</h4>
+						<p>You can't really create another layer, but you can cheat by using the brush layer or the roughs layer as a secondary plane if you need it. </p>
+					</div>
+					<div class="faq-element">
+						<h4>How do i fix a drawing ?</h4>
+						<p>This feature is in the development pipeline. You can do it though, by pressing the <b>K</b> key. This will fix the current drawing on every frame. But beware: it will not be saved on database, as it is a feature in the making.</p>
+					</div>
+					<div class="faq-element">
+						<h4>How do i duplicate a frame next to it?</h4>
+						<p>To duplicate a frame in the timeline, click on the frame you want to duplicate, then hit <b>ctrl + D</b> on the keyboard.</p>
+					</div>
+
+
+					<div class="faq-element">
+						<h4>How do i duplicate a frame ahead?</h4>
+						<p>To duplicate a frame, click on the frame you want to duplicate, then click on the "save & next" button.<br>
+							This will copy the current displayed drawing on a new frame ahead.</p>
+						</div>
+
+					</div>
+				</div>
+				<div id="patronsContent">
+
+				</div>
+		</div>
+	</div>
+	<div id="about">
+		<h5>Moblitz is an animation software made by Sylvain Filoni for Magmanim. <a href="https://www.facebook.com/groups/251815259044808" target="_blank">Join the BETA team on Facebook</a> ;)<br>
+		</h5>
+	</div>
+
+</body>
+
+</html>

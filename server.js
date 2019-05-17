@@ -77,14 +77,19 @@ function newConnection(socket){
   })
 
   socket.on('sendPoint', function(points){
-    socket.broadcast.volatile.to(socket.room).emit('pushPointFromDuo',points);
+    socket.broadcast.to(socket.room).emit('pushPointFromDuo',points);
+    // console.log(points);
+  })
+
+  socket.on('endToDuo', function(){
+    socket.broadcast.to(socket.room).emit('endFromDuo');
     //console.log(data);
   })
 
-  socket.on('sendImage', function(imgReceived){
-    socket.broadcast.to(socket.room).emit('displayGraphic',imgReceived);
-    //console.log(data);
-  })
+  // socket.on('sendImage', function(imgReceived){
+  //   // socket.broadcast.to(socket.room).emit('displayGraphic',imgReceived);
+  //   console.log(imgReceived);
+  // })
 
   socket.on('clearForeign', function(){
     socket.broadcast.to(socket.room).emit('cleanDuo');

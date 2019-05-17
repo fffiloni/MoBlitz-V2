@@ -148,10 +148,17 @@ function setup() {
 		redraw();
 	});
 
+	// socket.on('endFromDuo', function(){
+	// 	// currentForeign = [];
+	// 	duoDrawings.push(currentForeign);
+	// 	currentForeign.splice(0, 1);
+	// 	redraw();
+	// });
+
 	socket.on('pushPointFromDuo', function(points){
-		//console.log(data);
+		console.log(points);
 		currentForeign.push(points);
-		redraw();
+		// redraw();
 	});
 
 	socket.on('cleanDuo', function(){
@@ -1102,6 +1109,7 @@ function draw() {
         }
         currentPath.push(point);
 				socket.emit('sendPoint', point);
+				// socket.emit('sendImage', gogol);
         sx = ppx;
         sy = ppy;
         ppx = px;
@@ -1207,13 +1215,14 @@ function draw() {
   image(graphicOnion, 0, 0);
   image(graphicBrush, 0, 0);
   image(graphicRough, 0, 0);
-  image(graphicFRONT, 0, 0);
+	gogol = graphicFRONT;
+  image(gogol, 0, 0);
 	// let imgToSend = graphicFRONT;
-	// socket.emit('sendImage', imgToSend);
+
 	// socket.on('displayGraphic', function(data){
 	// 	image(data, 0, 0);
 	// })
-	image(graphicDUO, 0, 0);
+	// image(graphicDUO, 0, 0);
 
 }
 // Closing the DRAW function

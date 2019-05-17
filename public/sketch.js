@@ -158,7 +158,7 @@ function setup() {
 	socket.on('pushPointFromDuo', function(points){
 		console.log(points);
 		currentForeign.push(points);
-		// redraw();
+		redraw();
 	});
 
 	socket.on('cleanDuo', function(){
@@ -1209,12 +1209,14 @@ function draw() {
     graphicFRONT.ellipse(mouseX,mouseY,sliderStroke.value());
   }
   image(graphicBG, 0, 0);
+	image(graphicDUO, 0, 0);
   image(graphicFixed, 0, 0);
   image(graphicKeyPoses, 0, 0);
   image(graphicGuides, 0, 0);
   image(graphicOnion, 0, 0);
   image(graphicBrush, 0, 0);
   image(graphicRough, 0, 0);
+
 	gogol = graphicFRONT;
   image(gogol, 0, 0);
 	// let imgToSend = graphicFRONT;
@@ -1222,7 +1224,7 @@ function draw() {
 	// socket.on('displayGraphic', function(data){
 	// 	image(data, 0, 0);
 	// })
-	// image(graphicDUO, 0, 0);
+
 
 }
 // Closing the DRAW function

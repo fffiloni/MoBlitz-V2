@@ -24,9 +24,9 @@ let config = {
 };
 
 
-var socket = require('socket.io');
 
-var io = socket(server, {pingTimeout: 60000});
+
+var io = require('socket.io')(server, { wsEngine: 'ws' });
 var people = 0;
 var stockIDs = [];
 var currentRoom;

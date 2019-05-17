@@ -81,6 +81,11 @@ function newConnection(socket){
     //console.log(data);
   })
 
+  socket.on('sendImage', function(imgReceived){
+    socket.broadcast.to(socket.room).emit('displayGraphic',imgReceived);
+    //console.log(data);
+  })
+
   socket.on('clearForeign', function(){
     socket.broadcast.to(socket.room).emit('cleanDuo');
     //console.log(data);

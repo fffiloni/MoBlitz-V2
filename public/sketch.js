@@ -1208,6 +1208,11 @@ function draw() {
   image(graphicBrush, 0, 0);
   image(graphicRough, 0, 0);
   image(graphicFRONT, 0, 0);
+	// let imgToSend = graphicFRONT;
+	// socket.emit('sendImage', imgToSend);
+	// socket.on('displayGraphic', function(data){
+	// 	image(data, 0, 0);
+	// })
 	image(graphicDUO, 0, 0);
 
 }

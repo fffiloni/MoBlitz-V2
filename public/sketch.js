@@ -148,17 +148,14 @@ function setup() {
 		redraw();
 	});
 
-	// socket.on('endFromDuo', function(){
-	// 	// currentForeign = [];
-	// 	duoDrawings.push(currentForeign);
-	// 	currentForeign.splice(0, 1);
-	// 	redraw();
-	// });
+	socket.on('endFromDuo', function(){
+		redraw();
+	});
 
 	socket.on('pushPointFromDuo', function(points){
 		console.log(points);
 		currentForeign.push(points);
-		redraw();
+		// redraw();
 	});
 
 	socket.on('cleanDuo', function(){
@@ -781,6 +778,7 @@ function endPath() {
   //console.log("You're not drawing right now");
 	//socket.emit('sendToDuo', drawing);
   redraw();
+	socket.emit('endToDuo');
 }
 
 function draw() {

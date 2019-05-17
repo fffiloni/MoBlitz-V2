@@ -155,7 +155,11 @@ function setup() {
 	socket.on('pushPointFromDuo', function(points){
 		console.log(points);
 		currentForeign.push(points);
-		// redraw();
+		if (isDrawing == false){
+			redraw();
+		} else {
+			//Do Not redraw
+		}
 	});
 
 	socket.on('cleanDuo', function(){

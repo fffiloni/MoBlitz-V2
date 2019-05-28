@@ -6,8 +6,10 @@ class ConsoleMessage {
     this.id = id;
     this.addClass = addClass;
     this.color = color;
+
     let msg = createP(this.message);
     msg.parent(this.container);
+
     if (this.id != 0) {
       msg.id(id);
     }
@@ -16,6 +18,12 @@ class ConsoleMessage {
     }
     msg.style('color', this.color);
     this.updateScroll();
+    if(this.addClass == 'feedback'){
+      setTimeout(function(){
+        msg.remove();
+      }, 5000)
+    }
+
   }
 
   updateScroll() {

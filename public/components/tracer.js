@@ -570,6 +570,28 @@ class Tracer {
     }
   };
 
+  eraserFriends(){
+    for (let i = 0; i < duoDrawings.length; i++) {
+      let path = duoDrawings[i];
+      for (let j = 0; j < path.length; j++) {
+        let d1 = int(dist(path[j]["x1"], path[j]["y1"], fex, fey));
+        let d2 = int(dist(path[j]["x2"], path[j]["y2"], fex, fey));
+
+        if (d1 <= sliderStroke.value() || d2 <= sliderStroke.value()) {
+          if (path.length != 0) {
+            path.splice(path.indexOf(path[j]), 1);
+          }
+
+          if (path.length == 0) {
+            duoDrawings.splice(duoDrawings.indexOf(path), 1)
+          }
+
+          // eraserUsed = true;
+        }
+      }
+    }
+  };
+
   traceDUO(){
     //Shows the current drawing if there any data in drawing array
     for (let i = 0; i < duoDrawings.length; i++) {
@@ -581,7 +603,7 @@ class Tracer {
 
           if (path[j].type == 'trait') {
 
-            graphicDUO.strokeCap(ROUND);
+            graphicDUO.strokeCap(SQUARE);
             //takes colors data form each point in database
             if (path[j].strk !== undefined) {
 
@@ -597,7 +619,7 @@ class Tracer {
             } else {
               graphicDUO.strokeWeight(2);
             }
-            graphicDUO.stroke(path[j].csR, path[j].csV, path[j].csB);
+            graphicDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
             graphicDUO.beginShape();
             graphicDUO.noFill();
             graphicDUO.curveVertex(path[j].x1, path[j].y1);
@@ -605,6 +627,48 @@ class Tracer {
             graphicDUO.curveVertex(path[j].x3, path[j].y3);
             graphicDUO.curveVertex(path[j].x4, path[j].y4);
             graphicDUO.endShape();
+          }
+        }
+      }
+
+    }
+  };
+
+  tracePrivateDUO(){
+    //Shows the current drawing if there any data in drawing array
+    for (let i = 0; i < duoPrivateDrawings.length; i++) {
+      let path = duoPrivateDrawings[i];
+      if (duoPrivateDrawings[i].length != 0) {
+        // beginShape();
+        lastStroke = path[path.length - 1].pressure;
+        for (let j = 0; j < path.length; j++) {
+
+          if (path[j].type == 'trait') {
+
+            graphicPrivateDUO.strokeCap(SQUARE);
+            //takes colors data form each point in database
+            if (path[j].strk !== undefined) {
+
+              if (path[j].pressure !== undefined) {
+                if (path[j].strk == 1) {
+                  graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                } else if (path[j].pressure === undefined) {
+                  graphicPrivateDUO.strokeWeight(2);
+                } else {
+                  graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                }
+              }
+            } else {
+              graphicDUO.strokeWeight(2);
+            }
+            graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
+            graphicPrivateDUO.beginShape();
+            graphicPrivateDUO.noFill();
+            graphicPrivateDUO.curveVertex(path[j].x1, path[j].y1);
+            graphicPrivateDUO.curveVertex(path[j].x2, path[j].y2);
+            graphicPrivateDUO.curveVertex(path[j].x3, path[j].y3);
+            graphicPrivateDUO.curveVertex(path[j].x4, path[j].y4);
+            graphicPrivateDUO.endShape();
           }
         }
       }

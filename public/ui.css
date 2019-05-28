@@ -307,6 +307,11 @@ div#toolsContainer {
   color: #ffdc00!important;
 }
 
+.occupiedFolder {
+  color: blue!important;
+}
+
+
 div#canvasFooter {
     background: #fffff8;
     height: 30px;

@@ -15,7 +15,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pressure/2.1.2/jquery.pressure.min.js"></script>
-	<script src="libraries/gpu-browser.min.js"></script>
 
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script> -->
 	<script src="libraries/p5.js"></script>
@@ -24,13 +23,19 @@
 	<script src="libraries/p5.dom.js"></script>
 	<script src="sketch.js"></script>
 	<script src="libraries/p5gif.min.js"></script>
+
+	<script src="components/magma-canvas.js"></script>
+	<script src="components/socketCOM.js"></script>
 	<script src="components/consoleMessage.js"></script>
+	<script src="components/ui.js"></script>
 	<script src="components/tools.js"></script>
 	<script src="components/colors.js"></script>
 	<script src="components/frames.js"></script>
 	<script src="components/dbTalk.js"></script>
+	<script src="components/maindraw.js"></script>
 	<script src="components/play.js"></script>
 	<script src="components/tracer.js"></script>
+	<script src="components/keyBoard.js"></script>
 
 </head>
 
@@ -129,6 +134,9 @@
 				</div>
 				<div class="flexy">
 					<div id="drawinglist">
+					</div>
+					<div id="drawinglist-friend">
+						
 					</div>
 				</div>
 			</div>

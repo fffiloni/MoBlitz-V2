@@ -56,10 +56,24 @@ canvas {
   align-items: center;
   justify-content: center;
   /* width: 1280px; */
-  height: 50px;
+  height: 30px;
+  margin-top: 20px;
   overflow:auto;
   white-space:nowrap;
-  background: black;
+  /* background: black; */
+}
+
+#drawinglist-friend{
+  /* margin-top: 20px; */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  /* width: 1280px; */
+  height: 30px;
+  overflow:auto;
+  white-space:nowrap;
+  /* background: black; */
 }
 
 #peopleReady {
@@ -88,6 +102,21 @@ span.waitingText, #peopleReady > p {
 }
 
 .listing:first-child {
+    display: none;
+}
+
+.listing-friend {
+  flex: 1;
+  min-width: 6px;
+  height: 10px;
+  margin: 1px 1px 2px 1px;
+  background: #fff;
+  display: inline-block;
+  border-radius: 8px;
+  list-style: none;
+}
+
+.listing-friend:first-child {
     display: none;
 }
 

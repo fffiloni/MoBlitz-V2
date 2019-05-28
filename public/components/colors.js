@@ -1,5 +1,60 @@
 class Colors {
 
+  setColorComponent(){
+    //Colors RGB/RVB i used V for G because french
+    colorChoice = createElement('div');
+    colorChoice.style('width', '100px');
+    colorChoice.style('height', '18px');
+    colorChoice.style('margin-right', '10px');
+    colorChoice.style('display', 'inline-block');
+    colorChoice.style('border-radius', '20px');
+
+    sliderR = createSlider(0, 255, 0);
+    sliderV = createSlider(0, 255, 0);
+    sliderB = createSlider(0, 255, 0);
+
+    sliderR.style('width', '100px');
+    sliderV.style('width', '100px');
+    sliderB.style('width', '100px');
+    colorChoice.parent('currentColor');
+    sliderR.parent('colorCtrls');
+    sliderV.parent('colorCtrls');
+    sliderB.parent('colorCtrls');
+
+    sliderR.mousePressed(function() {
+      setR = null;
+      setV = null;
+      setB = null;
+      redraw();
+    });
+
+    sliderR.mouseReleased(function() {
+      redraw();
+    });
+
+    sliderV.mousePressed(function() {
+      setR = null;
+      setV = null;
+      setB = null;
+      redraw();
+    });
+
+    sliderV.mouseReleased(function() {
+      redraw();
+    });
+
+    sliderB.mousePressed(function() {
+      setR = null;
+      setV = null;
+      setB = null;
+      redraw();
+    });
+
+    sliderB.mouseReleased(function() {
+      redraw();
+    });
+  }
+
   setFirstColors() {
     let setWhite = {
       red: 255,

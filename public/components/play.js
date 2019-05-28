@@ -1,3 +1,18 @@
+let timelinePos = 0, onionPos, postOnionPos;
+let timelinePosFriend;
+let posKey, onionKey, postonionkey, keyToUpdate, previouskey, nextkey;
+let posKeyFriend;
+let tm;
+let playing = false;
+let loopTm = true;
+let nframe;
+let onVirginFrame = true;
+
+//RECORDER GIF VARIABLES
+let recorder;
+let isRecording = false;
+let fps = 12;
+
 class Play {
   keyShowing() {
     onVirginFrame = false;
@@ -34,6 +49,7 @@ class Play {
       //console.log("We fired oneDrawingOfkeyShowing !");
       let dbdrawing = data.val();
       drawing = dbdrawing.drawing;
+      socket.emit('showForeign', key);
       painting = dbdrawing.painting;
       roughs = dbdrawing.roughs;
       keyToUpdate = key;
@@ -45,25 +61,19 @@ class Play {
       //console.log("Let see the content of drawing array: ")
       //console.log(drawing);
       //console.log("nb elements in drawing: " + drawing.length);
-      nbdrawingloaded = drawing.length;
-      nbdrawingupdated = drawing.length;
-      if (painting != undefined && roughs != undefined) {
-        //console.log("nb elements in painting: " + painting.length);
-        nbpaintingloaded = painting.length;
-        nbpaintingupdated = painting.length
-        //console.log("nb elements in roughs: " + roughs.length);
-        nbroughsloaded = roughs.length;
-        nbroughsupdated = roughs.length;
-      }
-      eraserUsed = false;
+    countPathOld = drawing.length + painting.length + roughs.length;
+    eraserUsed = false;
     }
-    redraw();
+    if(foreignDrawing == false){
+      redraw();
+    }
   };
 
   togglePlay() {
     //console.log("——");
     //console.log("We just fired 'togglePlay'!");
     playing = !playing;
+    // showForeign = !showForeign;
     framesClass.clearOnion();
     //console.log("ANIMATION STARTED. (playing: " + playing + ")");
     if (playing) {
@@ -92,7 +102,7 @@ class Play {
           playClass.proposeGifDownload();
         }
         //console.log("ANIMATION STOPPED. (playing: " + playing + ")");
-        framesClass.clearDrawing();
+        framesClass.goVirgin();
         framesClass.clearOnion();
         isRecording = false;
       } else {
@@ -111,7 +121,10 @@ class Play {
         }
       }
     }
-    redraw();
+    if(foreignDrawing == false){
+      redraw();
+    }
+
   };
 
   //Gif record PROCESS
@@ -132,6 +145,7 @@ class Play {
 
 
     consoleClass.newMessage("——<br><br>You want to export your animation to gif. You can decide between 3 renders. <br><br>CHOOSE A FORMAT: <br><button id=\"squareBtn\" class=\"formatGifBtn\" ontouchstart=\"playClass.launchRecordProcess('square')\" onclick=\"playClass.launchRecordProcess('square')\">SQUARE</button> <button id=\"fullBtn\" class=\"formatGifBtn\" ontouchstart=\"playClass.launchRecordProcess('full')\" onclick=\"playClass.launchRecordProcess('full')\">FULL</button>  <button id=\"scopeBtn\" class=\"formatGifBtn\" ontouchstart=\"playClass.launchRecordProcess('scope')\" onclick=\"playClass.launchRecordProcess('scope')\">SCOPE</button>", 'console', 'chooseGifMessage', 0);
+
 
 
     let squareOver = select('#squareBtn')
@@ -165,6 +179,7 @@ class Play {
 
   launchRecordProcess(gifFormat) {
     showSafetyLines = false;
+    btnSquareOver = btnScopeOver = btnFullOver = false;
     if (gifFormat == 'square') {
       recorder.settings.width = expWidthSq;
       recorder.settings.height = expHeightSq;

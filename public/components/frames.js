@@ -300,7 +300,7 @@ class Frames {
       }
 
     }
-    framesClass.safeRedraw();
+    scktClass.safeRedraw();
   }
 
   showPrivateDrawingFriend(key) {
@@ -338,7 +338,7 @@ class Frames {
       }
 
     }
-    framesClass.safeRedraw();
+    scktClass.safeRedraw();
   }
 
   newInsertFrame(){

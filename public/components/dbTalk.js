@@ -313,17 +313,17 @@ class DBTalk {
     //console.log("New DB created with this key: " + result.key);
     currentEnsemble = result.key;
     console.log('Key Ensemble: ' + currentEnsemble);
-    let msgK = createP("<p>——</p>You created a new permanent session.");
-    let perma = createA('?id=' + result.key, result.key);
-    msgK.id('newEnsemblemsg');
-    perma.addClass('permalink');
-    msgK.parent('console');
-    perma.parent('newEnsemblemsg');
-    // msgK.addClass('feedback');
-    updateScroll();
-    let keyLink = createA('?id=' + result.key, '<i class="fas fa-key"></i>');
-    keyLink.parent('keyEnsemble');
-    keyLink.style('color', '#f2dd00')
+    // let msgK = createP("<p>——</p>You created a new permanent session.");
+    // let perma = createA('?id=' + result.key, result.key);
+    // msgK.id('newEnsemblemsg');
+    // perma.addClass('permalink');
+    // msgK.parent('console');
+    // perma.parent('newEnsemblemsg');
+    // // msgK.addClass('feedback');
+    // updateScroll();
+    // let keyLink = createA('?id=' + result.key, '<i class="fas fa-key"></i>');
+    // keyLink.parent('keyEnsemble');
+    // keyLink.style('color', '#f2dd00')
 
     socket.emit('join custom', result.key);
   }
@@ -334,10 +334,10 @@ class DBTalk {
     if (((newdbKeys.length) + (storeProjects[0].length - 1)) >= maxProjects || newdbKeys.length == maxProjects) {
       consoleClass.newMessage("<p>——</p>You reached the max number of projects allowed.", 'console', 0, 'feedback');
     } else if (newdbKeys.length == 0 || newdbKeys.length < maxProjects) {
-      let elts = selectAll('.listing');
-      for (let i = 0; i < elts.length; i++) {
-        elts[i].remove();
-      }
+      // let elts = selectAll('.listing');
+      // for (let i = 0; i < elts.length; i++) {
+      //   elts[i].remove();
+      // }
       //console.log("——");
       //console.log("We just fired 'createNewDB'!");
       let ref = database.ref('/' + currentEnsemble);
@@ -359,12 +359,12 @@ class DBTalk {
 
       //console.log("We push data in the DB.");
       let result = ref.push(newDB);
-      //console.log("New DB created with this key: " + result.key);
-      currentDB = currentEnsemble + '/' + result.key + '/drawings/';
-      storeKeys = [];
-      //console.log("We tried to create a new DB Branche");
-      let ref2 = database.ref(currentDB);
-      ref2.on('value', dbTalkClass.gotData, dbTalkClass.errData);
+      // //console.log("New DB created with this key: " + result.key);
+      // currentDB = currentEnsemble + '/' + result.key + '/drawings/';
+      // storeKeys = [];
+      // //console.log("We tried to create a new DB Branche");
+      // let ref2 = database.ref(currentDB);
+      // ref2.on('value', dbTalkClass.gotData, dbTalkClass.errData);
 
       newdbKeys.push(result.key);
       let thisDB = newdbKeys[newdbKeys.indexOf(result.key)].toString();
@@ -375,30 +375,38 @@ class DBTalk {
       // updateScroll();
 
 
-      consoleClass.newMessage("<p>——</p>You created a new project and its database.", 'console', 'newDBmsg', 'feedback');
+      // consoleClass.newMessage("<p>——</p>You created a new project and its database.", 'console', 'newDBmsg', 'feedback');
 
-      setTimeout(function() {
-        consoleClass.newMessage("You can now draw on the Canvas with your mouse or, even better with your pen tablet!", 'console', 0, 'feedback')
-      }, 100);
-      setTimeout(function() {
-        consoleClass.newMessage("After your first frame, click on the \"Save & Next\" button to save your drawing and continue to the next frame.", 'console', 0, 'feedback');
-      }, 200);
-      consoleClass.newMessage("<button class=\"project-folder\" id=\"" + thisDB + "\" ontouchstart=\"dbTalkClass.loadOneOfDBs('" + thisDB + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + thisDB + "')\"><i class=\"fas fa-folder\"></i></button>", 'folder-container');
-      framesClass.goVirgin();
+      // setTimeout(function() {
+      //   consoleClass.newMessage("You can now draw on the Canvas with your mouse or, even better with your pen tablet!", 'console', 0, 'feedback')
+      // }, 100);
+      // setTimeout(function() {
+      //   consoleClass.newMessage("After your first frame, click on the \"Save & Next\" button to save your drawing and continue to the next frame.", 'console', 0, 'feedback');
+      // }, 200);
+      // consoleClass.newMessage("<button class=\"project-folder\" id=\"" + thisDB + "\" ontouchstart=\"dbTalkClass.loadOneOfDBs('" + thisDB + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + thisDB + "')\"><i class=\"fas fa-user-circle\"></i>", 'folder-container');
+      // framesClass.goVirgin();
 
-      $(".project-folder").removeClass("currentFolder");
-      $("#" + thisDB).addClass("currentFolder");
+      // $(".project-folder").removeClass("currentFolder");
+      // $("#" + thisDB).addClass("currentFolder");
+      //
+      // /// SLOTS ///
+      //
+      // if(currentLayerKey !== undefined){
+      //   let indexOld = slots.findIndex(i => i.db == currentLayerKey);
+      //   slots[indexOld].status = "free";
+      //   slots[indexOld].user = undefined;
+      // };
+      //
+      // currentLayerKey = result.key;
+      //
+      // let slotStatus = {
+      //   db: result.key,
+      //   status: 'free',
+      //   user: undefined
+      // };
+      // slots.push(slotStatus);
 
-      /// SLOTS ///
 
-      currentLayerKey = result.key;
-
-      let slotStatus = {
-        db: result.key,
-        status: 'not free',
-        user: yourID
-      };
-      slots.push(slotStatus);
     }
 
 
@@ -419,6 +427,7 @@ class DBTalk {
       consoleClass.newMessage("This slot is already occupied, choose a white one.", 'console', 0, 'feedback');
     } else {
       //console.log('not same');
+      $("#chooseSlot").addClass("hide");
       $(".project-folder").removeClass("currentFolder");
       $("#" + dbkey).addClass("currentFolder");
       framesClass.cleanTimelineElements();
@@ -428,7 +437,7 @@ class DBTalk {
       waitDB = true;
       let ref = database.ref(currentDB);
       ref.on('value', dbTalkClass.gotData, dbTalkClass.errData);
-      consoleClass.newMessage("You switched database", 'console', 0, 'feedback');
+      consoleClass.newMessage("You switched slot", 'console', 0, 'feedback');
       timelinePos = 0;
 
       /// slots update status ////
@@ -436,6 +445,7 @@ class DBTalk {
       if(currentLayerKey !== undefined){
         let indexOld = slots.findIndex(i => i.db == currentLayerKey);
         slots[indexOld].status = "free";
+        slots[indexOld].user = undefined;
       };
 
         currentLayerKey = dbkey;
@@ -448,7 +458,7 @@ class DBTalk {
           if(slot.db !== currentLayerKey){
             friendLayerKey = slot.db;
             console.log("Friend layer is: " + friendLayerKey)
-
+            storeKeysFriend = [];
             friendDB = currentEnsemble + '/' + friendLayerKey + '/drawings/';
             //waitDB = true;
             let refFriend = database.ref(friendDB);
@@ -474,7 +484,8 @@ class DBTalk {
     storeKeys = [];
     // //console.log(storeKeys.length);
     currentEnsemble = dbkey;
-    let msgK = createP("<p>——</p>You joined an existing permanent session.");
+    // let msgK = createP("<p>——</p>You joined an existing permanent session.");
+    let msgK = createP("<p>——</p>Share this link with a friend !");
     let perma = createA('?id=' + dbkey, dbkey);
     msgK.id('gotEnsemblemsg');
     msgK.parent('console');
@@ -486,6 +497,8 @@ class DBTalk {
     let keyLink = createA('?id=' + dbkey, '<i class="fas fa-key"></i>');
     keyLink.parent('keyEnsemble');
     keyLink.style('color', '#f2dd00')
+
+
 
   }
 
@@ -549,18 +562,26 @@ class DBTalk {
       //Load folder for different layers/sequences
       consoleClass.newMessage("<button class=\"project-folder\" id=\"" + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>", 'folder-container');
 
+      let createSlotButton = createDiv("<button class=\"start-slot-choice " + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>");
+      createSlotButton.parent(slotsButton);
+
       if(nbPeopleInRoom == 1){
         // if we are alone
         let slotData = {db: storeProjects[0][i], status: 'free'};
         slots.push(slotData);
+        // dbTalkClass.loadOneOfDBs(slotData.db);
+        console.log("test")
       } else if (nbPeopleInRoom > 1){
         // if we are NOT alone
         let index = slots.findIndex(finder => finder.db == storeProjects[0][i]);
+
         if (slots[index].status === 'not free'){
             $("#" + storeProjects[0][i]).addClass("occupiedFolder");
+            $("." + storeProjects[0][i]).addClass("occupiedFolder");
         } else {
           $("#" + storeProjects[0][i]).removeClass("occupiedFolder");
         }
+        // dbTalkClass.loadOneOfDBs(slots[1].db);
       }
 
 
@@ -569,5 +590,7 @@ class DBTalk {
     slots.forEach(function(slot, index){
       console.log(slot.db + " : " + slot.status + " | user: " + slot.user)
     })
+
+
   }
 }

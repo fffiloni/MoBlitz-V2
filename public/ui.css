@@ -308,7 +308,7 @@ div#toolsContainer {
 }
 
 .occupiedFolder {
-  color: blue!important;
+  color: #6d6ad5!important;
 }
 
 
@@ -453,7 +453,7 @@ button.project-folder {
   color: #fffff8;
 }
 
-div#startSession {
+div#startSession, div#chooseSlot {
     position: absolute;
     margin: 21px 0;
     background: #4fca69;
@@ -462,6 +462,29 @@ div#startSession {
     justify-content: center;
     align-items: center;
     z-index: 1;
+}
+
+div#chooseSlotContent {
+  width: 200px;
+display: flex;
+text-align: center;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+color: white;
+}
+
+div#slotsButton {
+    display: flex;
+}
+
+button.start-slot-choice {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 60px;
+    cursor: pointer;
+    margin: 19px;
 }
 
 button#startButton {

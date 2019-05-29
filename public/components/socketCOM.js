@@ -22,7 +22,16 @@ class SCKT{
   			socket.emit('join custom', params.id);
       } else {
         dbTalkClass.createNewEnsemble();
-        dbTalkClass.createNewDB();
+        // dbTalkClass.createNewDB();
+        async function createSecondOne() {
+          dbTalkClass.createNewDB();
+        }
+        async function loadAllForMulti(){
+          dbTalkClass.loadParamDB(currentEnsemble);
+
+        }
+        createSecondOne().then(createSecondOne()).then(loadAllForMulti());
+
       }
     });
   };
@@ -50,6 +59,7 @@ class SCKT{
         for (let i = 0; i < storeProjects[0].length - 1; i++) {
           let slotData = {db: storeProjects[0][i], status: 'free'};
           slots.push(slotData);
+          // dbTalkClass.loadOneOfDBs(slots[0].db);
         }
       }
     });
@@ -78,6 +88,7 @@ class SCKT{
         } else {
           $("#" + slot.db).removeClass("occupiedFolder");
         }
+
       })
     })
 
@@ -157,7 +168,7 @@ class SCKT{
     //////////////////
 
     socket.on('replaceDuoDrawings', function(data){
-  		
+
       framesClass.showDrawingFriend(data);
   		// console.log("try to undo foreign drawings")
   		scktClass.safeRedraw()

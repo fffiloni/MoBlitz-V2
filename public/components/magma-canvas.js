@@ -90,6 +90,16 @@ class MagmaCanvas{
   ////////////////////////
 
   loadCoveredCanvas(){
+    let chooseSlot = createDiv('');
+    chooseSlot.id('chooseSlot');
+    chooseSlot.parent('canvascontainer')
+    chooseSlot.style('width', cnvWidth + 'px');
+    chooseSlot.style('height', cnvHeight + 40 + 'px');
+
+    let chooseSlotContent = createDiv('PLEASE CHOOSE A SEAT');
+    chooseSlotContent.id('chooseSlotContent');
+    chooseSlotContent.parent('chooseSlot');
+
     let loadingDiv = createDiv('');
     loadingDiv.id('loadingDiv');
     loadingDiv.parent('canvascontainer')
@@ -110,10 +120,13 @@ class MagmaCanvas{
     startContent.id('startContent');
     startContent.parent('startSession');
 
+
+
     socket.on('hello', () => {
       var params = getURLParams();
       // console.log(params);
       if (params.id) {
+        socket.emit('join custom', params.id);
         let startButton = createButton('<i class="fas fa-power-off" style="font-size: 60px;"></i><br><br>Connect to Session<br>' + params.id);
         startButton.id('startButton');
         startButton.parent('startContent');

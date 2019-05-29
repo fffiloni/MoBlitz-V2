@@ -324,9 +324,9 @@ class Frames {
         //console.log("oneDrawing success!");
         let dbdrawing = data.val();
         duoPrivateDrawings = dbdrawing.drawing;
-        $(".listing-friend").removeClass("activedraw");
+        $(".listing-friend").removeClass("activedraw-friend");
 
-        $("#" + key).addClass("activedraw");
+        $("#" + key).addClass("activedraw-friend");
         // timelinePosFriend = storeKeysFriend[0].indexOf(key);
         // onionPos = timelinePos - 1;
         // postOnionPos = timelinePos + 1;

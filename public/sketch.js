@@ -93,9 +93,9 @@ function preload() {
   // bg = loadImage('./paris-color-3.jpg');
 
   //console.log("WELCOME ON MOBLITZ!");
-  let wlcm = createP('Welcome On MoBlitz Solo Version!<br><br>' +
+  let wlcm = createP('Welcome On MoBlitz DUO Version!<br><br>' +
     'This is your console, where you\'ll get feedback from everything you do. <br> If you need help, Scroll down to see the ShortCuts documentation.<br><br>' +
-    'Now you can click on the big green button to begin your awesome animation!' +
+    'Now click on the big green button to begin your awesome animation!' +
     '');
   wlcm.parent('console');
 
@@ -110,9 +110,16 @@ function connectDB() {
   socket.emit('connectDB');
   let rmbtn = document.getElementById('connectFirst');
   rmbtn.remove();
-  consoleClass.newMessage('You started a new Session! Enjoy! Bim!', 'console');
+  // consoleClass.newMessage('You started a new Session! Enjoy! Bim!', 'console');
   $("#startSession").addClass("hide");
   toolClass.selectPencilTool();
+
+	let slotsButton = createDiv('');
+	slotsButton.id('slotsButton');
+	slotsButton.parent('chooseSlotContent');
+
+
+
 }
 
 function setup() {
@@ -136,6 +143,8 @@ function setup() {
     //socket.emit('newPeople');
     //console.log("Your ID is " + yourID);
   });
+
+
 
   colorClass.setColorComponent();
   colorClass.setFirstColors();

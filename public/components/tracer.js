@@ -1,3 +1,9 @@
+let drawing = roughs = painting = [];
+let duoDrawings = duoPrivateDrawings = [];
+let predrawing = preroughs = prepainting = [];
+let postdrawing = postroughs = postpainting = [];
+let guidePath = guidelines = [];
+
 class Tracer {
   traceGuidelines(){
 

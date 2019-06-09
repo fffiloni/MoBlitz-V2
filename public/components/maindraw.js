@@ -2,6 +2,14 @@ let px, py, ppx, ppy, sx, sy;
 let fex, fey; // erasePoint from friend
 let ableToDraw = true;
 let isDrawing = false;
+let showRoughs = showDrawingLayer = showBrushLayer = true;
+let erasing = false;
+let eraserUsed = false;
+let safetyEraser = true;
+let brushing = roughing = makingLine = false;
+let penciling = true;
+let lineTracing = [];
+let showGuidelines = true;
 let autoUpdate = false;
 let friendIsErasing = false;
 
@@ -143,7 +151,7 @@ class HowToDraw{
   };
 
 
-  //3. Release th pen from canvas
+  //3. Release the pen from canvas
   safeEndPath(){
     //Here we check for breaking cases, due to pen accidents
     if (currentPath.length === 0) {
@@ -219,6 +227,75 @@ class HowToDraw{
     } else {
       redraw();
     }
+  };
+
+  //5. UNDO LAST PATH
+  undoLastPath() {
+    if (brushing == true) {
+      painting.pop();
+    } else if (roughing == true) {
+      roughs.pop();
+    } else if (makingLine == true) {
+      guidelines.pop();
+    } else if (penciling == true) {
+      drawing.pop();
+  		socket.emit('undoForeign');
+    }
+    //console.log("——");
+    //console.log("You deleted the last path in 'drawing'.");
+    //console.log("So, there is " + drawing.length + " paths in 'drawing' now.");
+    redraw();
+  };
+
+  // * HOW DIFFERENT DRAWING DATA ARE BEING SHOWN ON CANVAS //
+
+  tracePreAndPost(){
+    if (showBrushLayer) {
+      if (stateOnionBrush == true) {
+        if (statePreOnion == true) {
+          tracerClass.tracePrePainting();
+        }
+      }
+    }
+    if (showRoughs == true) {
+      if (stateOnionRough == true) {
+        if (statePreOnion == true) {
+          tracerClass.tracePreRoughs();
+        }
+      }
+      if (statePostOnion == true) {
+        if (stateOnionRough == true) {
+          tracerClass.tracePostRoughs();
+        }
+      }
+    }
+    if (showDrawingLayer == true) {
+      if (statePreOnion == true) {
+        if (stateOnionPencil == true) {
+          tracerClass.tracePreOnion();
+        }
+      }
+      if (statePostOnion == true) {
+        if (stateOnionPencil == true) {
+          tracerClass.tracePostOnion();
+        }
+      }
+    }
+  };
+
+  // * HOW WE HANDLE DIFFERENT GRAPHIC CANVAS PARTS //
+
+  loadAllGraphics(){
+    image(graphicBG, 0, 0);
+  	image(graphicDUO, 0, 0);
+  	image(graphicPrivateDUO, 0, 0);
+    image(graphicFixed, 0, 0);
+    image(graphicKeyPoses, 0, 0);
+    image(graphicGuides, 0, 0);
+    image(graphicOnion, 0, 0);
+    image(graphicBrush, 0, 0);
+    image(graphicRough, 0, 0);
+    image(graphicFRONT, 0, 0);
   };
 
 }

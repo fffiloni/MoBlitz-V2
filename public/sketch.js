@@ -20,16 +20,6 @@ let touchX, touchY;
 let insertedKey;
 
 let btnScopeOver = btnSquareOver = btnFullOver = false;
-let showRoughs = showDrawingLayer = showBrushLayer = true;
-
-
-let erasing = false;
-let eraserUsed = false;
-let safetyEraser = true;
-let brushing = roughing = makingLine = false;
-let penciling = true;
-let lineTracing = [];
-let showGuidelines = true;
 
 let typeOfTool;
 let yourID;
@@ -37,42 +27,28 @@ let pressure, lastPressure, lastStroke, getStrokeValue, strkVal, tempPressure;
 
 let onionDisplayed = false;
 let framesCount;
-let drawing = roughs = painting = [];
-let duoDrawings = duoPrivateDrawings = [];
-let predrawing = preroughs = prepainting = [];
-let postdrawing = postroughs = postpainting = [];
-let guidePath = guidelines = [];
+
 let currentPath = currentForeign = [];
 let lastPath = [];
 let fixedParts = [];
 let storeKeyPoses = [];
 let keyPoses = [];
 let showSafetyLines = true;
-let colorChoice, sliderR, sliderV, sliderB, sliderStroke;
-let csR = csB = csV = setR = setV = setB = 0;
-let paletteHandle = palette = [];
-
 
 let ableToSend = true;
 
 let foreignDrawing = false;
 let showForeign = true;
 
-
 let previousKeyfromInsert = null;
 
-
-let optionPressed = ctrlPressed = ctrlGkeyPressed = ctrlFkeyPressed = false;
 let deleteAble = false;
-
-
 
 let maxDraw = 49;
 let countFrames;
 let maxIsReached = false;
 let frameAfter = dataToKeep = drawingsToKeep = paintingsToKeep = roughsToKeep = [];
 let bg;
-
 
 
 function preload() {
@@ -100,27 +76,12 @@ function preload() {
   wlcm.parent('console');
 
   // socket = io.connect('https://magmanin.nanomenta.com/');
-  // socket = io.connect('http://localhost:4000');
-	socket = io.connect('https://mb-duo.herokuapp.com/');
+  socket = io.connect('http://localhost:4000');
+	// socket = io.connect('https://mb-duo.herokuapp.com/');
 	scktClass.initializeDB();
 
 } //END PRELOAD
 
-function connectDB() {
-  socket.emit('connectDB');
-  let rmbtn = document.getElementById('connectFirst');
-  rmbtn.remove();
-  // consoleClass.newMessage('You started a new Session! Enjoy! Bim!', 'console');
-  $("#startSession").addClass("hide");
-  toolClass.selectPencilTool();
-
-	let slotsButton = createDiv('');
-	slotsButton.id('slotsButton');
-	slotsButton.parent('chooseSlotContent');
-
-
-
-}
 
 function setup() {
 
@@ -134,92 +95,29 @@ function setup() {
 	drawClass.initializePressureSensor();
 	keyBoardClass.setKeyboardShortcuts();
 
-  let tlsubstitute = createDiv('');
-  tlsubstitute.id('substitute');
-  tlsubstitute.parent('drawinglist');
-
-  socket.on('yourID', (data) => {
-    yourID = data;
-    //socket.emit('newPeople');
-    //console.log("Your ID is " + yourID);
-  });
-
-
-
   colorClass.setColorComponent();
   colorClass.setFirstColors();
 
-  let clearButton = select('#clearButton');
-  clearButton.touchStarted(framesClass.goVirgin);
-
-  $(".changeBtn").addClass("disableAllBtn");
-
+	// ACTION BUTTONS //
+	uiClass.setActionButtons();
+  // SIDE CONTAINERS
   uiClass.createAsideContainers();
 	uiClass.setToolsContainer();
-
+  // ON CANVAS WATCH CONTROLS
 	uiClass.setOnionControls();
 	uiClass.setLoopControl();
 	uiClass.setFPSControl();
 
 } // END SETUP
 
-function selectEraserTool() {
-  erasing = !erasing;
-	socket.emit('iamerasing');
-
-  if (erasing) {
-    //console.log("Eraser selected: " + erasing );
-    $("#eraserBtn").addClass("selectedEraser");
-  } else {
-    //console.log("Eraser selected: " + erasing );
-    $("#eraserBtn").removeClass("selectedEraser");
-  }
-
-  // $( "#pencilBtn" ).removeClass( "selectedTool" );
-  // $( "#brushBtn" ).removeClass( "selectedTool" );
-  redraw();
-};
-
-
-//Note: Function to update scroll in console and chat
-function updateScroll() {
-  let element = document.getElementById("console");
-  element.scrollTop = element.scrollHeight;
-}
-//Note: Function to update scroll in palette
-function updatePLScroll() {
-  let element = document.getElementById("yourPalette");
-  element.scrollTop = element.scrollHeight;
-}
-//Note: Function to update Timline's scroll
-function updateTLScroll() {
-  let element = document.getElementById("drawinglist");
-  element.scrollLeft = element.scrollWidth;
-}
-
-
 function draw() {
 
 	touchX = mouseX;
   touchY = mouseY;
 
-	//
+	// HANDLE UI CHANGES //
+	uiClass.watchUIinDraw();
 
-	uiClass.watchFrameCount();
-	uiClass.toggleStateLoopOnion();
-	uiClass.toggleStatePostOnion();
-	uiClass.toggleStatePreOnion();
-  uiClass.watchFPSControl();
-	uiClass.watchLoopControl();
-
-	//
-
-	uiClass.toggleShowRoughs();
-	uiClass.toggleShowDrawingLayer();
-	uiClass.toggleShowBrushLayer();
-	uiClass.toggleStateOnionPencil();
-	uiClass.toggleStateOnionRough();
-  uiClass.toggleStateOnionBrush();
 
   if (ctrlGkeyPressed == true) {
     $("#addGuideBtn").addClass("cursorDelGuide");
@@ -228,16 +126,21 @@ function draw() {
 
   }
 
-  uiClass.toggleDarkmodeCursorBehavior();
+  // GRAPHICS BEHAVIOR //
+	// 1. CLEANING CANVAS
 
-  graphicBG.background(setBG);
+  graphicBG.background(setBG); // BG FIRST
+
+	// START MULTI LABELED
 	graphicDUO.clear();
 	graphicPrivateDUO.clear();
+	// END MULTI LABELED
+
   graphicBrush.clear();
   graphicRough.clear();
   graphicFRONT.clear();
-  graphicGuides.clear();
 
+  graphicGuides.clear(); // GUIDELINES
 
   if (isDrawing == false) {
     graphicKeyPoses.clear();
@@ -248,44 +151,14 @@ function draw() {
 
 	magmaCNV.safetyLinesBehavior();
   framesClass.buttonsBehaviorOnFrameChanges();
+	keyBoardClass.watchKeyboardDown();
+  colorClass.watchColorsInDraw();
 
-
-  if (keyIsDown(OPTION)) {
-    optionPressed = true;
-    //console.log("You are holding the 'Option' key.");
-  }
-
-  if (keyIsDown(CONTROL)) {
-    ctrlPressed = true;
-    //console.log("You are holding the 'Option' key.");
-  }
-
-  if (keyIsDown(69)) {
-    deleteAble = true;
-    //console.log("You are holding the 'E' key.");
-  }
-
-  if (setR === null) {
-    csR = sliderR.value();
-  } else {
-    csR = setR;
-  }
-  if (setV === null) {
-    csV = sliderV.value();
-  } else {
-    csV = setV;
-  }
-  if (setB === null) {
-    csB = sliderB.value();
-  } else {
-    csB = setB;
-  }
-
-  colorChoice.style('background', 'rgb(' + csR + ',' + csV + ',' + csB + ')');
-
-  drawClass.traceCurrentPath();
+	// 2. TRACE CURRENT USER PATH BEING DRAWED //
+	drawClass.traceCurrentPath();
 
   if (isRecording == false) {
+		// A. GUIDELINES DOES NOT APPEAR WHILE CREATING GIF
     tracerClass.traceGuidelines();
   }
 
@@ -294,44 +167,17 @@ function draw() {
 		tracerClass.traceFixedParts();
     tracerClass.traceKeyPoses();
 
-    if (showBrushLayer) {
-      if (stateOnionBrush == true) {
-        if (statePreOnion == true) {
-          tracerClass.tracePrePainting();
-        }
-      }
-    }
-    if (showRoughs == true) {
-      if (stateOnionRough == true) {
-        if (statePreOnion == true) {
-          tracerClass.tracePreRoughs();
-        }
-      }
-      if (statePostOnion == true) {
-        if (stateOnionRough == true) {
-          tracerClass.tracePostRoughs();
-        }
-      }
-    }
-    if (showDrawingLayer == true) {
-      if (statePreOnion == true) {
-        if (stateOnionPencil == true) {
-          tracerClass.tracePreOnion();
-        }
-      }
-      if (statePostOnion == true) {
-        if (stateOnionPencil == true) {
-          tracerClass.tracePostOnion();
-        }
-      }
-    }
+		// B. TRACING ONIONS POST AND PREVIOUS FOR EACH TOOL //
+    drawClass.tracePreAndPost();
   }
 
 	if (showForeign == true){
+		// MULTI — SHOW FRIENDS DRAWINGS
 		tracerClass.traceDUO();
 		tracerClass.tracePrivateDUO();
 	}
 
+	// C. TRACE TOOLS LAYER CONTENT
   if (showBrushLayer) {
     tracerClass.tracePainting();
   }
@@ -341,7 +187,6 @@ function draw() {
   }
 
   if (showDrawingLayer == true) {
-
     graphicFRONT.clear();
     tracerClass.traceDrawings();
   }
@@ -352,48 +197,18 @@ function draw() {
   if(isDrawing){
     graphicFRONT.ellipse(mouseX,mouseY,sliderStroke.value());
   }
-  image(graphicBG, 0, 0);
-	image(graphicDUO, 0, 0);
-	image(graphicPrivateDUO, 0, 0);
-  image(graphicFixed, 0, 0);
-  image(graphicKeyPoses, 0, 0);
-  image(graphicGuides, 0, 0);
-  image(graphicOnion, 0, 0);
-  image(graphicBrush, 0, 0);
-  image(graphicRough, 0, 0);
-  image(graphicFRONT, 0, 0);
-	// let imgToSend = graphicFRONT;
 
-	// socket.on('displayGraphic', function(data){
-	// 	image(data, 0, 0);
-	// })
- countPathNew = drawing.length + painting.length + roughs.length;
+	// D. FINALLY LOAD ALL GRAPHIC CANVAS IN THE RIGHT ORDER
+  drawClass.loadAllGraphics();
+
+ 	countPathNew = drawing.length + painting.length + roughs.length;
 
 }
 // Closing the DRAW function
 
-
 function mouseDragged() {
   strkVal = sliderStroke.value();
   getStrokeValue.html(strkVal);
-  // graphicFRONT.clear();
-  redraw();
-}
-
-function undoLastPath() {
-  if (brushing == true) {
-    painting.pop();
-  } else if (roughing == true) {
-    roughs.pop();
-  } else if (makingLine == true) {
-    guidelines.pop();
-  } else if (penciling == true) {
-    drawing.pop();
-		socket.emit('undoForeign');
-  }
-  //console.log("——");
-  //console.log("You deleted the last path in 'drawing'.");
-  //console.log("So, there is " + drawing.length + " paths in 'drawing' now.");
   redraw();
 }
 
@@ -594,37 +409,6 @@ function showPrivateAnimFriend(key) {
   redraw();
 }
 
-function triggerHelp() {
-  consoleClass.newMessage('You asked for help ?', 'console', 0, 0, 'white');
-
-  let msg2 = createP(
-    "<b>ctrl+ H</b>: show help again <br>" +
-    "<b>ctrl+ S</b>: save & next <br>" +
-    "<b>ctrl+ Z</b>: undo last line <br>" +
-    "<b>ctrl+ E</b>: delete frame <br>" +
-    "<br><b>ctrl+ F + hover a frame</b>: fly over frames<br>" +
-    "<br><b>G + hover guide button</b>: delete blue guidelines<br>" +
-    "<br><b>left arrow </b>: show previous frame with onion<br>" +
-    "<b>right arrow</b>: show next frame with onion<br>" +
-    "<b>up arrow </b>: increase tool size<br>" +
-    "<b>down arrow </b>: decrease tool size<br>" +
-    "<br><b>V </b>: select pen tool<br>" +
-    "<b>B </b>: select brush tool<br>" +
-    "<b>R </b>: select rough tool<br>" +
-    "<b>E </b>: toggle eraser<br>" +
-    "<b>L </b>: select line tool<br>" +
-    "<br><b>G + hover line button</b>: toggle lines<br>" +
-    "<b>U </b>: update frame<br>" +
-    "<b>I </b>: insert frame<br>" +
-    "<b>O </b>: toggle onion skin<br>" +
-    "<b>X </b>: clear pad<br>" +
-    "<b>spacebar </b>: play animation<br>"
-  );
-  msg2.style('color', 'white');
-  msg2.style('font-size', '12px');
-  msg2.parent('console');
-  updateScroll();
-}
 
 function pinThisKey(keyToPin) {
   storeKeyPoses.push(keyToPin);

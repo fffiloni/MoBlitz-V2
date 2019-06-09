@@ -2,6 +2,28 @@ let statePreOnion = statePostOnion = stateLoopOnion  = true;
 let stateOnionPencil = stateOnionBrush = stateOnionRough = true;
 
 class UI{
+  // ACTION BUTTONS //
+
+  setActionButtons(){
+    let clearButton = select('#clearButton');
+    clearButton.touchStarted(framesClass.goVirgin);
+  	let clearOnionBtn = select('#clearOnion');
+  	clearOnionBtn.touchStarted(framesClass.clearOnion);
+  	let showOnionBtn = select('#showOnion');
+  	showOnionBtn.touchStarted(framesClass.showOnion);
+  	let delBtn = select('#delButton');
+  	delBtn.touchStarted(framesClass.deleteFrame);
+  	let insertBtn = select('#insertButton');
+  	insertBtn.touchStarted(framesClass.newInsertFrame);
+  	let duplicateBtn = select('#duplicateButton');
+  	duplicateBtn.touchStarted(framesClass.duplicateFrame);
+  	let updateBtn = select('#updateButton');
+  	updateBtn.touchStarted(framesClass.updateFrame);
+  	let saveBtn = select('#saveButton');
+  	saveBtn.touchStarted(framesClass.saveDrawing);
+    $(".changeBtn").addClass("disableAllBtn");
+  }
+
   //////////////////////////////////////////
   // SIDE PANEL
   //////////////////////////////////////////
@@ -74,7 +96,7 @@ class UI{
     toolClass.createNewTool('fa-pen', 'Pencil', 'pencilBtn', toolClass.selectPencilTool);
     toolClass.createNewTool('fa-paint-brush', 'Brush', 'brushBtn', toolClass.selectBrushTool);
     toolClass.createNewTool('fa-pencil-alt', 'Rough', 'roughBtn', toolClass.selectRoughTool);
-    toolClass.createNewTool('fa-eraser', 'Eraser', 'eraserBtn', selectEraserTool);
+    toolClass.createNewTool('fa-eraser', 'Eraser', 'eraserBtn', toolClass.selectEraserTool);
   	let separator = createDiv('   —   ');
   	separator.parent(toolsContainer);
   	separator.style('display', 'inline-block');
@@ -375,6 +397,28 @@ class UI{
       }
     }
   };
+
+  watchUIinDraw(){
+    // HANDLE UI CHANGES //
+
+    uiClass.watchFrameCount();
+    uiClass.toggleStateLoopOnion();
+    uiClass.toggleStatePostOnion();
+    uiClass.toggleStatePreOnion();
+    uiClass.watchFPSControl();
+    uiClass.watchLoopControl();
+
+    //
+
+    uiClass.toggleShowRoughs();
+    uiClass.toggleShowDrawingLayer();
+    uiClass.toggleShowBrushLayer();
+    uiClass.toggleStateOnionPencil();
+    uiClass.toggleStateOnionRough();
+    uiClass.toggleStateOnionBrush();
+
+    uiClass.toggleDarkmodeCursorBehavior();
+  }
 
 
 

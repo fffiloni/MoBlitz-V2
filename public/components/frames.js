@@ -29,6 +29,8 @@ class Frames {
   }
 
   saveDrawing() {
+    waitDB = true;
+    // waitFriendDB = true;
 
     console.log("——");
     console.log("We just fired 'saveDrawing'!");
@@ -108,6 +110,7 @@ class Frames {
     console.log("We push data in the DB.");
     storeKeys.splice(0, 1);
     let result = ref.push(data);
+
     console.log("We update the local storeKeys array.");
     storeKeys[0].push(result.key);
     storeKeys[0].splice(storeKeys[0].length - 1, 1);
@@ -189,6 +192,7 @@ class Frames {
   };
 
   showDrawing(key) {
+
     this.key = key;
 
     countPathNew = null;
@@ -283,7 +287,7 @@ class Frames {
     ref.once('value', oneDrawingFriend, dbTalkClass.errData);
 
     function oneDrawingFriend(data) {
-      if (!waitDB) {
+      if (!waitFriendDB) {
         //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
         //console.log("oneDrawing success!");
         let dbdrawing = data.val();
@@ -319,7 +323,7 @@ class Frames {
     ref.once('value', onePrivateDrawingFriend, dbTalkClass.errData);
 
     function onePrivateDrawingFriend(data) {
-      if (!waitDB) {
+      if (!waitFriendDB) {
         //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
         //console.log("oneDrawing success!");
         let dbdrawing = data.val();
@@ -347,6 +351,7 @@ class Frames {
       if (calcNbAfter != 0) {
 
         waitDB = true;
+        // waitFriendDB = true;
 
         let ref = database.ref(currentDB);
 
@@ -413,6 +418,7 @@ class Frames {
     if(ableDuplicate == true){
 
       waitDB = true;
+      // waitFriendDB = true;
 
       let ref = database.ref(currentDB);
 
@@ -550,6 +556,7 @@ class Frames {
 
 
   deleteFrame() {
+    // waitFriendDB = true;
     if (ableDelete == true) {
 
       console.log("——");

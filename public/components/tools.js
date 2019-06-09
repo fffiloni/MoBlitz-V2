@@ -79,6 +79,20 @@ class Tools {
 
   };
 
+  selectEraserTool(){
+    erasing = !erasing;
+  	socket.emit('iamerasing');
+
+    if (erasing) {
+      //console.log("Eraser selected: " + erasing );
+      $("#eraserBtn").addClass("selectedEraser");
+    } else {
+      //console.log("Eraser selected: " + erasing );
+      $("#eraserBtn").removeClass("selectedEraser");
+    }
+    redraw();
+  };
+
   selectLineTool() {
     if (ctrlGkeyPressed == false) {
       typeOfTool = 'line';

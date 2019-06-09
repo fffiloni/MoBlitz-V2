@@ -17,20 +17,18 @@ class SCKT{
 
       if (params.id) {
         //Load DB with this ID
-        dbTalkClass.loadParamDB(params.id);
-        //Say to server that we will join e room with this ID name
-  			socket.emit('join custom', params.id);
+        dbTalkClass.loadParamDB(params.id);        
+
       } else {
         dbTalkClass.createNewEnsemble();
-        // dbTalkClass.createNewDB();
-        async function createSecondOne() {
+
+        async function createDBAsync() {
           dbTalkClass.createNewDB();
         }
         async function loadAllForMulti(){
           dbTalkClass.loadParamDB(currentEnsemble);
-
         }
-        createSecondOne().then(createSecondOne()).then(loadAllForMulti());
+        createDBAsync().then(createDBAsync()).then(loadAllForMulti());
 
       }
     });
@@ -45,6 +43,12 @@ class SCKT{
   }
 
   actionSocketResponses(){
+
+    socket.on('yourID', (data) => {
+      yourID = data;
+      //socket.emit('newPeople');
+      //console.log("Your ID is " + yourID);
+    });
 
     //// CONNECTION TO ROOM ///
 

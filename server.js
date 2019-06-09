@@ -60,13 +60,14 @@ function newConnection(socket){
     // console.log(numClients);
     socket.join(roomname);
     socket.room = roomname;
+    socket.roomID = roomname;
 
-    console.log(socket.id + " Says: Je suis dans la room: " + roomname +" "+ numClients);
+    console.log(socket.id + " Says: Je suis dans la room: " + socket.roomID);
 
-    if (numClients[roomname] == undefined) {
-          numClients[roomname] = 1;
+    if (numClients[socket.roomID] == undefined || numClients[socket.roomID] == 0) {
+          numClients[socket.roomID] = 1;
       } else {
-          numClients[roomname]++;
+          numClients[socket.roomID]++;
       }
 
     socket.emit('socket joined a room', numClients[roomname]);
@@ -152,15 +153,18 @@ function newConnection(socket){
   socket.on('disconnect', newDisConnection);
 
   function newDisConnection(){
-    numClients[socket.room]--;
+    console.log('new disconnection');
+    console.log("disconnected socket was in room: " + socket.roomID);
     //var indexIDout = stockIDs.indexOf(socket.id);
     var indexIDout = stockIDs.map(function(e) { return e.animid; }).indexOf(socket.id);
     stockIDs.splice(indexIDout, 1);
     console.log("disconnected:" + socket.id);
     people--;
-    console.log('new disconnection');
+    numClients[socket.roomID]--;
+    console.log("numClients: " +   numClients[socket.roomID]);
+
     console.log(people + " people left in the moblitz.");
     // socket.broadcast.emit('spliceID', socket.id);
-    socket.broadcast.to(socket.room).emit('user freeing slot', socket.id);
+    socket.broadcast.to(socket.roomID).emit('user freeing slot', socket.id);
   }
 }

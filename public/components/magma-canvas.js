@@ -120,7 +120,9 @@ class MagmaCanvas{
     startContent.id('startContent');
     startContent.parent('startSession');
 
-
+    let tlsubstitute = createDiv('');
+    tlsubstitute.id('substitute');
+    tlsubstitute.parent('drawinglist');
 
     socket.on('hello', () => {
       var params = getURLParams();
@@ -130,12 +132,12 @@ class MagmaCanvas{
         let startButton = createButton('<i class="fas fa-power-off" style="font-size: 60px;"></i><br><br>Connect to Session<br>' + params.id);
         startButton.id('startButton');
         startButton.parent('startContent');
-        startButton.touchStarted(connectDB);
+        startButton.touchStarted(dbTalkClass.connectDB);
       } else {
         let startButton = createButton('<i class="fas fa-power-off" style="font-size: 60px;"></i><br><br>Start Session');
         startButton.id('startButton');
         startButton.parent('startContent');
-        startButton.touchStarted(connectDB);
+        startButton.touchStarted(dbTalkClass.connectDB);
       }
       let elts = selectAll('.feedback');
       for (let i = 0; i < elts.length; i++) {

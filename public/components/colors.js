@@ -1,3 +1,7 @@
+let colorChoice, sliderR, sliderV, sliderB, sliderStroke;
+let csR = csB = csV = setR = setV = setB = 0;
+let paletteHandle = palette = [];
+
 class Colors {
 
   setColorComponent(){
@@ -268,7 +272,28 @@ class Colors {
     });
   };
 
-  updatePLScroll() {
+  watchColorsInDraw(){
+    if (setR === null) {
+      csR = sliderR.value();
+    } else {
+      csR = setR;
+    }
+    if (setV === null) {
+      csV = sliderV.value();
+    } else {
+      csV = setV;
+    }
+    if (setB === null) {
+      csB = sliderB.value();
+    } else {
+      csB = setB;
+    }
 
+    colorChoice.style('background', 'rgb(' + csR + ',' + csV + ',' + csB + ')');
+  }
+
+  updatePLScroll() {
+    let element = document.getElementById("yourPalette");
+    element.scrollTop = element.scrollHeight;
   };
 }

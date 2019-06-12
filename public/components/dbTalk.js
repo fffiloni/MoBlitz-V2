@@ -356,7 +356,8 @@ class DBTalk {
                 //
                 // }
                 layer.storeKeysFolder = someoneTempKeys;
-                layer.currentDisplayKey = null;
+                // layer.currentDisplayKey = null;
+
                 // socket.emit('initialOtherLayers', someone)
                 // console.log(layer.folderKey + ' ' + layer.storeKeysFolder);
                 for (let i = 1; i < someoneTempKeys.length; i++) {
@@ -420,6 +421,9 @@ class DBTalk {
                   span.parent(ahref);
                   ahref.parent(someoneTL);
 
+                  if(layer.currentDisplayKey != null){
+                    $("#" + layer.currentDisplayKey).addClass("private-activedraw-friend");
+                  }
 
 
                 }

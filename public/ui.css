@@ -621,13 +621,26 @@ div#onionControls {
     margin-left: 132px;
 }
 
+div#preonionBtn {
+    color: #e9c2ba;
+}
+
+div#postonionBtn {
+    color: #a3e2ae;
+}
+
+div#looponionBtn {
+    color: #f3ce89;
+}
+
+
 .onion-is-on {
-  color: black;
+  color: #4d4d4d;
   cursor: pointer;
 }
 
 .hideOnion {
-  color: rgb(197, 194, 198);
+  color: rgb(197, 194, 198) !important;
   cursor: pointer;
 }
 
@@ -684,4 +697,15 @@ div#substitute {
     background: #4d4d4d;
     border-radius: 8px;
 
+}
+
+.someone-empty {
+  min-width: 6px;
+    height: 10px;
+    margin: 1px 1px 2px 1px;
+    background: #4d4d4d;
+    display: inline-block;
+    list-style: none;
+    flex: 1;
+    border-radius: 4px;
 }

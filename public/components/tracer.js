@@ -599,87 +599,93 @@ class Tracer {
   };
 
   traceDUO(){
-    //Shows the current drawing if there any data in drawing array
-    for (let i = 0; i < duoDrawings.length; i++) {
-      let path = duoDrawings[i];
-      if (duoDrawings[i].length != 0) {
-        // beginShape();
-        lastStroke = path[path.length - 1].pressure;
-        for (let j = 0; j < path.length; j++) {
+    folks.forEach(function(folk){
+      //Shows the current drawing if there any data in drawing array
+      for (let i = 0; i < folk.drawings.length; i++) {
+        let path = folk.drawings[i];
+        if (folk.drawings[i].length != 0) {
+          // beginShape();
+          lastStroke = path[path.length - 1].pressure;
+          for (let j = 0; j < path.length; j++) {
 
-          if (path[j].type == 'trait') {
+            if (path[j].type == 'trait') {
 
-            graphicDUO.strokeCap(SQUARE);
-            //takes colors data form each point in database
-            if (path[j].strk !== undefined) {
+              graphicDUO.strokeCap(SQUARE);
+              //takes colors data form each point in database
+              if (path[j].strk !== undefined) {
 
-              if (path[j].pressure !== undefined) {
-                if (path[j].strk == 1) {
-                  graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
-                } else if (path[j].pressure === undefined) {
-                  graphicDUO.strokeWeight(2);
-                } else {
-                  graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                if (path[j].pressure !== undefined) {
+                  if (path[j].strk == 1) {
+                    graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                  } else if (path[j].pressure === undefined) {
+                    graphicDUO.strokeWeight(2);
+                  } else {
+                    graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                  }
                 }
+              } else {
+                graphicDUO.strokeWeight(2);
               }
-            } else {
-              graphicDUO.strokeWeight(2);
+              graphicDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
+              graphicDUO.beginShape();
+              graphicDUO.noFill();
+              graphicDUO.curveVertex(path[j].x1, path[j].y1);
+              graphicDUO.curveVertex(path[j].x2, path[j].y2);
+              graphicDUO.curveVertex(path[j].x3, path[j].y3);
+              graphicDUO.curveVertex(path[j].x4, path[j].y4);
+              graphicDUO.endShape();
             }
-            graphicDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
-            graphicDUO.beginShape();
-            graphicDUO.noFill();
-            graphicDUO.curveVertex(path[j].x1, path[j].y1);
-            graphicDUO.curveVertex(path[j].x2, path[j].y2);
-            graphicDUO.curveVertex(path[j].x3, path[j].y3);
-            graphicDUO.curveVertex(path[j].x4, path[j].y4);
-            graphicDUO.endShape();
           }
         }
       }
-
-    }
+    });
   };
 
   tracePrivateDUO(){
-    //Shows the current drawing if there any data in drawing array
-    for (let i = 0; i < duoPrivateDrawings.length; i++) {
-      let path = duoPrivateDrawings[i];
-      if (duoPrivateDrawings[i].length != 0) {
-        // beginShape();
-        lastStroke = path[path.length - 1].pressure;
-        for (let j = 0; j < path.length; j++) {
+    layersArray.forEach(function(multi){
+      //Shows the current drawing if there any data in drawing array
+      let multiDraw = multi.folderDrawings;
 
-          if (path[j].type == 'trait') {
+      for (let i = 0; i < multiDraw.length; i++) {
+        let path = multiDraw[i];
+        if (multiDraw[i].length != 0) {
+          // beginShape();
+          lastStroke = path[path.length - 1].pressure;
+          for (let j = 0; j < path.length; j++) {
 
-            graphicPrivateDUO.strokeCap(SQUARE);
-            //takes colors data form each point in database
-            if (path[j].strk !== undefined) {
+            if (path[j].type == 'trait') {
 
-              if (path[j].pressure !== undefined) {
-                if (path[j].strk == 1) {
-                  graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
-                } else if (path[j].pressure === undefined) {
-                  graphicPrivateDUO.strokeWeight(2);
-                } else {
-                  graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+              graphicPrivateDUO.strokeCap(SQUARE);
+              //takes colors data form each point in database
+              if (path[j].strk !== undefined) {
+
+                if (path[j].pressure !== undefined) {
+                  if (path[j].strk == 1) {
+                    graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                  } else if (path[j].pressure === undefined) {
+                    graphicPrivateDUO.strokeWeight(2);
+                  } else {
+                    graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                  }
                 }
+              } else {
+                graphicDUO.strokeWeight(2);
               }
-            } else {
-              graphicDUO.strokeWeight(2);
+              graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
+              graphicPrivateDUO.beginShape();
+              graphicPrivateDUO.noFill();
+              graphicPrivateDUO.curveVertex(path[j].x1, path[j].y1);
+              graphicPrivateDUO.curveVertex(path[j].x2, path[j].y2);
+              graphicPrivateDUO.curveVertex(path[j].x3, path[j].y3);
+              graphicPrivateDUO.curveVertex(path[j].x4, path[j].y4);
+              graphicPrivateDUO.endShape();
             }
-            graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
-            graphicPrivateDUO.beginShape();
-            graphicPrivateDUO.noFill();
-            graphicPrivateDUO.curveVertex(path[j].x1, path[j].y1);
-            graphicPrivateDUO.curveVertex(path[j].x2, path[j].y2);
-            graphicPrivateDUO.curveVertex(path[j].x3, path[j].y3);
-            graphicPrivateDUO.curveVertex(path[j].x4, path[j].y4);
-            graphicPrivateDUO.endShape();
           }
         }
-      }
 
-    }
+      }
+    });
+
   };
 
   //Outils caché

@@ -81,7 +81,7 @@ class UI{
   }
 
   createLayerType(icon, kind, id, state, touchStarted){
-    let newLayerType = createDiv('<i class="fas  ' + icon + '" style="font-size: 12px;"></i>' + kind + ' Layer is ' + state);
+    let newLayerType = createDiv('<i class="fas  ' + icon + '" style="font-size: 12px;"></i> ' + kind + ' Layer is ' + state);
     newLayerType.id(id);
     newLayerType.style('color', 'white');
     newLayerType.parent('layersContainer');

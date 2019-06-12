@@ -80,7 +80,7 @@ class HowToDraw{
 
           if (showDrawingLayer == true) {
             drawing.push(currentPath);
-  					socket.emit('startToDuo');
+  					socket.emit('startToDuo', yourID);
             currentPath.splice(0, 1);
           } else {
             return;
@@ -121,7 +121,11 @@ class HowToDraw{
             strk: sliderStroke.value()
           }
           currentPath.push(point);
-  				socket.emit('sendPoint', point);
+          let dataToSend = {
+            folkID: yourID,
+            point:point
+          }
+  				socket.emit('sendPoint', dataToSend);
         }
       } else {
         //erase

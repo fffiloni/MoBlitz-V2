@@ -62,24 +62,45 @@ function newConnection(socket){
     socket.room = roomname;
     socket.roomID = roomname;
 
-    console.log(socket.id + " Says: Je suis dans la room: " + socket.roomID);
+    console.log(socket.id + " Says: I am in room number: " + socket.roomID);
+    let index = stockIDs.findIndex(i => i.animid === socket.id);
+    stockIDs[index].inRoom = socket.roomID;
+    console.log(stockIDs);
+
+    let peopleInThisRoom = [];
+
+    stockIDs.forEach(function(people){
+      if(people.inRoom != undefined && people.inRoom == socket.roomID){
+        peopleInThisRoom.push(people.animid);
+      }
+    })
 
     if (numClients[socket.roomID] == undefined || numClients[socket.roomID] == 0) {
           numClients[socket.roomID] = 1;
       } else {
           numClients[socket.roomID]++;
       }
+    let data = {
+      roomID: socket.roomID,
+      folks: peopleInThisRoom
+    }
 
-    socket.emit('socket joined a room', numClients[roomname]);
+    console.log(data);
+
+    socket.emit('socket joined a room', data );
 
   })
+
+  socket.on('pushmeinyourfolksarray', function(data){
+    socket.broadcast.to(socket.room).emit('pushnewfolkinfolksarray', data);
+  });
 
   socket.on('get slots array', function(){
     socket.broadcast.to(socket.room).emit('gimme your slots array');
   })
 
   socket.on('this is my slots array', function(data){
-    console.log("slots send " + data);
+    // console.log("slots send " + data);
     socket.broadcast.to(socket.room).emit('transfer slots array', data);
   })
 
@@ -88,9 +109,9 @@ function newConnection(socket){
   })
   /// Sending Drawing Informations to Others ///
 
-  socket.on('startToDuo', function(){
-    socket.broadcast.to(socket.room).emit('startFromDuo');
-    //console.log(data);
+  socket.on('startToDuo', function(data){
+    socket.broadcast.to(socket.room).emit('startFromDuo', data);
+    // console.log(data);
   })
 
   socket.on('sendPoint', function(points){
@@ -116,21 +137,26 @@ function newConnection(socket){
   })
 
   socket.on('iamdrawing', function(){
-    socket.broadcast.to(socket.room).emit('foreingIsDrawing');
+    socket.broadcast.to(socket.room).emit('foreignIsDrawing');
   })
 
   socket.on('iamnotdrawing', function(){
     socket.broadcast.to(socket.room).emit('foreingIsNotDrawing');
   })
 
-  socket.on('clearForeign', function(){
-    socket.broadcast.to(socket.room).emit('cleanDuo');
+  socket.on('clearForeign', function(data){
+    socket.broadcast.to(socket.room).emit('cleanDuo', data);
     //console.log(data);
   })
 
   socket.on('eraseFriend', function(erasePoint){
     socket.broadcast.to(socket.room).emit('eraseInFriend', erasePoint);
   })
+
+  // TEST MULTI
+  socket.on('iamchangingkey', (data) => {
+    socket.broadcast.to(socket.room).emit('someonechangedkey', data);
+  });
 
 
 

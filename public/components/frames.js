@@ -159,7 +159,7 @@ class Frames {
     //console.log("Pad has been cleared. Back on track for next frame.");
     // selectPencilTool();
     redraw();
-    socket.emit('clearForeign');
+    socket.emit('clearForeign', yourID);
   };
 
   clearDrawing() {
@@ -188,7 +188,7 @@ class Frames {
     //console.log("Pad has been cleared. Back on track for next frame.");
     // selectPencilTool();
     redraw();
-    socket.emit('clearForeign');
+    socket.emit('clearForeign', yourID);
   };
 
   showDrawing(key) {
@@ -221,6 +221,15 @@ class Frames {
       }
     }
 
+    // envoie aux sockets signal
+    let data = {
+      folkID: yourID,
+      layerID: currentLayerKey,
+      keyDisplayed: key
+    }
+    // let layerID = currentLayerKey;
+    socket.emit('iamchangingkey', data);
+
 
     let ref = database.ref(currentDB + key);
     //console.log("——");
@@ -233,7 +242,7 @@ class Frames {
         //console.log("oneDrawing success!");
         let dbdrawing = data.val();
         drawing = dbdrawing.drawing;
-        socket.emit('showForeign', key);
+        // socket.emit('showForeign', key);
         painting = dbdrawing.painting;
         roughs = dbdrawing.roughs;
         keyToUpdate = key;
@@ -271,41 +280,41 @@ class Frames {
     redraw();
   }
 
-  showDrawingFriend(key) {
-    this.key = key;
-
-    //console.log("——");
-    //console.log("We just fired 'showDrawing'!");
-    if (key instanceof MouseEvent) {
-      var key = this.id();
-    }
-
-
-    let ref = database.ref(friendDB + key);
-    //console.log("——");
-    //console.log("We try to fire 'oneDrawing'.");
-    ref.once('value', oneDrawingFriend, dbTalkClass.errData);
-
-    function oneDrawingFriend(data) {
-      if (!waitFriendDB) {
-        //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
-        //console.log("oneDrawing success!");
-        let dbdrawing = data.val();
-        duoDrawings = dbdrawing.drawing;
-
-        timelinePosFriend = storeKeysFriend[0].indexOf(key);
-        // onionPos = timelinePos - 1;
-        // postOnionPos = timelinePos + 1;
-        // document.getElementById('onionkey').value = storeKeys[0][onionPos];
-        // document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-        //console.log('Index in storeKeys: ' + storeKeys[0].indexOf(key) + ' | Timeline Position: ' +  timelinePos + ' | Onion Position: ' + onionPos);
-      } else {
-        console.log("We wait for gotData ...");
-      }
-
-    }
-    scktClass.safeRedraw();
-  }
+  // showDrawingFriend(key) {
+  //   this.key = key;
+  //
+  //   //console.log("——");
+  //   //console.log("We just fired 'showDrawing'!");
+  //   if (key instanceof MouseEvent) {
+  //     var key = this.id();
+  //   }
+  //
+  //
+  //   let ref = database.ref(friendDB + key);
+  //   //console.log("——");
+  //   //console.log("We try to fire 'oneDrawing'.");
+  //   ref.once('value', oneDrawingFriend, dbTalkClass.errData);
+  //
+  //   function oneDrawingFriend(data) {
+  //     if (!waitFriendDB) {
+  //       //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
+  //       //console.log("oneDrawing success!");
+  //       let dbdrawing = data.val();
+  //       duoDrawings = dbdrawing.drawing;
+  //
+  //       timelinePosFriend = storeKeysFriend[0].indexOf(key);
+  //       // onionPos = timelinePos - 1;
+  //       // postOnionPos = timelinePos + 1;
+  //       // document.getElementById('onionkey').value = storeKeys[0][onionPos];
+  //       // document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+  //       //console.log('Index in storeKeys: ' + storeKeys[0].indexOf(key) + ' | Timeline Position: ' +  timelinePos + ' | Onion Position: ' + onionPos);
+  //     } else {
+  //       console.log("We wait for gotData ...");
+  //     }
+  //
+  //   }
+  //   scktClass.safeRedraw();
+  // }
 
   showPrivateDrawingFriend(key) {
     this.key = key;
@@ -417,7 +426,7 @@ class Frames {
   duplicateFrame(){
     if(ableDuplicate == true){
 
-      waitDB = true;
+      // waitDB = true;
       // waitFriendDB = true;
 
       let ref = database.ref(currentDB);

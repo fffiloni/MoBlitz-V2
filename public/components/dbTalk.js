@@ -5,7 +5,7 @@ let currentEnsemble = null;
 let storeEnsembles = [];
 
 let storeProjects = [[]];
-let maxProjects = 2;
+let maxProjects = 3;
 
 let currentDB = 'drawings/';
 let refDB;
@@ -25,6 +25,9 @@ let refFriend;
 
 let nbPeopleInRoom = 0;
 
+let layersArray = [];
+let referencesArray = [];
+
 
 class DBTalk {
 
@@ -39,6 +42,23 @@ class DBTalk {
   	let slotsButton = createDiv('');
   	slotsButton.id('slotsButton');
   	slotsButton.parent('chooseSlotContent');
+  }
+
+  move(arr, old_index, new_index) {
+    while (old_index < 0) {
+        old_index += arr.length;
+    }
+    while (new_index < 0) {
+        new_index += arr.length;
+    }
+    if (new_index >= arr.length) {
+        var k = new_index - arr.length;
+        while ((k--) + 1) {
+            arr.push(undefined);
+        }
+    }
+    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+    return arr;
   }
 
   gotData(data) {
@@ -61,22 +81,6 @@ class DBTalk {
       let keys = Object.keys(drawings);
       // console.log("keys from db: " + keys);
 
-      function move(arr, old_index, new_index) {
-        while (old_index < 0) {
-            old_index += arr.length;
-        }
-        while (new_index < 0) {
-            new_index += arr.length;
-        }
-        if (new_index >= arr.length) {
-            var k = new_index - arr.length;
-            while ((k--) + 1) {
-                arr.push(undefined);
-            }
-        }
-         arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-         return arr;
-      }
       return orderKeys(keys).then(displayKeys(tempKeys));
 
       // ASYNC FUNCTIONS FOR ORDERING AND DISPLAYING KEYFRAMES IN RIGTH ORDER
@@ -99,7 +103,7 @@ class DBTalk {
 
               let movingKey = keys.indexOf(k);
               let arrivalKey = wichkey + 1;
-              move(tempKeys, movingKey, arrivalKey);
+              dbTalkClass.move(tempKeys, movingKey, arrivalKey);
 
               movingKey = null;
               arrivalKey = null;
@@ -143,6 +147,7 @@ class DBTalk {
           ahref.mouseOver(showAnim);
           ahref.touchStarted(framesClass.showDrawing);
 
+
           span.parent(ahref);
           ahref.parent('drawinglist');
         }
@@ -154,6 +159,7 @@ class DBTalk {
         ableDelete = true;
         waitFriendDB = false;
       };
+
     } else {
       console.log("wait for safety delete")
     }
@@ -165,116 +171,6 @@ class DBTalk {
     ////console.log(err);
   }
 
-  gotFriendData(data) {
-    if(waitFriendDB != true){
-      if(waitSafeDelete == false){
-        console.log("—— gotFriendData fired.");
-
-        ableDelete = false;
-        waitFriendDB = true;
-        let elts = selectAll('.listing-friend');
-        for (let i = 0; i < elts.length; i++) {
-          elts[i].remove();
-        }
-
-        console.log("We have new data from Friend Database!");
-        waitFriendDB = false;
-
-        //console.log("We updated the timeline (listing).");
-        let drawings = data.val();
-        let keys = Object.keys(drawings);
-        // console.log("keys from db: " + keys);
-
-        function move(arr, old_index, new_index) {
-          while (old_index < 0) {
-              old_index += arr.length;
-          }
-          while (new_index < 0) {
-              new_index += arr.length;
-          }
-          if (new_index >= arr.length) {
-              var k = new_index - arr.length;
-              while ((k--) + 1) {
-                  arr.push(undefined);
-              }
-          }
-           arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-           return arr;
-        }
-        return orderFriendKeys(keys).then(displayFriendKeys(friendTempKeys));
-
-        async function orderFriendKeys (keys){
-          console.log("async function friend orderKeys");
-          waitSafeDelete = true;
-          friendTempKeys = keys;
-          for (let k of friendTempKeys){
-            let ref = database.ref(friendDB + k);
-            ref.once('value', moveFriendKey, dbTalkClass.errData);
-
-            function moveFriendKey(data){
-
-              let dbdrawing = data.val();
-
-              if (dbdrawing.nearPrevKey != null){
-                let wichkey = keys.indexOf(dbdrawing.nearPrevKey);
-
-                console.log("j'ai trouvé une clefs d'insertion!: "+ wichkey);
-                // let calculateDiff = key.indexOf(k) - wichkey;
-                let movingKey = keys.indexOf(k);
-                let arrivalKey = wichkey + 1;
-                move(friendTempKeys, movingKey, arrivalKey);
-                // console.log("tempKeys array: " + tempKeys)
-                movingKey = null;
-                arrivalKey = null;
-              } else {
-                //do as usual
-              }
-
-            };
-          };
-        };
-
-
-        async function displayFriendKeys(friendTempKeys){
-          console.log("async function friend displayKeys");
-          waitSafeDelete = false;
-          storeKeysFriend.push(friendTempKeys);
-          if (storeKeysFriend.length > 1) {
-            storeKeysFriend.splice(0, 1)
-          };
-
-          friendTempKeys = null;
-
-          for (let i = 0; i < storeKeysFriend[0].length; i++) {
-            let key = storeKeysFriend[0][i];
-            console.log("CREATING SPAN FOR FRAMES FRIENDS");
-            let span = createElement('span');
-            span.id(key);
-            let ahref = createA('javascript:', '');
-            ahref.class('listing-friend');
-            ahref.id(key);
-
-              ahref.mouseOver(showPrivateAnimFriend);
-
-
-            ahref.touchStarted(framesClass.showPrivateDrawingFriend);
-
-            span.parent(ahref);
-            ahref.parent('drawinglist-friend');
-          }
-
-          ableDelete = true;
-
-        };
-      } else {
-        console.log("wait for safety delete")
-      }
-
-    } else {
-
-      console.log(" waitFriendDB is TRUE, we have to wait ")}
-
-  }
 
   createNewEnsemble() {
     $("#loadingDiv").addClass("hide");
@@ -318,41 +214,24 @@ class DBTalk {
 
       //console.log("We push data in the DB.");
       let result = ref.push(newDB);
-      // //console.log("New DB created with this key: " + result.key);
-      // currentDB = currentEnsemble + '/' + result.key + '/drawings/';
-      // storeKeys = [];
-      // //console.log("We tried to create a new DB Branche");
-      // let ref2 = database.ref(currentDB);
-      // ref2.on('value', dbTalkClass.gotData, dbTalkClass.errData);
 
       newdbKeys.push(result.key);
       let thisDB = newdbKeys[newdbKeys.indexOf(result.key)].toString();
 
-
-    //   // /// SLOTS ///
-    //
-    //   if(currentLayerKey != undefined){
-    //     let indexOld = slots.findIndex(i => i.db == currentLayerKey);
-    //     slots[indexOld].status = "free";
-    //     slots[indexOld].user = undefined;
-    //   };
-    //
-    //   currentLayerKey = result.key;
-    //
-    //   let slotStatus = {
-    //     db: result.key,
-    //     status: 'free',
-    //     user: undefined
-    //   };
-    //   slots.push(slotStatus);
-    //
-    //
+      let slotData = {db: thisDB, status: 'free'};
+      slots.push(slotData);
     }
 
   } //Closing createNewDB function
 
   loadOneOfDBs(dbkey) {
 
+    layersArray.forEach(function(layerToClean){
+      layerToClean.folderDrawings = [];
+      layerToClean.currentDisplayKey = null;
+
+    });
+    redraw();
 
     $("#substitute").removeClass("hide");
     console.log("Je charge loadOneOfDBs");
@@ -364,81 +243,203 @@ class DBTalk {
       console.log('same db key');
     } else {
         console.log('not same');
-        if(slots[index].status === 'not free'){
-          console.log("slots is occupied, you can't join this layer");
-          consoleClass.newMessage("This slot is already occupied, choose a white one.", 'console', 0, 'feedback');
-        } else {
-            // CLOSING PREVIOUS CALLBACK REFERENCE FOR FIREBASE
-            if(refFriend != undefined){
-              refFriend.off('value', dbTalkClass.gotFriendData);
+
+        if(referencesArray.length != 0){
+          referencesArray.forEach(function(reference){
+            let ref = reference.refToOff;
+            ref.off();
+          });
+          referencesArray = [];
+        }
+
+        return partOneSwitch().then(partTwoSwitch());
+
+        async function partOneSwitch(){
+          console.log("fired Part One switch");
+          $("#chooseSlot").addClass("hide");
+          $(".project-folder").removeClass("currentFolder");
+          $("#" + dbkey).addClass("currentFolder");
+
+          framesClass.cleanTimelineElements();
+          storeKeys = [];
+
+          // //console.log(storeKeys.length);
+          currentDB = currentEnsemble + '/' + dbkey + '/drawings/';
+
+          waitDB = true;
+          refDB = database.ref(currentDB);
+          refDB.on('value', dbTalkClass.gotData, dbTalkClass.errData);
+          consoleClass.newMessage("You switched slot", 'console', 0, 'feedback');
+          timelinePos = 0;
+        }
+
+        async function partTwoSwitch(){
+          console.log("fired Part Two switch");
+
+          currentLayerKey = dbkey;
+
+          layersArray.forEach(function(layer, index){
+
+            $("#" + layer.folderKey + '-tl').remove();
+
+            let someoneTL = createDiv('');
+            someoneTL.id(layer.folderKey + '-tl');
+            someoneTL.class(layer.folderKey);
+            someoneTL.parent('someoneslist');
+
+            let someoneDB = currentEnsemble + '/' + layer.folderKey + '/drawings/';
+            let refSomeone = database.ref(someoneDB);
+
+            let data = {
+              layerKey: layer.folderKey,
+              refToOff: refSomeone
             }
 
-            if(refDB != undefined){
-              refDB.off('value', dbTalkClass.gotData);
-            }
+            referencesArray.push(data);
 
-            return partOneSwitch().then(partTwoSwitch());
+            refSomeone.on('value', function(data){
 
-            async function partOneSwitch(){
-              console.log("fired Part One switch");
-              $("#chooseSlot").addClass("hide");
-              $(".project-folder").removeClass("currentFolder");
-              $("#" + dbkey).addClass("currentFolder");
+              let elts = selectAll('.listing-some-' + layer.folderKey);
+              for (let i = 0; i < elts.length; i++) {
+                elts[i].remove();
+              }
 
-              framesClass.cleanTimelineElements();
-              storeKeys = [];
+              // console.log(data);
+              console.log("someone number " + index + " has new data to show");
 
-              // //console.log(storeKeys.length);
-              currentDB = currentEnsemble + '/' + dbkey + '/drawings/';
+              let someoneTempKeys;
 
-              waitDB = true;
-              refDB = database.ref(currentDB);
-              refDB.on('value', dbTalkClass.gotData, dbTalkClass.errData);
-              consoleClass.newMessage("You switched slot", 'console', 0, 'feedback');
-              timelinePos = 0;
-            }
-
-            async function partTwoSwitch(){
-              console.log("fired Part Two switch");
+              let drawings = data.val();
+              let keys = Object.keys(drawings);
+              //console.log(keys);
 
 
-              /// slots update status ////
+              return orderSomeoneKeys(keys).then(displaySomeoneKeys(someoneTempKeys));
 
-              if(currentLayerKey != undefined){
-                let indexOld = slots.findIndex(i => i.db == currentLayerKey);
-                slots[indexOld].status = "free";
-                slots[indexOld].user = undefined;
+              // ASYNC FUNCTIONS FOR ORDERING AND DISPLAYING KEYFRAMES IN RIGTH ORDER
+              // 1. ORDERING
+              async function orderSomeoneKeys (keys){
+                console.log("async function someone orderKeys");
+                waitSafeDelete = true;
+                someoneTempKeys = keys;
+
+                for (let k of someoneTempKeys){
+                  let ref = database.ref(someoneDB + k);
+                  ref.once('value', moveSomeoneKey, dbTalkClass.errData);
+
+                  function moveSomeoneKey(data){
+                    let dbdrawing = data.val();
+
+                    if (dbdrawing.nearPrevKey != null){
+                      let wichkey = keys.indexOf(dbdrawing.nearPrevKey);
+                      console.log("j'ai trouvé une clefs d'insertion!: " + wichkey);
+
+                      let movingKey = keys.indexOf(k);
+                      let arrivalKey = wichkey + 1;
+                      dbTalkClass.move(someoneTempKeys, movingKey, arrivalKey);
+
+                      movingKey = null;
+                      arrivalKey = null;
+                    } else {
+                      //do as usual
+                    }
+
+                  };
+                };
               };
 
-              currentLayerKey = dbkey;
-              slots[index].status = "not free";
-              slots[index].user = yourID;
+              // 2. DISPLAYING
+              async function displaySomeoneKeys(someoneTempKeys){
+                console.log("async function someone displayKeys");
+                waitSafeDelete = false;
+                // if(someoneTempKeys.length == 1){
+                //
+                // }
+                layer.storeKeysFolder = someoneTempKeys;
+                layer.currentDisplayKey = null;
+                // socket.emit('initialOtherLayers', someone)
+                // console.log(layer.folderKey + ' ' + layer.storeKeysFolder);
+                for (let i = 1; i < someoneTempKeys.length; i++) {
+                  let key = someoneTempKeys[i];
 
-              slots.forEach(function(slot, index){
-                console.log(slot.db + " : " + slot.status + " | user: " + slot.user)
+                  let span = createElement('span');
+                  span.id(key);
+                  let ahref = createA('javascript:', '');
+                  ahref.class('listing-some-' + layer.folderKey);
+                  ahref.id(key);
+                  ahref.touchStarted(function(){
+                    if(layer.currentDisplayKey == key){
+                      layer.currentDisplayKey = null;
+                      // console.log("same key man");
+                      layer.folderDrawings = [];
+                      $("#" + key).removeClass("private-activedraw-friend");
+                      redraw();
+                    } else {
+                      layer.currentDisplayKey = key;
+                      console.log(layer.currentDisplayKey);
+                      let ref = database.ref(someoneDB + key);
+                      ref.once('value', onePrivateSomeone, dbTalkClass.errData);
+                      function onePrivateSomeone(data){
+                        let dbdrawing = data.val();
+                        layer.folderDrawings = dbdrawing.drawing;
+                        $(".listing-some-" + layer.folderKey).removeClass("private-activedraw-friend");
 
-                if(slot.db !== currentLayerKey){
-                  friendLayerKey = slot.db;
-                  console.log("Friend layer is: " + friendLayerKey)
-                  storeKeysFriend = [];
-                  friendDB = currentEnsemble + '/' + friendLayerKey + '/drawings/';
+                        $("#" + key).addClass("private-activedraw-friend");
+                        redraw();
+                      }
+                    }
+                  });
+                  ahref.mouseOver(function(){
+                    // if (key instanceof MouseEvent) {
+                    //   let key = this.id();
 
-                  // waitFriendDB = false;
-                  refFriend = database.ref(friendDB);
+                      if (optionPressed || ctrlFkeyPressed) {
+                        if(layer.currentDisplayKey == key){
+                          layer.currentDisplayKey = null;
+                          // console.log("same key man");
+                          layer.folderDrawings = [];
+                          $("#" + key).removeClass("private-activedraw-friend");
+                          redraw();
+                        } else {
+                          layer.currentDisplayKey = key;
+                          console.log(layer.currentDisplayKey);
+                          let ref = database.ref(someoneDB + key);
+                          ref.once('value', onePrivateSomeone, dbTalkClass.errData);
+                          function onePrivateSomeone(data){
+                            let dbdrawing = data.val();
+                            layer.folderDrawings = dbdrawing.drawing;
+                            $(".listing-some-" + layer.folderKey).removeClass("private-activedraw-friend");
 
-                  refFriend.on('value', dbTalkClass.gotFriendData, dbTalkClass.errData);
+                            $("#" + key).addClass("private-activedraw-friend");
+                            redraw();
+                          }
+                        }
+                      }
+                    // }
+                  });
+                  span.parent(ahref);
+                  ahref.parent(someoneTL);
 
-                } else {
-                  console.log("Your layer is: " + slot.db)
+
+
                 }
-              });
+                if(layer.folderKey == currentLayerKey){
+                  $("#" + layer.folderKey + '-tl').remove();
+                }
+                if(layer.storeKeysFolder.length == 1){
+                  let sublayer = createElement('span');
+                  sublayer.class('someone-empty');
+                  sublayer.parent(someoneTL);
+                }
 
-              socket.emit('update slots array abroad', slots);
-            }
-
-          }
+              };
+          });
+        });
       }
+    }
   }
+
+
 
   loadParamDB(dbkey) {
 
@@ -514,15 +515,18 @@ class DBTalk {
     console.log("fired GotDBToShow");
     $("#loadingDiv").addClass("hide");
     storeProjects = [];
-    if (nbPeopleInRoom == 1){
-      slots = [];
-    }
+    slots = [];
+
     let projects = data.val();
     let keys = Object.keys(projects);
     storeProjects.splice(0, 1);
     storeProjects.push(keys);
-    //console.log(storeProjects);
+
+
     for (let i = 0; i < storeProjects[0].length - 1; i++) {
+
+      let slotData = {db: storeProjects[0][i], status: 'free'};
+      slots.push(slotData);
 
       //Load folder for different layers/sequences
       consoleClass.newMessage("<button class=\"project-folder\" id=\"" + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>", 'folder-container');
@@ -530,32 +534,14 @@ class DBTalk {
       let createSlotButton = createDiv("<button class=\"start-slot-choice " + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>");
       createSlotButton.parent(slotsButton);
 
-      if(nbPeopleInRoom == 1){
-        // if we are alone
-        let slotData = {db: storeProjects[0][i], status: 'free'};
-        slots.push(slotData);
-        // dbTalkClass.loadOneOfDBs(slotData.db);
-        console.log("test")
-      } else if (nbPeopleInRoom > 1){
-        // if we are NOT alone
-        let index = slots.findIndex(finder => finder.db == storeProjects[0][i]);
-
-        if (slots[index].status === 'not free'){
-            $("#" + storeProjects[0][i]).addClass("occupiedFolder");
-            $("." + storeProjects[0][i]).addClass("occupiedFolder");
-        } else {
-          $("#" + storeProjects[0][i]).removeClass("occupiedFolder");
-        }
-        // dbTalkClass.loadOneOfDBs(slots[1].db);
-      }
-
+      // * TEST MULTI - On prepare un tableau pour display les differents folders/layers
+      let oneLayer = {
+        folderKey: storeProjects[0][i],
+        storeKeysFolder: [],
+        folderDrawings: []
+      };
+      layersArray.push(oneLayer);
 
     }
-    console.log("Slots available: ");
-    slots.forEach(function(slot, index){
-      console.log(slot.db + " : " + slot.status + " | user: " + slot.user)
-    })
-
-
   }
 }

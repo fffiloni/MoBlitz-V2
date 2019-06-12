@@ -76,6 +76,31 @@ canvas {
   /* background: black; */
 }
 
+div#someoneslist > div {
+  /* margin-top: 20px; */
+      margin-bottom: -5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  /* width: 1280px; */
+  height: 30px;
+  overflow:auto;
+  white-space:nowrap;
+  /* background: black; */
+}
+
+div#someoneslist > div > a {
+    min-width: 6px;
+    height: 10px;
+    margin: 1px 1px 2px 1px;
+    background: #fff;
+    display: inline-block;
+    list-style: none;
+    flex: 1;
+    border-radius: 4px;
+}
+
 #peopleReady {
   margin-top: 20px;
 }
@@ -91,7 +116,7 @@ span.waitingText, #peopleReady > p {
 }
 
 .listing {
-  flex: 1;
+  flex: 2;
   min-width: 6px;
   height: 20px;
   margin: 1px 1px 2px 1px;
@@ -144,8 +169,11 @@ span.waitingText, #peopleReady > p {
 .activedraw {
   background: #ffdc00;
 }
+.private-activedraw-friend {
+  background: #ddaf57!important;
+}
 .activedraw-friend {
-  background: #6d6ad5;
+  background: #6d6ad5!important;
 }
 .activelast {
   /* background: #ffde0078; */
@@ -391,6 +419,8 @@ div#console, div#chat, div#inputChat {
 
 .current {
   background: #252027;
+  flex: 1;
+  min-width:100px;
 }
 
 .controlBtns {

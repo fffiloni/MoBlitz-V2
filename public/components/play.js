@@ -49,7 +49,12 @@ class Play {
       //console.log("We fired oneDrawingOfkeyShowing !");
       let dbdrawing = data.val();
       drawing = dbdrawing.drawing;
-      socket.emit('showForeign', key);
+      let keyToSendData = {
+        folkID: yourID,
+        layerID: currentLayerKey,
+        keyDisplayed: key
+      }
+      socket.emit('iamchangingkey', keyToSendData);
       painting = dbdrawing.painting;
       roughs = dbdrawing.roughs;
       keyToUpdate = key;

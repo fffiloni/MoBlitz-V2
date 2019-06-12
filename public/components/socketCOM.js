@@ -1,3 +1,6 @@
+let folks = [];
+someoneRedraws = false;
+
 class SCKT{
 
   //////////////////
@@ -17,7 +20,7 @@ class SCKT{
 
       if (params.id) {
         //Load DB with this ID
-        dbTalkClass.loadParamDB(params.id);        
+        dbTalkClass.loadParamDB(params.id);
 
       } else {
         dbTalkClass.createNewEnsemble();
@@ -35,10 +38,15 @@ class SCKT{
   };
 
   safeRedraw(){
-    if (isDrawing == false){
-      redraw();
-    } else {
-      //Do Not redraw
+    if (isDrawing == false ){
+      if(foreignDrawing == true){
+        redraw();
+
+      } else {
+        if(playing == false){
+           redraw();
+         }
+      }
     }
   }
 
@@ -53,20 +61,31 @@ class SCKT{
     //// CONNECTION TO ROOM ///
 
     socket.on('socket joined a room', function(data){
-      console.log("nb people in room : " + data);
-      nbPeopleInRoom = data;
-      if(data > 1){
-        slots = [];
-        socket.emit('get slots array');
-      } else {
-        console.log("je suis tout seul dans la room");
-        for (let i = 0; i < storeProjects[0].length - 1; i++) {
-          let slotData = {db: storeProjects[0][i], status: 'free'};
-          slots.push(slotData);
-          // dbTalkClass.loadOneOfDBs(slots[0].db);
+      //data.roomID & data.folks
+      console.log("you are in room: " + data.roomID);
+      console.log("These folks are here too: " + data.folks);
+
+      data.folks.forEach(function(folk){
+        if(folk !== yourID){
+          let folkData = {
+            folk: folk,
+            currentPoint: [],
+            drawings: []
+          }
+          folks.push(folkData);
         }
-      }
+      })
+      socket.emit('pushmeinyourfolksarray', yourID);
     });
+
+    socket.on('pushnewfolkinfolksarray', function(data){
+      let newfolkData = {
+        folk: data,
+        currentPoint: [],
+        drawings: []
+      }
+      folks.push(newfolkData);
+    })
 
     socket.on('gimme your slots array', function(){
       socket.emit("this is my slots array", slots);
@@ -97,6 +116,9 @@ class SCKT{
     })
 
     socket.on('user freeing slot', function(data){
+      // CLeaning Folks array
+      let folk = folks.findIndex(i => i.folk == data);
+      folks.splice(folk, 1);
       //Cleaning
       duoDrawings = [];
       scktClass.safeRedraw();
@@ -119,27 +141,30 @@ class SCKT{
     socket.on('foreignIsDrawing', () => foreignDrawing = true);
 
     //1. Receive a startPath (first point) from Friends
-    socket.on('startFromDuo', function(){
-  		currentForeign = [];
-  		duoDrawings.push(currentForeign);
-  		currentForeign.splice(0, 1);
+    socket.on('startFromDuo', function(data){
+      console.log(data);
+      let index = folks.findIndex(i => i.folk == data);
+      folks.findIndex(i => i.folk == "vplslPxrVIIsYi1ZAAAE");
+      console.log(index);
+      folks[index].currentPoint = [];
+  		// currentForeign = [];
+  		folks[index].drawings.push(folks[index].currentPoint);
+  		folks[index].currentPoint.splice(0, 1);
   		scktClass.safeRedraw();
   	});
 
     //2. Trace Friend's path
-    socket.on('pushPointFromDuo', function(points){
+    socket.on('pushPointFromDuo', function(dataReceived){
   		// console.log(points);
-
-        currentForeign.push(points);
-        scktClass.safeRedraw()
-
-
-
+        let index = folks.findIndex(i => i.folk == dataReceived.folkID);
+        folks[index].currentPoint.push(dataReceived.point);
+        // currentForeign.push(points);
+        scktClass.safeRedraw();
   	});
 
     //3. Receive the end Path (last point) from friends
     socket.on('endFromDuo', () => {
-      scktClass.safeRedraw()
+      scktClass.safeRedraw();
     });
 
     socket.on('eraseInFriend', function(erasePoint){
@@ -147,7 +172,7 @@ class SCKT{
       fey = erasePoint.py;
       tracerClass.eraserFriends();
       scktClass.safeRedraw();
-    })
+    });
 
     //3bis. Friend is not drawing, he released the pen
     socket.on('foreingIsNotDrawing', () => foreignDrawing = false);
@@ -160,8 +185,9 @@ class SCKT{
   	});
 
     //5. Receive clean pad from friends
-    socket.on('cleanDuo', function(){
-  		duoDrawings = [];
+    socket.on('cleanDuo', function(data){
+      let index = folks.findIndex(i => i.folk == data);
+  		folks[index].drawings = [];
   		scktClass.safeRedraw();
   	});
 
@@ -171,11 +197,38 @@ class SCKT{
     // Friend is navigating in his timeline part
     //////////////////
 
+    socket.on('someonechangedkey', (data) => {
+
+        // il faut trouver l’index de layerID, dans le tableau des layers (layersArray)
+        let index = layersArray.findIndex(i => i.folderKey === data.layerID);
+        let folkfinder = folks.findIndex(i => i.folk === data.folkID);
+
+        // il faudra créer les span de timeline correspondants
+
+        layersArray[index].currentDisplayKey = data.keyDisplayed;
+        // console.log(layersArray[index]);
+
+        let ref = database.ref(currentEnsemble + '/' + data.layerID + '/drawings/' + data.keyDisplayed);
+        ref.once('value', oneFromSomeone, dbTalkClass.errData);
+        function oneFromSomeone(data){
+          let dbdrawing = data.val();
+          folks[folkfinder].drawings = dbdrawing.drawing;
+          $(".listing-some-" + layersArray[index].folderKey).removeClass("activedraw-friend");
+
+          $("#" + layersArray[index].currentDisplayKey).addClass("activedraw-friend");
+          // redraw();
+        }
+        // console.log("index du layer concerné " + data.layerID + ": " + index );
+
+        scktClass.safeRedraw();
+
+    });
+
     socket.on('replaceDuoDrawings', function(data){
 
       framesClass.showDrawingFriend(data);
   		// console.log("try to undo foreign drawings")
-  		scktClass.safeRedraw()
+  		scktClass.safeRedraw();
   	});
 
   }; // END actionSocketResponses();

@@ -159,7 +159,11 @@ class Frames {
     //console.log("Pad has been cleared. Back on track for next frame.");
     // selectPencilTool();
     redraw();
-    socket.emit('clearForeign', yourID);
+    let data ={
+      folkID: yourID,
+      layerID: currentLayerKey
+    }
+    socket.emit('clearForeign', data);
   };
 
   clearDrawing() {

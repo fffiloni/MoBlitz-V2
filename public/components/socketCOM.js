@@ -186,8 +186,10 @@ class SCKT{
 
     //5. Receive clean pad from friends
     socket.on('cleanDuo', function(data){
-      let index = folks.findIndex(i => i.folk == data);
+      let index = folks.findIndex(i => i.folk == data.folkID);
   		folks[index].drawings = [];
+      folks[index].currentDisplayKey = null;
+      $(".listing-some-" + data.layerID).removeClass("activedraw-friend");
   		scktClass.safeRedraw();
   	});
 
@@ -205,7 +207,7 @@ class SCKT{
 
         // il faudra créer les span de timeline correspondants
 
-        layersArray[index].currentDisplayKey = data.keyDisplayed;
+        folks[folkfinder].currentDisplayKey = data.keyDisplayed;
         // console.log(layersArray[index]);
 
         let ref = database.ref(currentEnsemble + '/' + data.layerID + '/drawings/' + data.keyDisplayed);
@@ -215,7 +217,7 @@ class SCKT{
           folks[folkfinder].drawings = dbdrawing.drawing;
           $(".listing-some-" + layersArray[index].folderKey).removeClass("activedraw-friend");
 
-          $("#" + layersArray[index].currentDisplayKey).addClass("activedraw-friend");
+          $("#" + folks[folkfinder].currentDisplayKey).addClass("activedraw-friend");
           // redraw();
         }
         // console.log("index du layer concerné " + data.layerID + ": " + index );

@@ -18,7 +18,7 @@ class HowToDraw{
 
   //*PRESSURE LIBRARY
   initializePressureSensor(){
-    $('#defaultCanvas0').pressure({
+    $('#magma-canvas').pressure({
 
       change: function(force, event) {
         // this is called every time there is a change in pressure
@@ -159,7 +159,7 @@ class HowToDraw{
   safeEndPath(){
     //Here we check for breaking cases, due to pen accidents
     if (currentPath.length === 0) {
-      //console.log("OUPS | SLOW DOWN JOLLY JUMPER!");
+      console.log("OUPS | SLOW DOWN JOLLY JUMPER!");
       ableToDraw = false;
 
       //We create a safetyPoint to fill the void

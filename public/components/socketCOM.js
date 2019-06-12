@@ -39,14 +39,18 @@ class SCKT{
 
   safeRedraw(){
     if (isDrawing == false ){
-      if(foreignDrawing == true){
-        redraw();
-
+      // si je ne dessine pas
+      if(playing == false){
+        // si je ne suis pas en train de play anim
+          redraw();
       } else {
-        if(playing == false){
-           redraw();
-         }
+        // si je suis en train de play anim
+        if(foreignDrawing == true){
+          redraw();
+        }
       }
+    } else {
+
     }
   }
 
@@ -142,15 +146,25 @@ class SCKT{
 
     //1. Receive a startPath (first point) from Friends
     socket.on('startFromDuo', function(data){
-      console.log(data);
+      foreignDrawing = true;
+      // console.log(data);
       let index = folks.findIndex(i => i.folk == data);
       folks.findIndex(i => i.folk == "vplslPxrVIIsYi1ZAAAE");
-      console.log(index);
+      // console.log(index);
       folks[index].currentPoint = [];
   		// currentForeign = [];
   		folks[index].drawings.push(folks[index].currentPoint);
   		folks[index].currentPoint.splice(0, 1);
   		scktClass.safeRedraw();
+
+
+        timer = setInterval(function(){
+          scktClass.safeRedraw();
+        }, 1000/60);
+
+
+
+
   	});
 
     //2. Trace Friend's path
@@ -164,6 +178,8 @@ class SCKT{
 
     //3. Receive the end Path (last point) from friends
     socket.on('endFromDuo', () => {
+      foreignDrawing = false;
+      clearInterval(timer);
       scktClass.safeRedraw();
     });
 

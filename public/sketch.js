@@ -212,6 +212,11 @@ function mouseDragged() {
   redraw();
 }
 
+// function mouseIsPressed() {
+//
+//   redraw();
+// }
+
 function toggleRoughs() {
   if (showRoughs == true) {
     showRoughs = false;
@@ -330,6 +335,11 @@ function keyPressed() {
     }
   }
 }
+
+// document.getElementById("magma-canvas").addEventListener("mousedown", mouseDown);
+// function mouseDown(){
+// 	console.log("mouse is down");
+// }
 
 window.onkeydown = function(event) {
   if (event.keyCode === 32) {

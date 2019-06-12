@@ -2,6 +2,8 @@ let canvas, cnvWidth, cnvHeight , expWidthF , expHeightF , expTopF , expLeftF, e
 
 let graphicBG, graphicFixed, graphicKeyPoses, graphicGuides, graphicOnion, graphicBrush, graphicRough, graphicFRONT, graphicDUO, graphicPrivateDUO;
 
+let timer;
+
 class MagmaCanvas{
 
   ////////////////////////
@@ -23,6 +25,7 @@ class MagmaCanvas{
     cnvHeight = cnvWidth * 0.5625;
 
     canvas = createCanvas(cnvWidth, cnvHeight);
+    canvas.id('magma-canvas');
     canvas.parent('canvascontainer');
     pixelDensity(1);
     frameRate(24);
@@ -33,9 +36,18 @@ class MagmaCanvas{
     let formatDrawingList = document.getElementById('drawinglist');
     formatDrawingList.style.width = "cnvWidth";
 
-    $('#defaultCanvas0').bind('contextmenu', function(e) {
+    $('#magma-canvas').bind('contextmenu', function(e) {
       return false;
     });
+
+    // $( "#magma-canvas" ).mousedown(function() {
+    //   timer = setInterval(function(){
+    //     scktClass.safeRedraw();
+    //   }, 1000/60);
+    // });
+    // $( "#magma-canvas" ).mouseup(function() {
+    //   clearInterval(timer);
+    // });
 
     canvas.touchStarted(drawClass.startPath);
     canvas.touchEnded(drawClass.safeEndPath);

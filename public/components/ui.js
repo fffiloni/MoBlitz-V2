@@ -344,56 +344,56 @@ class UI{
   toggleDarkmodeCursorBehavior(){
     if (brushing == true) {
       if (darkmode == true) {
-        $("#defaultCanvas0").addClass("cursorBrushDM");
-        $("#defaultCanvas0").removeClass("cursorBrush");
+        $("#magma-canvas").addClass("cursorBrushDM");
+        $("#magma-canvas").removeClass("cursorBrush");
       } else {
-        $("#defaultCanvas0").addClass("cursorBrush");
-        $("#defaultCanvas0").removeClass("cursorBrushDM");
+        $("#magma-canvas").addClass("cursorBrush");
+        $("#magma-canvas").removeClass("cursorBrushDM");
       }
 
     } else if (roughing == true || (roughing == true && brushing == false)) {
       if (darkmode == true) {
-        $("#defaultCanvas0").addClass("cursorRoughDM");
-        $("#defaultCanvas0").removeClass("cursorBrushDM");
+        $("#magma-canvas").addClass("cursorRoughDM");
+        $("#magma-canvas").removeClass("cursorBrushDM");
       } else {
-        $("#defaultCanvas0").addClass("cursorRough");
-        $("#defaultCanvas0").removeClass("cursorBrush");
-        $("#defaultCanvas0").removeClass("cursorBrushDM");
+        $("#magma-canvas").addClass("cursorRough");
+        $("#magma-canvas").removeClass("cursorBrush");
+        $("#magma-canvas").removeClass("cursorBrushDM");
       }
 
     } else {
       if (darkmode == true) {
-        $("#defaultCanvas0").addClass("cursorPencilDM");
-        $("#defaultCanvas0").removeClass("cursorBrushDM");
-        $("#defaultCanvas0").removeClass("cursorRoughDM");
-        $("#defaultCanvas0").removeClass("cursorBrush");
-        $("#defaultCanvas0").removeClass("cursorRough");
+        $("#magma-canvas").addClass("cursorPencilDM");
+        $("#magma-canvas").removeClass("cursorBrushDM");
+        $("#magma-canvas").removeClass("cursorRoughDM");
+        $("#magma-canvas").removeClass("cursorBrush");
+        $("#magma-canvas").removeClass("cursorRough");
       } else {
-        $("#defaultCanvas0").addClass("cursorPencil");
-        $("#defaultCanvas0").removeClass("cursorBrush");
-        $("#defaultCanvas0").removeClass("cursorRough");
-        $("#defaultCanvas0").removeClass("cursorBrushDM");
-        $("#defaultCanvas0").removeClass("cursorRoughDM");
-        $("#defaultCanvas0").removeClass("cursorPencilDM");
+        $("#magma-canvas").addClass("cursorPencil");
+        $("#magma-canvas").removeClass("cursorBrush");
+        $("#magma-canvas").removeClass("cursorRough");
+        $("#magma-canvas").removeClass("cursorBrushDM");
+        $("#magma-canvas").removeClass("cursorRoughDM");
+        $("#magma-canvas").removeClass("cursorPencilDM");
       }
     }
 
     if (erasing == false || (erasing == false && brushing == false && roughing == false)) {
       if (darkmode == true) {
-        $("#defaultCanvas0").removeClass("cursorEraserDM");
-        $("#defaultCanvas0").removeClass("cursorEraser");
+        $("#magma-canvas").removeClass("cursorEraserDM");
+        $("#magma-canvas").removeClass("cursorEraser");
       } else {
-        $("#defaultCanvas0").removeClass("cursorEraser");
-        $("#defaultCanvas0").removeClass("cursorEraserDM");
+        $("#magma-canvas").removeClass("cursorEraser");
+        $("#magma-canvas").removeClass("cursorEraserDM");
       }
     }
     if (erasing == true) {
       if (darkmode == true) {
-        $("#defaultCanvas0").addClass("cursorEraserDM");
-        $("#defaultCanvas0").removeClass("cursorEraser");
+        $("#magma-canvas").addClass("cursorEraserDM");
+        $("#magma-canvas").removeClass("cursorEraser");
       } else {
-        $("#defaultCanvas0").addClass("cursorEraser");
-        $("#defaultCanvas0").removeClass("cursorEraserDM");
+        $("#magma-canvas").addClass("cursorEraser");
+        $("#magma-canvas").removeClass("cursorEraserDM");
       }
     }
   };

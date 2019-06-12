@@ -76,8 +76,8 @@ function preload() {
   wlcm.parent('console');
 
   // socket = io.connect('https://magmanin.nanomenta.com/');
-  socket = io.connect('http://localhost:4000');
-	// socket = io.connect('https://mb-duo.herokuapp.com/');
+  // socket = io.connect('http://localhost:4000');
+	socket = io.connect('https://mb-duo.herokuapp.com/');
 	scktClass.initializeDB();
 
 } //END PRELOAD
@@ -396,18 +396,7 @@ function showAnim(key) {
   redraw();
 }
 
-function showPrivateAnimFriend(key) {
-  if (key instanceof MouseEvent) {
-    let key = this.id();
 
-    if (optionPressed || ctrlFkeyPressed) {
-      framesClass.showPrivateDrawingFriend(key);
-      // keyToUpdate = key;
-      //console.log(keyToUpdate);
-    }
-  }
-  redraw();
-}
 
 
 function pinThisKey(keyToPin) {

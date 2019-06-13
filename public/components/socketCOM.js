@@ -1,5 +1,7 @@
 let folks = [];
 someoneRedraws = false;
+nbpeopleoncanvas = 0;
+nbpeopleplaying = 0;
 
 class SCKT{
 
@@ -38,19 +40,27 @@ class SCKT{
   };
 
   safeRedraw(){
-    if (isDrawing == false ){
-      // si je ne dessine pas
-      if(playing == false){
-        // si je ne suis pas en train de play anim
+    if (isDrawing == true ){
+      //canvas is already being redraw
+      // si je dessine laisse moi faire
+      // do not redraw
+    } else if (isDrawing == false){
+      //check if someone is already on canvas
+      if(nbpeopleoncanvas > 1){
+        //canvas is already being redraw
+        //do nothing
+      } else if (nbpeopleoncanvas == 1 ){
+        // one people is about to being able to redraw
+        if (playing == false){
           redraw();
-      } else {
-        // si je suis en train de play anim
-        if(foreignDrawing == true){
-          redraw();
-        }
-      }
-    } else {
+        } else if (playing == true){
+          //
 
+        }
+      } else if(nbpeopleoncanvas == 0){
+        //nobody is redrawing, you can do it
+        redraw();
+      }
     }
   }
 
@@ -142,11 +152,11 @@ class SCKT{
     //////////////////
 
     //0. Friend is drawing, his pen is on canvas
-    socket.on('foreignIsDrawing', () => foreignDrawing = true);
+    // socket.on('foreignIsDrawing', () => );
 
     //1. Receive a startPath (first point) from Friends
     socket.on('startFromDuo', function(data){
-      foreignDrawing = true;
+      nbpeopleoncanvas++
       // console.log(data);
       let index = folks.findIndex(i => i.folk == data);
       folks.findIndex(i => i.folk == "vplslPxrVIIsYi1ZAAAE");
@@ -157,18 +167,15 @@ class SCKT{
   		folks[index].currentPoint.splice(0, 1);
   		scktClass.safeRedraw();
 
-
-        timer = setInterval(function(){
-          scktClass.safeRedraw();
-        }, 1000/60);
-
-
-
+      // timer = setInterval(function(){
+      //   scktClass.safeRedraw();
+      // }, 1000/60);
 
   	});
 
     //2. Trace Friend's path
     socket.on('pushPointFromDuo', function(dataReceived){
+
   		// console.log(points);
         let index = folks.findIndex(i => i.folk == dataReceived.folkID);
         folks[index].currentPoint.push(dataReceived.point);
@@ -178,8 +185,8 @@ class SCKT{
 
     //3. Receive the end Path (last point) from friends
     socket.on('endFromDuo', () => {
-      foreignDrawing = false;
-      clearInterval(timer);
+      nbpeopleoncanvas--
+      // clearInterval(timer);
       scktClass.safeRedraw();
     });
 
@@ -191,7 +198,7 @@ class SCKT{
     });
 
     //3bis. Friend is not drawing, he released the pen
-    socket.on('foreingIsNotDrawing', () => foreignDrawing = false);
+    // socket.on('foreingIsNotDrawing', () => );
 
     //4. Undo last path from friend
     socket.on('undoLastForeign', function(){
@@ -209,7 +216,13 @@ class SCKT{
   		scktClass.safeRedraw();
   	});
 
+    socket.on('foreingIsPlaying', function(){
+      nbpeopleplaying++;
+    })
 
+    socket.on('foreingIsNotPlaying', function(){
+      nbpeopleplaying--;
+    })
 
     //////////////////
     // Friend is navigating in his timeline part
@@ -241,13 +254,6 @@ class SCKT{
         scktClass.safeRedraw();
 
     });
-
-    socket.on('replaceDuoDrawings', function(data){
-
-      framesClass.showDrawingFriend(data);
-  		// console.log("try to undo foreign drawings")
-  		scktClass.safeRedraw();
-  	});
 
   }; // END actionSocketResponses();
 

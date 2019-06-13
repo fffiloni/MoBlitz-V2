@@ -30,7 +30,7 @@ class Play {
     let calcNbAfter = (storeKeys[0].length - 1) - (storeKeys[0].indexOf(key));
     //console.log("Nb of frames after the displayed one: " + calcNbAfter);
     frameAfter = [];
-    drawingsToKeep = [];
+    // drawingsToKeep = [];
     for (let i = storeKeys[0].indexOf(key) + 1; i < storeKeys[0].length; i++) {
       frameAfter.push(storeKeys[0][i]);
     }
@@ -69,15 +69,27 @@ class Play {
     countPathOld = drawing.length + painting.length + roughs.length;
     eraserUsed = false;
     }
-    if(foreignDrawing == false){
-      redraw();
-    }
+    // if(foreignDrawing == false){
+      scktClass.safeRedraw();
+    // }
   };
 
   togglePlay() {
     //console.log("——");
     //console.log("We just fired 'togglePlay'!");
     playing = !playing;
+    if(playing == true){
+      ableToDraw = false;
+      $("#stopButton").removeClass("hide");
+      $("#playButton").addClass("hide");
+      socket.emit('iamplaying');
+    } else if (playing == false){
+      ableToDraw = true;
+      $("#stopButton").addClass("hide");
+      $("#playButton").removeClass("hide");
+      socket.emit('iamnotplaying');
+    }
+
     // showForeign = !showForeign;
     framesClass.clearOnion();
     //console.log("ANIMATION STARTED. (playing: " + playing + ")");

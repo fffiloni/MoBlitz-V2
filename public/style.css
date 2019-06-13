@@ -477,7 +477,7 @@ div#about h5 > a {
 div#addLayer {
     color: #6e6e6e;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex: 1;
 }
 

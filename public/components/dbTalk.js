@@ -10,18 +10,13 @@ let maxProjects = 3;
 let currentDB = 'drawings/';
 let refDB;
 let tempKeys;
-let friendTempKeys;
 let storeKeys = [];
-let storeKeysFriend = [];
 
 let newdbKeys = [];
 let storeSketches = [];
 
 let slots = [];
 let currentLayerKey = undefined;
-let friendLayerKey = undefined;
-let friendDB;
-let refFriend;
 
 let nbPeopleInRoom = 0;
 
@@ -44,6 +39,7 @@ class DBTalk {
   	slotsButton.parent('chooseSlotContent');
   }
 
+  // THIS FUNCTION REORDERS INDEXES FROM DATABASE TO TAKE CARE OF SPECIAL FRAMES
   move(arr, old_index, new_index) {
     while (old_index < 0) {
         old_index += arr.length;
@@ -352,14 +348,9 @@ class DBTalk {
               async function displaySomeoneKeys(someoneTempKeys){
                 console.log("async function someone displayKeys");
                 waitSafeDelete = false;
-                // if(someoneTempKeys.length == 1){
-                //
-                // }
-                layer.storeKeysFolder = someoneTempKeys;
-                // layer.currentDisplayKey = null;
 
-                // socket.emit('initialOtherLayers', someone)
-                // console.log(layer.folderKey + ' ' + layer.storeKeysFolder);
+                layer.storeKeysFolder = someoneTempKeys;
+
                 for (let i = 1; i < someoneTempKeys.length; i++) {
                   let key = someoneTempKeys[i];
 
@@ -391,8 +382,8 @@ class DBTalk {
                     }
                   });
                   ahref.mouseOver(function(){
-                    // if (key instanceof MouseEvent) {
-                    //   let key = this.id();
+                    if (key instanceof MouseEvent) {
+                      let key = this.id();
 
                       if (optionPressed || ctrlFkeyPressed) {
                         if(layer.currentDisplayKey == key){
@@ -416,7 +407,7 @@ class DBTalk {
                           }
                         }
                       }
-                    // }
+                    }
                   });
                   span.parent(ahref);
                   ahref.parent(someoneTL);
@@ -447,7 +438,6 @@ class DBTalk {
 
   loadParamDB(dbkey) {
 
-    //console.log('not same');
     framesClass.cleanTimelineElements();
     storeKeys = [];
     // //console.log(storeKeys.length);
@@ -462,8 +452,10 @@ class DBTalk {
     msgK.addClass('msgFixed');
     consoleClass.updateScroll();
 
+    // CALL TO GET DATA FROM THE SESSION/ENSEMBLE LOADED
     dbTalkClass.getEnsembleDBs();
 
+    // CREATE A KEY ICON IN THE RIGHT CORNER
     let keyLink = createA('?id=' + dbkey, '<i class="fas fa-key"></i>');
     keyLink.parent('keyEnsemble');
     keyLink.style('color', '#f2dd00')
@@ -472,7 +464,49 @@ class DBTalk {
 
   }
 
+  getEnsembleDBs() {
+    //GET FOLDERS/LAYERS FROM SESSION DATABASE
+    let ref = database.ref('/' + currentEnsemble);
+    ref.once('value', dbTalkClass.gotDBsToShow, dbTalkClass.errData);
+  }
 
+  gotDBsToShow(data) {
+    // Callback grom getEnsembleDBS
+    //Displays the different layers/folders registered in the session
+    console.log("fired GotDBToShow");
+    $("#loadingDiv").addClass("hide");
+    storeProjects = [];
+    slots = [];
+
+    let projects = data.val();
+    let keys = Object.keys(projects);
+    storeProjects.splice(0, 1);
+    storeProjects.push(keys);
+
+
+    for (let i = 0; i < storeProjects[0].length - 1; i++) {
+
+      let slotData = {db: storeProjects[0][i], status: 'free'};
+      slots.push(slotData);
+
+      //Load folders/seats for different layers/sequences
+      consoleClass.newMessage("<button class=\"project-folder\" id=\"" + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>", 'folder-container');
+
+      let createSlotButton = createDiv("<button class=\"start-slot-choice " + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>");
+      createSlotButton.parent(slotsButton);
+
+      // * TEST MULTI - On prepare un tableau pour display les differents folders/layers
+      let oneLayer = {
+        folderKey: storeProjects[0][i],
+        storeKeysFolder: [],
+        folderDrawings: []
+      };
+      layersArray.push(oneLayer);
+
+    }
+  }
+
+  //DANGEROUS ! THIS WILL DELETE ALL EXISTING SESSIONS
   cleanMBDB() {
     let ref = database.ref('/');
     ref.once('value', dbTalkClass.gotDataToClean2, dbTalkClass.errData);
@@ -491,7 +525,7 @@ class DBTalk {
     }
   }
 
-
+  //DANGEROUS ! THIS IS TO DELETE ALL DATA IN THE SESSION
   cleanDB() {
     let ref = database.ref('/' + currentEnsemble);
     ref.once('value', dbTalkClass.gotDataToClean, dbTalkClass.errData);
@@ -507,45 +541,6 @@ class DBTalk {
       //console.log(storeSketches[0][i] + ' : sketch removed.');
       let delRef = database.ref('/' + currentEnsemble + '/' + storeSketches[0][i]);
       delRef.remove();
-    }
-  }
-
-  getEnsembleDBs() {
-    let ref = database.ref('/' + currentEnsemble);
-    ref.once('value', dbTalkClass.gotDBsToShow, dbTalkClass.errData);
-  }
-
-  gotDBsToShow(data) {
-    console.log("fired GotDBToShow");
-    $("#loadingDiv").addClass("hide");
-    storeProjects = [];
-    slots = [];
-
-    let projects = data.val();
-    let keys = Object.keys(projects);
-    storeProjects.splice(0, 1);
-    storeProjects.push(keys);
-
-
-    for (let i = 0; i < storeProjects[0].length - 1; i++) {
-
-      let slotData = {db: storeProjects[0][i], status: 'free'};
-      slots.push(slotData);
-
-      //Load folder for different layers/sequences
-      consoleClass.newMessage("<button class=\"project-folder\" id=\"" + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>", 'folder-container');
-
-      let createSlotButton = createDiv("<button class=\"start-slot-choice " + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>");
-      createSlotButton.parent(slotsButton);
-
-      // * TEST MULTI - On prepare un tableau pour display les differents folders/layers
-      let oneLayer = {
-        folderKey: storeProjects[0][i],
-        storeKeysFolder: [],
-        folderDrawings: []
-      };
-      layersArray.push(oneLayer);
-
     }
   }
 }

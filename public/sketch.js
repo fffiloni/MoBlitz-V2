@@ -17,13 +17,10 @@ let darkmode = false;
 
 let touchX, touchY;
 
-let insertedKey;
-
 let btnScopeOver = btnSquareOver = btnFullOver = false;
 
 let typeOfTool;
 let yourID;
-let pressure, lastPressure, lastStroke, getStrokeValue, strkVal, tempPressure;
 
 let onionDisplayed = false;
 let framesCount;
@@ -40,14 +37,13 @@ let ableToSend = true;
 let foreignDrawing = false;
 let showForeign = true;
 
-let previousKeyfromInsert = null;
-
 let deleteAble = false;
 
 let maxDraw = 49;
 let countFrames;
 let maxIsReached = false;
-let frameAfter = dataToKeep = drawingsToKeep = paintingsToKeep = roughsToKeep = [];
+let frameAfter = [];
+// let dataToKeep = drawingsToKeep = paintingsToKeep = roughsToKeep = [];
 let bg;
 
 
@@ -405,7 +401,6 @@ function showAnim(key) {
   }
   redraw();
 }
-
 
 
 

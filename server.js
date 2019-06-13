@@ -144,6 +144,14 @@ function newConnection(socket){
     socket.broadcast.to(socket.room).emit('foreingIsNotDrawing');
   })
 
+  socket.on('iamplaying', function(){
+    socket.broadcast.to(socket.room).emit('foreingIsPlaying');
+  });
+
+  socket.on('iamnotplaying', function(){
+    socket.broadcast.to(socket.room).emit('foreingIsNotPlaying');
+  })
+
   socket.on('clearForeign', function(data){
     socket.broadcast.to(socket.room).emit('cleanDuo', data);
     //console.log(data);

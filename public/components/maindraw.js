@@ -12,6 +12,7 @@ let lineTracing = [];
 let showGuidelines = true;
 let autoUpdate = false;
 let friendIsErasing = false;
+let pressure, lastPressure, lastStroke, getStrokeValue, strkVal, tempPressure;
 
 
 class HowToDraw{

@@ -68,6 +68,14 @@ button#playButton {
     margin: 0 10px;
 }
 
+button#stopButton {
+    max-width: 110px;
+    border-radius: 4px;
+    background: #F44336;
+    padding: 6px;
+    margin: 0 10px;
+}
+
 button#clearOnion {
     max-width: 90px;
     border-radius: 4px;

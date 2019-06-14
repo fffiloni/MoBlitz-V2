@@ -167,7 +167,7 @@ span.waitingText, #peopleReady > p {
 }
 
 .activedraw {
-  background: #ffdc00;
+  background: #ffc900;
 }
 .private-activedraw-friend {
   background: #ddaf57!important;
@@ -177,7 +177,7 @@ span.waitingText, #peopleReady > p {
 }
 .activelast {
   /* background: #ffde0078; */
-  border: 1.4px dashed #ffdc00;
+  border: 1.4px dashed #ffc900;
 }
 .updateddraw {
   background: #22d762;

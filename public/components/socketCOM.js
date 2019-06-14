@@ -83,6 +83,7 @@ class SCKT{
         if(folk !== yourID){
           let folkData = {
             folk: folk,
+            position: {x: -1, y: -1},
             currentPoint: [],
             drawings: []
           }
@@ -95,6 +96,7 @@ class SCKT{
     socket.on('pushnewfolkinfolksarray', function(data){
       let newfolkData = {
         folk: data,
+        position: {x: -1, y: -1},
         currentPoint: [],
         drawings: []
       }
@@ -102,7 +104,10 @@ class SCKT{
     })
 
     socket.on('gimme your slots array', function(){
-      socket.emit("this is my slots array", slots);
+      if(myLayer != undefined){
+        socket.emit("this is my slots array", slots);
+      }
+
     })
 
     socket.on('transfer slots array', function(data){
@@ -112,15 +117,23 @@ class SCKT{
 
       });
       slots.forEach(function(slot, index){
-        console.log(slot.db + " : " + slot.status)
+        console.log(slot.db + " : " + slot.status + " | userID: " + slot.user);
+        if (slot.status === 'occupied'){
+            $("#" + slot.db).addClass("occupiedFolder");
+            $("." + slot.db).addClass("occupiedFolder");
+
+        } else {
+          $("#" + slot.db).removeClass("occupiedFolder");
+          $("." + slot.db).removeClass("occupiedFolder");
+        }
       })
     });
 
     socket.on('update slots from abroad', function(data){
       slots = data;
       slots.forEach(function(slot, index){
-        console.log(slot.db + " : " + slot.status + " | user: " + slot.user)
-        if (slot.status === 'not free' && slot.db !== currentLayerKey){
+        console.log(slot.db + " : " + slot.status)
+        if (slot.status === 'occupied' && slot.db !== currentLayerKey){
             $("#" + slot.db).addClass("occupiedFolder");
         } else {
           $("#" + slot.db).removeClass("occupiedFolder");
@@ -134,17 +147,19 @@ class SCKT{
       let folk = folks.findIndex(i => i.folk == data);
       folks.splice(folk, 1);
       //Cleaning
-      duoDrawings = [];
-      scktClass.safeRedraw();
+
+
 
       //Update slots before disconnection
       let index = slots.findIndex(finder => finder.user == data);
       slots[index].status = 'free';
       slots[index].user = undefined;
       $("#" + slots[index].db).removeClass("occupiedFolder");
+      $(".listing-some-" + slots[index].db).removeClass("activedraw-friend");
       slots.forEach(function(slot, index){
         console.log(slot.db + " : " + slot.status + " | user: " + slot.user)
       })
+      scktClass.safeRedraw();
     })
 
     //////////////////
@@ -179,13 +194,17 @@ class SCKT{
   		// console.log(points);
         let index = folks.findIndex(i => i.folk == dataReceived.folkID);
         folks[index].currentPoint.push(dataReceived.point);
+        folks[index].position.x = dataReceived.point.x4;
+        folks[index].position.y = dataReceived.point.y4;
         // currentForeign.push(points);
         scktClass.safeRedraw();
   	});
 
     //3. Receive the end Path (last point) from friends
-    socket.on('endFromDuo', () => {
+    socket.on('endFromDuo', (data) => {
       nbpeopleoncanvas--
+      let index = folks.findIndex(i => i.folk == data.folkID);
+      folks[index].position = data.position;
       // clearInterval(timer);
       scktClass.safeRedraw();
     });

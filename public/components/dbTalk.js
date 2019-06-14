@@ -6,6 +6,7 @@ let storeEnsembles = [];
 
 let storeProjects = [[]];
 let maxProjects = 3;
+let myLayer;
 
 let currentDB = 'drawings/';
 let refDB;
@@ -238,8 +239,11 @@ class DBTalk {
     if (currentDB == testDBKEY) {
       console.log('same db key');
     } else {
-        console.log('not same');
-
+      console.log('not same');
+      let indexCheckOccupied = slots.findIndex(i => i.db === dbkey);
+      if(slots[indexCheckOccupied].status == 'occupied'){
+        console.log("Seat is already taken");
+      } else {
         if(referencesArray.length != 0){
           referencesArray.forEach(function(reference){
             let ref = reference.refToOff;
@@ -248,7 +252,25 @@ class DBTalk {
           referencesArray = [];
         }
 
+        if(myLayer != undefined){
+          let prevLayer = myLayer;
+          let indexSlot = slots.findIndex(i => i.db === prevLayer);
+          slots[indexSlot].status = 'free';
+          slots[indexSlot].user = undefined;
+        }
+
+        //SLOTS
+        myLayer = dbkey;
+        let indexSlot = slots.findIndex(i => i.db === myLayer);
+        slots[indexSlot].status = 'occupied';
+        slots[indexSlot].user = yourID;
+        socket.emit('update slots array abroad', slots);
+
         return partOneSwitch().then(partTwoSwitch());
+      }
+
+
+
 
         async function partOneSwitch(){
           console.log("fired Part One switch");
@@ -299,6 +321,8 @@ class DBTalk {
               for (let i = 0; i < elts.length; i++) {
                 elts[i].remove();
               }
+
+              $("#substitute" + layer.folderKey).remove();
 
               // console.log(data);
               console.log("someone number " + index + " has new data to show");
@@ -423,6 +447,7 @@ class DBTalk {
                 }
                 if(layer.storeKeysFolder.length == 1){
                   let sublayer = createElement('span');
+                  sublayer.id('substitute'+ layer.folderKey)
                   sublayer.class('someone-empty');
                   sublayer.parent(someoneTL);
                 }
@@ -458,7 +483,7 @@ class DBTalk {
     // CREATE A KEY ICON IN THE RIGHT CORNER
     let keyLink = createA('?id=' + dbkey, '<i class="fas fa-key"></i>');
     keyLink.parent('keyEnsemble');
-    keyLink.style('color', '#f2dd00')
+    keyLink.style('color', '#ffdc00')
 
 
 
@@ -504,6 +529,10 @@ class DBTalk {
       layersArray.push(oneLayer);
 
     }
+    if(folks.length > 0){
+      socket.emit('get slots array');
+    }
+
   }
 
   //DANGEROUS ! THIS WILL DELETE ALL EXISTING SESSIONS

@@ -80,10 +80,12 @@ class Play {
     playing = !playing;
     if(playing == true){
       ableToDraw = false;
+      $(".changeBtn").addClass("disableAllBtnPlaying");
       $("#stopButton").removeClass("hide");
       $("#playButton").addClass("hide");
       socket.emit('iamplaying');
     } else if (playing == false){
+      $(".changeBtn").removeClass("disableAllBtnPlaying");
       ableToDraw = true;
       $("#stopButton").addClass("hide");
       $("#playButton").removeClass("hide");

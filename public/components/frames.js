@@ -32,110 +32,112 @@ class Frames {
   }
 
   saveDrawing() {
-    waitDB = true;
-    // waitFriendDB = true;
+    if(playing == false){
 
-    console.log("——");
-    console.log("We just fired 'saveDrawing'!");
+      waitDB = true;
+      // waitFriendDB = true;
 
-    //We clear the listing of drawings
-    framesClass.cleanTimelineElements();
+      console.log("——");
+      console.log("We just fired 'saveDrawing'!");
 
-    let ref = database.ref(currentDB);
-    let data;
+      //We clear the listing of drawings
+      framesClass.cleanTimelineElements();
 
-    if (drawing[0] == null && painting[0] == null && roughs[0] == null) {
-      console.log("No data found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: blank_data,
-        painting: blank_data,
-        roughs: blank_data
+      let ref = database.ref(currentDB);
+      let data;
+
+      if (drawing[0] == null && painting[0] == null && roughs[0] == null) {
+        console.log("No data found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: blank_data,
+          painting: blank_data,
+          roughs: blank_data
+        }
+      } else if (painting[0] == null && roughs[0] != null && drawing[0] != null) {
+        console.log("No painting found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: drawing,
+          painting: blank_data,
+          roughs: roughs
+        }
+      } else if (drawing[0] == null && roughs[0] != null && painting[0] != null) {
+        console.log("No drawing found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: blank_data,
+          painting: painting,
+          roughs: roughs
+        }
+      } else if (roughs[0] == null && drawing[0] != null && painting[0] != null) {
+        console.log("No drawing nor painting found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: drawing,
+          painting: painting,
+          roughs: blank_data
+        }
+      } else if (roughs[0] == null && drawing[0] == null && painting[0] != null) {
+        console.log("No drawing nor roughs found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: blank_data,
+          painting: painting,
+          roughs: blank_data
+        }
+      } else if (roughs[0] == null && painting[0] == null && drawing[0] != null) {
+        console.log("No painting nor roughs found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: drawing,
+          painting: blank_data,
+          roughs: blank_data
+        }
+      } else if (drawing[0] == null && painting[0] == null && roughs[0] != null) {
+        console.log("No drawing nor painting found, so we set default value to avoid breaking.");
+        data = {
+          name: "Sylvain",
+          drawing: blank_data,
+          painting: blank_data,
+          roughs: roughs
+        }
+      } else {
+        console.log("Data OK | Setting data to be sent in DB.");
+        data = {
+          name: "Sylvain",
+          drawing: drawing,
+          painting: painting,
+          roughs: roughs
+        }
       }
-    } else if (painting[0] == null && roughs[0] != null && drawing[0] != null) {
-      console.log("No painting found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: drawing,
-        painting: blank_data,
-        roughs: roughs
-      }
-    } else if (drawing[0] == null && roughs[0] != null && painting[0] != null) {
-      console.log("No drawing found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: blank_data,
-        painting: painting,
-        roughs: roughs
-      }
-    } else if (roughs[0] == null && drawing[0] != null && painting[0] != null) {
-      console.log("No drawing nor painting found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: drawing,
-        painting: painting,
-        roughs: blank_data
-      }
-    } else if (roughs[0] == null && drawing[0] == null && painting[0] != null) {
-      console.log("No drawing nor roughs found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: blank_data,
-        painting: painting,
-        roughs: blank_data
-      }
-    } else if (roughs[0] == null && painting[0] == null && drawing[0] != null) {
-      console.log("No painting nor roughs found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: drawing,
-        painting: blank_data,
-        roughs: blank_data
-      }
-    } else if (drawing[0] == null && painting[0] == null && roughs[0] != null) {
-      console.log("No drawing nor painting found, so we set default value to avoid breaking.");
-      data = {
-        name: "Sylvain",
-        drawing: blank_data,
-        painting: blank_data,
-        roughs: roughs
-      }
-    } else {
-      console.log("Data OK | Setting data to be sent in DB.");
-      data = {
-        name: "Sylvain",
-        drawing: drawing,
-        painting: painting,
-        roughs: roughs
-      }
+
+      console.log("We push data in the DB.");
+      storeKeys.splice(0, 1);
+      let result = ref.push(data);
+
+      console.log("We update the local storeKeys array.");
+      storeKeys[0].push(result.key);
+      storeKeys[0].splice(storeKeys[0].length - 1, 1);
+      console.log("Let's see the content of 'storeKeys':");
+      console.log(storeKeys);
+
+      //When everything is saved in DB, we clear all the arrays
+      framesClass.cleanUp();
+
+      //We put the timeline's cursors on the right spot
+      timelinePos = storeKeys[0].length - 1;
+      onionKey = storeKeys[0].length - 2;
+      console.log("Timeline Position: " + timelinePos + " | Onion Position: " + onionKey);
+
+      framesClass.clearOnion();
+
+      console.log("Success! Your new frame has been saved!");
+      consoleClass.newMessage('Frame has been saved! <br>Back on track for the next one !', 'console', 0, 'feedback');
+
+      framesClass.goVirgin();
+      redraw();
     }
-
-    console.log("We push data in the DB.");
-    storeKeys.splice(0, 1);
-    let result = ref.push(data);
-
-    console.log("We update the local storeKeys array.");
-    storeKeys[0].push(result.key);
-    storeKeys[0].splice(storeKeys[0].length - 1, 1);
-    console.log("Let's see the content of 'storeKeys':");
-    console.log(storeKeys);
-
-    //When everything is saved in DB, we clear all the arrays
-    framesClass.cleanUp();
-
-    //We put the timeline's cursors on the right spot
-    timelinePos = storeKeys[0].length - 1;
-    onionKey = storeKeys[0].length - 2;
-    console.log("Timeline Position: " + timelinePos + " | Onion Position: " + onionKey);
-
-    framesClass.clearOnion();
-
-    console.log("Success! Your new frame has been saved!");
-    consoleClass.newMessage('Frame has been saved! <br>Back on track for the next one !', 'console', 0, 'feedback');
-
-    framesClass.goVirgin();
-    redraw();
-
   };
 
   goVirgin() {
@@ -162,11 +164,13 @@ class Frames {
     //console.log("Pad has been cleared. Back on track for next frame.");
     // selectPencilTool();
     redraw();
-    let data ={
-      folkID: yourID,
-      layerID: currentLayerKey
+    if(folks.length > 0){
+      let data ={
+        folkID: yourID,
+        layerID: currentLayerKey
+      }
+      socket.emit('clearForeign', data);
     }
-    socket.emit('clearForeign', data);
   };
 
   clearDrawing() {
@@ -228,14 +232,16 @@ class Frames {
       }
     }
 
-    // envoie aux sockets signal
-    let data = {
-      folkID: yourID,
-      layerID: currentLayerKey,
-      keyDisplayed: key
+    if(folks.length > 0){
+      // envoie aux sockets signal
+      let data = {
+        folkID: yourID,
+        layerID: currentLayerKey,
+        keyDisplayed: key
+      }
+      // let layerID = currentLayerKey;
+      socket.emit('iamchangingkey', data);
     }
-    // let layerID = currentLayerKey;
-    socket.emit('iamchangingkey', data);
 
 
     let ref = database.ref(currentDB + key);
@@ -362,50 +368,119 @@ class Frames {
   }
 
   newInsertFrame(){
-    if (ableInsert == true) {
+    if(playing == false){
 
-      if (calcNbAfter != 0) {
+      if (ableInsert == true) {
 
-        waitDB = true;
+        if (calcNbAfter != 0) {
+
+          waitDB = true;
+          // waitFriendDB = true;
+
+          let ref = database.ref(currentDB);
+
+          let data = {
+            name: "Sylvain",
+            drawing: blank_data,
+            painting: blank_data,
+            roughs: blank_data,
+            nearPrevKey: keyToUpdate
+          };
+          console.log("Pushing new frame");
+          let result = ref.push(data, function(){
+            console.log("We push the new inserted frames, virgin");
+            insertedKey = result.key;
+
+            let ref2 = database.ref(currentDB + keyToUpdate);
+            ref2.once('value', function(data) {
+              console.log("Updating childkeys");
+              let dbData = data.val();
+              if(dbData.childKeys){
+                let childKeysArray = dbData.childKeys;
+                // console.log(childKeysArray)
+                childKeysArray.push(insertedKey)
+                // console.log(childKeysArray)
+                ref2.update({childKeys: childKeysArray}, terminado);
+              } else {
+                ref2.update(
+                  {childKeys: [insertedKey]}, terminado);
+                }
+              });
+
+            });
+
+
+            function terminado(){
+              //When everything is saved in DB, we clear all the arrays
+              framesClass.cleanUp();
+
+              //We put the timeline's cursors on the right spot
+              timelinePos = storeKeys[0].length - 1;
+              onionKey = storeKeys[0].length - 2;
+              //console.log("Timeline Position: " + timelinePos + " | Onion Position: " + onionKey );
+
+              framesClass.clearOnion();
+              ////console.log("spotted clearOnion");
+              //console.log("Success! Your new frame has been inserted!");
+              consoleClass.newMessage('You inserted an empty frame.', 'console', 0, 'feedback');
+
+              framesClass.showDrawing(insertedKey);
+              previouskey = storeKeys[0][storeKeys[0].indexOf(insertedKey) + 1];
+              nextkey = storeKeys[0][storeKeys[0].indexOf(insertedKey) - 1];
+              $("#" + previouskey).addClass("braceFrame");
+              $("#" + nextkey).addClass("braceFrame");
+              framesClass.showOnion();
+            }
+
+
+          }
+        }
+    }
+  };
+
+
+  duplicateFrame(){
+    if(playing == false){
+
+      if(ableDuplicate == true){
+
+        // waitDB = true;
         // waitFriendDB = true;
 
         let ref = database.ref(currentDB);
 
         let data = {
           name: "Sylvain",
-          drawing: blank_data,
-          painting: blank_data,
-          roughs: blank_data,
+          drawing: drawing,
+          painting: painting,
+          roughs: roughs,
           nearPrevKey: keyToUpdate
         };
-        console.log("Pushing new frame");
-        let result = ref.push(data, function(){
-          console.log("We push the new inserted frames, virgin");
-          insertedKey = result.key;
 
-          let ref2 = database.ref(currentDB + keyToUpdate);
-          ref2.once('value', function(data) {
-            console.log("Updating childkeys");
-            let dbData = data.val();
-            if(dbData.childKeys){
-              let childKeysArray = dbData.childKeys;
-              // console.log(childKeysArray)
-              childKeysArray.push(insertedKey)
-              // console.log(childKeysArray)
-              ref2.update({childKeys: childKeysArray}, terminado);
-            } else {
-              ref2.update(
-                {childKeys: [insertedKey]}, terminado);
-            }
-          });
+        console.log("We push data in the DB.");
+        let result = ref.push(data);
+        insertedKey = result.key;
 
+        let ref2 = database.ref(currentDB + keyToUpdate);
+        ref2.once('value', function(data) {
+          console.log("We update childkeys.");
+          let dbData = data.val();
+          if(dbData.childKeys){
+            let childKeysArray = dbData.childKeys;
+            console.log(childKeysArray)
+            childKeysArray.push(insertedKey)
+            console.log(childKeysArray)
+            ref2.update({childKeys: childKeysArray}, terminado2)
+          } else {
+            ref2.update(
+              {childKeys: [insertedKey]}, terminado2
+            );
+          }
         });
 
-
-        function terminado(){
+        function terminado2(){
           //When everything is saved in DB, we clear all the arrays
           framesClass.cleanUp();
-
           //We put the timeline's cursors on the right spot
           timelinePos = storeKeys[0].length - 1;
           onionKey = storeKeys[0].length - 2;
@@ -414,81 +489,18 @@ class Frames {
           framesClass.clearOnion();
           ////console.log("spotted clearOnion");
           //console.log("Success! Your new frame has been inserted!");
-          consoleClass.newMessage('You inserted an empty frame.', 'console', 0, 'feedback');
+          consoleClass.newMessage('You duplicated a frame.', 'console', 0, 'feedback');
 
           framesClass.showDrawing(insertedKey);
-          previouskey = storeKeys[0][storeKeys[0].indexOf(insertedKey) + 1];
-          nextkey = storeKeys[0][storeKeys[0].indexOf(insertedKey) - 1];
+          nextkey = storeKeys[0][storeKeys[0].indexOf(insertedKey) + 1];
+          previouskey = storeKeys[0][storeKeys[0].indexOf(insertedKey)];
           $("#" + previouskey).addClass("braceFrame");
-          $("#" + nextkey).addClass("braceFrame");
+          // $("#" + nextkey).addClass("braceFrame");
           framesClass.showOnion();
-        }
+        };
 
 
       }
-    }
-  };
-
-
-  duplicateFrame(){
-    if(ableDuplicate == true){
-
-      // waitDB = true;
-      // waitFriendDB = true;
-
-      let ref = database.ref(currentDB);
-
-      let data = {
-          name: "Sylvain",
-          drawing: drawing,
-          painting: painting,
-          roughs: roughs,
-          nearPrevKey: keyToUpdate
-        };
-
-      console.log("We push data in the DB.");
-      let result = ref.push(data);
-      insertedKey = result.key;
-
-      let ref2 = database.ref(currentDB + keyToUpdate);
-      ref2.once('value', function(data) {
-        console.log("We update childkeys.");
-        let dbData = data.val();
-        if(dbData.childKeys){
-          let childKeysArray = dbData.childKeys;
-          console.log(childKeysArray)
-          childKeysArray.push(insertedKey)
-          console.log(childKeysArray)
-          ref2.update({childKeys: childKeysArray}, terminado2)
-        } else {
-          ref2.update(
-            {childKeys: [insertedKey]}, terminado2
-          );
-        }
-      });
-
-      function terminado2(){
-        //When everything is saved in DB, we clear all the arrays
-        framesClass.cleanUp();
-        //We put the timeline's cursors on the right spot
-        timelinePos = storeKeys[0].length - 1;
-        onionKey = storeKeys[0].length - 2;
-        //console.log("Timeline Position: " + timelinePos + " | Onion Position: " + onionKey );
-
-        framesClass.clearOnion();
-        ////console.log("spotted clearOnion");
-        //console.log("Success! Your new frame has been inserted!");
-        consoleClass.newMessage('You duplicated a frame.', 'console', 0, 'feedback');
-
-        framesClass.showDrawing(insertedKey);
-        nextkey = storeKeys[0][storeKeys[0].indexOf(insertedKey) + 1];
-        previouskey = storeKeys[0][storeKeys[0].indexOf(insertedKey)];
-        $("#" + previouskey).addClass("braceFrame");
-        // $("#" + nextkey).addClass("braceFrame");
-        framesClass.showOnion();
-      };
-
-
     }
   };
 
@@ -572,189 +584,195 @@ class Frames {
 
 
   deleteFrame() {
-    // waitFriendDB = true;
-    if (ableDelete == true) {
+    if(playing == false){
 
-      console.log("——");
-      console.log("Init Deleting operations ...");
+      // waitFriendDB = true;
+      if (ableDelete == true) {
 
-      if (keyToUpdate !== null && timelinePos !== 0) {
+        console.log("——");
+        console.log("Init Deleting operations ...");
 
-        let keyToDelete = keyToUpdate;
-        timelinePos = storeKeys[0].indexOf(keyToUpdate) - 1;
-        onionPos = timelinePos - 1;
-        document.getElementById('onionkey').value = storeKeys[0][onionPos];
-        postOnionPos = timelinePos + 1;
-        document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+        if (keyToUpdate !== null && timelinePos !== 0) {
+
+          let keyToDelete = keyToUpdate;
+          timelinePos = storeKeys[0].indexOf(keyToUpdate) - 1;
+          onionPos = timelinePos - 1;
+          document.getElementById('onionkey').value = storeKeys[0][onionPos];
+          postOnionPos = timelinePos + 1;
+          document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
 
 
-        let delRef = database.ref(currentDB + keyToDelete);
-        delRef.once('value', makeSafetyTransfer);
+          let delRef = database.ref(currentDB + keyToDelete);
+          delRef.once('value', makeSafetyTransfer);
 
-        function makeSafetyTransfer(data){
-          waitSafeDelete = true; //Prevent gotData
-          let keyData = data.val();
-          checkParent(keyData)
+          function makeSafetyTransfer(data){
+            waitSafeDelete = true; //Prevent gotData
+            let keyData = data.val();
+            checkParent(keyData)
             .then(checkChildren(keyData))
             .then(finalDeleteOperations());
-        };
+          };
 
-        async function checkParent(keyData){
-          // NOTE : on s'occupe ici des clefs parents
-          console.log("1. check for parent ?")
-          if (keyData.nearPrevKey){
-            console.log("frame has a parent: " + keyData.nearPrevKey);
+          async function checkParent(keyData){
+            // NOTE : on s'occupe ici des clefs parents
+            console.log("1. check for parent ?")
+            if (keyData.nearPrevKey){
+              console.log("frame has a parent: " + keyData.nearPrevKey);
 
-            let spliceRef = database.ref(currentDB + keyData.nearPrevKey);
-            spliceRef.once('value', weUpdateChildKeys);
+              let spliceRef = database.ref(currentDB + keyData.nearPrevKey);
+              spliceRef.once('value', weUpdateChildKeys);
 
-            function weUpdateChildKeys(data2){
-              let keyParentData = data2.val();
-              let keyParentArray = keyParentData.childKeys;
-              let finder = keyToDelete;
-              // console.log("voilà le tableau avec les enfants de mon parent " + keyParentData.childKeys + " index de la clef enfant la dedans: ");
-              // console.log(keyParentData.childKeys.indexOf(finder));
-              keyParentArray.splice(keyParentData.childKeys.indexOf(finder), 1);
-              // console.log(keyParentArray);
-              console.log("Deleting childkey in old parent");
+              function weUpdateChildKeys(data2){
+                let keyParentData = data2.val();
+                let keyParentArray = keyParentData.childKeys;
+                let finder = keyToDelete;
+                // console.log("voilà le tableau avec les enfants de mon parent " + keyParentData.childKeys + " index de la clef enfant la dedans: ");
+                // console.log(keyParentData.childKeys.indexOf(finder));
+                keyParentArray.splice(keyParentData.childKeys.indexOf(finder), 1);
+                // console.log(keyParentArray);
+                console.log("Deleting childkey in old parent");
 
-              spliceRef.update({childKeys: keyParentArray}, function(){
-                // console.log("try to do not fire got data")
-              }); //A REACTIVER APRES
-            }
-          } else {
-            console.log("Frame do not have parent");
-          }
-        };
-
-        async function checkChildren(keyData){
-          //NOTE : on s'occupe ici des clefs enfants
-          console.log("2. check for children ?");
-          if (keyData.childKeys){
-            console.log("frame has children: " + keyData.childKeys);
-            let findPrevKey = storeKeys[0][storeKeys[0].indexOf(keyToDelete) - 1];
-            console.log("assign a new parent: " + findPrevKey);
-
-            let transferRef = database.ref(currentDB + findPrevKey);
-            transferRef.once('value', weDispatch);
-
-            function weDispatch(data3){
-              console.log("fonction dispatch, Updating new parent childkeys");
-              let newParentData = data3.val();
-              if (newParentData.childKeys != null){
-                console.log("new parent has children already");
-                let newParentArray = newParentData.childKeys;
-                for (let child of keyData.childKeys ){
-                  newParentArray.push(child);
-                };
-                transferRef.update({childKeys: newParentArray}, () => {
-                  console.log("new parent adopted new children")
-                });
-              }
-                else {
-                console.log("new parent is not a parent yet");
-                transferRef.update({childKeys: keyData.childKeys}, () => {
-                  console.log("new parent adopted its first children")
-                });
-              }
-
-              for (let child of keyData.childKeys ){
-                // console.log(child);
-                let updateChildRef = database.ref(currentDB + child);
-                  console.log("Updating new parent for children");
-                updateChildRef.update({nearPrevKey: findPrevKey}, function(){
+                spliceRef.update({childKeys: keyParentArray}, function(){
                   // console.log("try to do not fire got data")
-                });
+                }); //A REACTIVER APRES
               }
+            } else {
+              console.log("Frame do not have parent");
             }
+          };
 
-          } else {
-            console.log("je n'ai pas d'enfants ");
+          async function checkChildren(keyData){
+            //NOTE : on s'occupe ici des clefs enfants
+            console.log("2. check for children ?");
+            if (keyData.childKeys){
+              console.log("frame has children: " + keyData.childKeys);
+              let findPrevKey = storeKeys[0][storeKeys[0].indexOf(keyToDelete) - 1];
+              console.log("assign a new parent: " + findPrevKey);
+
+              let transferRef = database.ref(currentDB + findPrevKey);
+              transferRef.once('value', weDispatch);
+
+              function weDispatch(data3){
+                console.log("fonction dispatch, Updating new parent childkeys");
+                let newParentData = data3.val();
+                if (newParentData.childKeys != null){
+                  console.log("new parent has children already");
+                  let newParentArray = newParentData.childKeys;
+                  for (let child of keyData.childKeys ){
+                    newParentArray.push(child);
+                  };
+                  transferRef.update({childKeys: newParentArray}, () => {
+                    console.log("new parent adopted new children")
+                  });
+                }
+                else {
+                  console.log("new parent is not a parent yet");
+                  transferRef.update({childKeys: keyData.childKeys}, () => {
+                    console.log("new parent adopted its first children")
+                  });
+                }
+
+                for (let child of keyData.childKeys ){
+                  // console.log(child);
+                  let updateChildRef = database.ref(currentDB + child);
+                  console.log("Updating new parent for children");
+                  updateChildRef.update({nearPrevKey: findPrevKey}, function(){
+                    // console.log("try to do not fire got data")
+                  });
+                }
+              }
+
+            } else {
+              console.log("je n'ai pas d'enfants ");
+            }
+          };
+
+          async function finalDeleteOperations() {
+            waitSafeDelete = false; // Allow gotData
+            console.log("J'ai fini de checker");
+            console.log("FInally deleting");
+            waitSafeDelete = false;
+            delRef.remove();
+            console.log("SUCCESS! THE FRAME HAS BEEN DELETED!");
+
+            consoleClass.newMessage('You deleted a frame.', 'console', 0, 'feedback');
+
+            console.log("We now display the previous one in the TL...");
+            framesClass.showDrawing(storeKeys[0][timelinePos])
           }
-        };
 
-        async function finalDeleteOperations() {
-          waitSafeDelete = false; // Allow gotData
-          console.log("J'ai fini de checker");
-          console.log("FInally deleting");
-          waitSafeDelete = false;
-          delRef.remove();
-          console.log("SUCCESS! THE FRAME HAS BEEN DELETED!");
 
-          consoleClass.newMessage('You deleted a frame.', 'console', 0, 'feedback');
-
-          console.log("We now display the previous one in the TL...");
-          framesClass.showDrawing(storeKeys[0][timelinePos])
+        } else {
+          //console.log("You need to load a frame, before deleting.");
+          console.log("Deleting frame is not allowed");
         }
 
+        redraw();
 
-      } else {
-        //console.log("You need to load a frame, before deleting.");
-        console.log("Deleting frame is not allowed");
       }
-
-      redraw();
-
     }
   };
 
   updateFrame() {
+    if(playing == false){
 
-    if (keyToUpdate === null || keyToUpdate === undefined || timelinePos == 0) { //do nothing
-    } else {
+      if (keyToUpdate === null || keyToUpdate === undefined || timelinePos == 0) { //do nothing
+      } else {
 
-      countPathNew = drawing.length + painting.length + roughs.length;
+        countPathNew = drawing.length + painting.length + roughs.length;
 
-      if(countPathNew != countPathOld || eraserUsed == true){
-        $("#" + keyToUpdate).removeClass("activedraw");
-        $("#" + keyToUpdate).addClass("isupdatingdraw");
-        setTimeout(function(){
+        if(countPathNew != countPathOld || eraserUsed == true){
+          $("#" + keyToUpdate).removeClass("activedraw");
+          $("#" + keyToUpdate).addClass("isupdatingdraw");
+          setTimeout(function(){
 
-          //console.log("——");
-          //console.log("We just updated the frame key: " + keyToUpdate);
+            //console.log("——");
+            //console.log("We just updated the frame key: " + keyToUpdate);
 
-          let updRef = database.ref(currentDB + keyToUpdate);
+            let updRef = database.ref(currentDB + keyToUpdate);
 
-          console.log('je clique update');
-          let data;
-          if (countPathNew < 3){
-            data = {
-              name: "Sylvain",
-              drawing: blank_data,
-              painting: blank_data,
-              roughs: blank_data
-            };
-          } else {
-            data = {
-              name: "Sylvain",
-              drawing: drawing,
-              painting: painting,
-              roughs: roughs
-            };
-          }
+            console.log('je clique update');
+            let data;
+            if (countPathNew < 3){
+              data = {
+                name: "Sylvain",
+                drawing: blank_data,
+                painting: blank_data,
+                roughs: blank_data
+              };
+            } else {
+              data = {
+                name: "Sylvain",
+                drawing: drawing,
+                painting: painting,
+                roughs: roughs
+              };
+            }
 
 
-          updRef.update(data);
-          //console.log("Now trying to fire oneDrawing ?");
-          // storeKeys.splice(0, 1);
-          eraserUsed = false;
-          countPathNew = null;
-          countPathOld = null;
-          $("#updateButton").addClass("disableBtn");
-          $("#" + keyToUpdate).removeClass("isupdatingdraw");
-          $("#" + keyToUpdate).addClass("updateddraw");
-          setTimeout(function() {
-            $("#" + keyToUpdate).removeClass("updateddraw");
-            framesClass.showDrawing(keyToUpdate);
-          }, 300);
+            updRef.update(data);
+            //console.log("Now trying to fire oneDrawing ?");
+            // storeKeys.splice(0, 1);
+            eraserUsed = false;
+            countPathNew = null;
+            countPathOld = null;
+            $("#updateButton").addClass("disableBtn");
+            $("#" + keyToUpdate).removeClass("isupdatingdraw");
+            $("#" + keyToUpdate).addClass("updateddraw");
+            setTimeout(function() {
+              $("#" + keyToUpdate).removeClass("updateddraw");
+              framesClass.showDrawing(keyToUpdate);
+            }, 300);
 
-          consoleClass.newMessage('You updated the frame.', 'console', 0, 'feedback', 'white');
-        }, 200);
+            consoleClass.newMessage('You updated the frame.', 'console', 0, 'feedback', 'white');
+          }, 200);
+        }
+
+
       }
-
-
+      redraw();
     }
-    redraw();
+
   };
 
   buttonsBehaviorOnFrameChanges(){

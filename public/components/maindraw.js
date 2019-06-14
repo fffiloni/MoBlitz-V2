@@ -81,7 +81,12 @@ class HowToDraw{
 
           if (showDrawingLayer == true) {
             drawing.push(currentPath);
-  					socket.emit('startToDuo', yourID);
+            if(folks.length > 0){
+              if(playing == false){
+                socket.emit('startToDuo', yourID);
+              }
+            }
+
             currentPath.splice(0, 1);
           } else {
             return;
@@ -122,11 +127,16 @@ class HowToDraw{
             strk: sliderStroke.value()
           }
           currentPath.push(point);
-          let dataToSend = {
-            folkID: yourID,
-            point:point
+          if(folks.length > 0){
+            let dataToSend = {
+              folkID: yourID,
+              point:point
+            }
+            if(playing == false){
+              socket.emit('sendPoint', dataToSend);
+            }
           }
-  				socket.emit('sendPoint', dataToSend);
+
         }
       } else {
         //erase
@@ -136,8 +146,10 @@ class HowToDraw{
           tracerClass.eraserRoughs();
         } else {
           tracerClass.eraserDrawings();
-          let erasePoint = {px: px, py: py};
-          socket.emit('eraseFriend', erasePoint);
+          if(folks.length > 0){
+            let erasePoint = {px: px, py: py};
+            socket.emit('eraseFriend', erasePoint);
+          }
         }
       }
       sx = ppx;
@@ -224,8 +236,16 @@ class HowToDraw{
 
     isDrawing = false;
   	socket.emit('iamnotdrawing');
+    if(folks.length > 0){
+      if(playing == false){
+        let positionBack = {
+          folkID: yourID,
+          position: {x: -1, y: -1}
+        };
+        socket.emit('endToDuo', positionBack);
+      }
+    }
 
-    socket.emit('endToDuo');
 
     if(autoUpdate == true){
       framesClass.updateFrame();
@@ -244,7 +264,9 @@ class HowToDraw{
       guidelines.pop();
     } else if (penciling == true) {
       drawing.pop();
-  		socket.emit('undoForeign');
+      if(folks.length > 0){
+        socket.emit('undoForeign');
+      }
     }
     //console.log("——");
     //console.log("You deleted the last path in 'drawing'.");

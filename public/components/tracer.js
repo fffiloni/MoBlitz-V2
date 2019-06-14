@@ -124,11 +124,11 @@ class Tracer {
                   graphicKeyPoses.strokeWeight(1 + d / 100);
                 }
 
-                let calcOPCT = opacity - 80;
+                let calcOPCT = opacity - 200;
                 if (calcOPCT <= 20) {
-                  graphicKeyPoses.stroke(113 - 50, 57 - 50, 125 - 50, 40);
+                  graphicKeyPoses.stroke(113 - 50, 57 - 50, 125 - 50, 20);
                 } else if (calcOPCT >= 220) {
-                  graphicKeyPoses.stroke(113 - 50, 57 - 50, 125 - 50, 180);
+                  graphicKeyPoses.stroke(113 - 50, 57 - 50, 125 - 50, 80);
                 } else {
                   graphicKeyPoses.stroke(113 - 50, 57 - 50, 125 - 50, calcOPCT);
                 };
@@ -216,11 +216,11 @@ class Tracer {
                 }
 
 
-                let calcOPCT = opacity - 80;
+                let calcOPCT = opacity - 200;
                 if (calcOPCT <= 20) {
-                  graphicOnion.stroke(186 - 50, 62 - 50, 51 - 50, 40);
+                  graphicOnion.stroke(186 - 50, 62 - 50, 51 - 50, 20);
                 } else if (calcOPCT >= 220) {
-                  graphicOnion.stroke(186 - 50, 62 - 50, 51 - 50, 180);
+                  graphicOnion.stroke(186 - 50, 62 - 50, 51 - 50, 80);
                 } else {
                   graphicOnion.stroke(186 - 50, 62 - 50, 51 - 50, calcOPCT);
                 };
@@ -278,11 +278,11 @@ class Tracer {
                   (timelinePos != storeKeys[0].length - 1 && stateLoopOnion == true && onVirginFrame == false) ||
                   (timelinePos != storeKeys[0].length - 1 && stateLoopOnion == false && onVirginFrame == false)
                 ) {
-                  let calcOPCT = opacity - 80;
+                  let calcOPCT = opacity - 200;
                   if (calcOPCT <= 20) {
-                    graphicOnion.stroke(79 - 50, 202 - 50, 105 - 50, 40);
+                    graphicOnion.stroke(79 - 50, 202 - 50, 105 - 50, 20);
                   } else if (calcOPCT >= 220) {
-                    graphicOnion.stroke(79 - 50, 202 - 50, 105 - 50, 180);
+                    graphicOnion.stroke(79 - 50, 202 - 50, 105 - 50, 80);
                   } else {
                     graphicOnion.stroke(79 - 50, 202 - 50, 105 - 50, calcOPCT);
                   };

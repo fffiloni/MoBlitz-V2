@@ -13,7 +13,7 @@ class Tools {
 
   selectPencilTool() {
     typeOfTool = 'trait';
-    sliderStroke.value('3');
+    sliderStroke.value('6');
     strkVal = sliderStroke.value();
     getStrokeValue.html(strkVal);
     erasing = brushing = roughing = makingLine = false;

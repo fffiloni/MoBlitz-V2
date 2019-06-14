@@ -72,8 +72,8 @@ function preload() {
   wlcm.parent('console');
 
   // socket = io.connect('https://magmanin.nanomenta.com/');
-  // socket = io.connect('http://localhost:4000');
-	socket = io.connect('https://mb-duo.herokuapp.com/');
+  socket = io.connect('http://localhost:4000');
+	// socket = io.connect('https://mb-duo.herokuapp.com/');
 	scktClass.initializeDB();
 
 } //END PRELOAD
@@ -187,12 +187,20 @@ function draw() {
     tracerClass.traceDrawings();
   }
 
-  noFill();
-  stroke(120);
-  strokeWeight(1);
+  // fill();
+  // stroke(120);
+  // strokeWeight(1);
   if(isDrawing){
-    graphicFRONT.ellipse(mouseX,mouseY,sliderStroke.value());
+		graphicFRONT.push();
+		graphicFRONT.noStroke();
+		graphicFRONT.fill('rgb(' + csR + ',' + csV + ',' + csB + ')');
+    graphicFRONT.ellipse(mouseX,mouseY,map(pressure, 0, 1, 0, sliderStroke.value()/5));
+		graphicFRONT.pop();
   }
+	folks.forEach((folk) => {
+		graphicPrivateDUO.text('. friend', folk.position.x, folk.position.y)
+	})
+
 
 	// D. FINALLY LOAD ALL GRAPHIC CANVAS IN THE RIGHT ORDER
   drawClass.loadAllGraphics();

@@ -498,6 +498,7 @@ class DBTalk {
 
   getEnsembleDBs() {
     //GET FOLDERS/LAYERS FROM SESSION DATABASE
+    console.log("—— GET ENSEMBLE DBS FIRED")
     let ref = database.ref('/' + currentEnsemble);
     ref.on('value', dbTalkClass.gotDBsToShow, dbTalkClass.errData);
 

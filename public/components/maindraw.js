@@ -240,6 +240,7 @@ class HowToDraw{
     isDrawing = false;
     noLoop();
     loopActivated = false;
+
   	socket.emit('iamnotdrawing');
     if(folks.length > 0){
       if(playing == false){

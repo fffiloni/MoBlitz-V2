@@ -195,13 +195,15 @@ class SCKT{
     //DRAWING FROM FRIENDS PART
     //////////////////
 
-    //0. Friend is drawing, his pen is on canvas
-    // socket.on('foreignIsDrawing', () => );
+    // 0. Friend is drawing, his pen is on canvas
+    socket.on('foreignIsDrawing', () => {
+      loopActivated = true;
+      loop();
+    });
 
     //1. Receive a startPath (first point) from Friends
     socket.on('startFromDuo', function(data){
-      loopActivated = true;
-      loop();
+
       nbpeopleoncanvas++
       // console.log(data);
       let index = folks.findIndex(i => i.folk == data);

@@ -46,6 +46,11 @@ class SCKT{
   }
 
   safeRedraw(){
+    if(loopActivated == true){
+
+    } else {
+
+    }
     if (isDrawing == true ){
       //canvas is already being redraw
       // si je dessine laisse moi faire
@@ -53,7 +58,6 @@ class SCKT{
     } else if (isDrawing == false){
       //check if someone is already on canvas
       if(nbpeopleoncanvas > 1){
-        redraw();
         //canvas is already being redraw
         //do nothing
       } else if (nbpeopleoncanvas == 1 ){
@@ -196,6 +200,8 @@ class SCKT{
 
     //1. Receive a startPath (first point) from Friends
     socket.on('startFromDuo', function(data){
+      loopActivated = true;
+      loop();
       nbpeopleoncanvas++
       // console.log(data);
       let index = folks.findIndex(i => i.folk == data);
@@ -232,6 +238,8 @@ class SCKT{
       folks[index].position = data.position;
       // clearInterval(timer);
       scktClass.safeRedraw();
+      loopActivated = false;
+      noLoop();
     });
 
     socket.on('eraseInFriend', function(erasePoint){

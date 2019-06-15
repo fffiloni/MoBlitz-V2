@@ -80,6 +80,7 @@ function preload() {
 
 
 function setup() {
+	frameRate(24);
 
 	//Here we load actions fired from the server via socket.
 	scktClass.actionSocketResponses();

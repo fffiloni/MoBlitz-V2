@@ -13,6 +13,7 @@ let showGuidelines = true;
 let autoUpdate = false;
 let friendIsErasing = false;
 let pressure, lastPressure, lastStroke, getStrokeValue, strkVal, tempPressure;
+let loopActivated = false;
 
 
 class HowToDraw{
@@ -49,6 +50,8 @@ class HowToDraw{
       //console.log("——");
       //console.log("You started a new path!");
       isDrawing = true;
+      loopActivated = true;
+      loop();
   		socket.emit('iamdrawing');
 
       if (!erasing) {
@@ -75,7 +78,7 @@ class HowToDraw{
           let firstPoint = { x: mouseX, y: mouseY };
           lineTracing = [];
           lineTracing.push(firstPoint);
-          redraw();
+          // redraw();
 
         } else {
 
@@ -219,7 +222,7 @@ class HowToDraw{
       drawClass.endPath();
       ableToDraw = true;
     }
-    redraw();
+    // redraw();
   };
 
   //4. Last step before full ending path
@@ -235,6 +238,8 @@ class HowToDraw{
     }
 
     isDrawing = false;
+    noLoop();
+    loopActivated = false;
   	socket.emit('iamnotdrawing');
     if(folks.length > 0){
       if(playing == false){

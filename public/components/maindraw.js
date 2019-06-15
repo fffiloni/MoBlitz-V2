@@ -155,7 +155,7 @@ class HowToDraw{
               folkID : yourID,
               point: erasePoint
             }
-            socket.emit('eraseFriend', erasePoint);
+            socket.emit('eraseFriend', dataToSend);
           }
         }
       }

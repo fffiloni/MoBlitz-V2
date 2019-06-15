@@ -53,6 +53,7 @@ class SCKT{
     } else if (isDrawing == false){
       //check if someone is already on canvas
       if(nbpeopleoncanvas > 1){
+        redraw();
         //canvas is already being redraw
         //do nothing
       } else if (nbpeopleoncanvas == 1 ){

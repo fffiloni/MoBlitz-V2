@@ -22,6 +22,7 @@ class MagmaCanvas{
 
     //console.log('device.tablet() === %s', device.tablet())
 
+
     cnvHeight = cnvWidth * 0.5625;
 
     canvas = createCanvas(cnvWidth, cnvHeight);

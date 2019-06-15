@@ -80,7 +80,7 @@ function preload() {
 
 
 function setup() {
-	frameRate(24);
+	frameRate(60);
 
 	//Here we load actions fired from the server via socket.
 	scktClass.actionSocketResponses();
@@ -214,7 +214,10 @@ function draw() {
 function mouseDragged() {
   strkVal = sliderStroke.value();
   getStrokeValue.html(strkVal);
-  redraw();
+	if(loopActivated == false){
+		redraw();
+	}
+
 }
 
 // function mouseIsPressed() {

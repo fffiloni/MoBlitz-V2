@@ -600,13 +600,13 @@ class Tracer {
     }
   };
 
-  eraserFriends(folkID){
-    let finder = folks.findIndex(i => i.folk == folkID);
+  eraserFriends(data){
+    let finder = folks.findIndex(i => i.folk == data.folk);
     for (let i = 0; i < folks[finder].drawings.length; i++) {
       let path = folks[finder].drawings[i];
       for (let j = 0; j < path.length; j++) {
-        let d1 = int(dist(path[j]["x1"], path[j]["y1"], fex, fey));
-        let d2 = int(dist(path[j]["x2"], path[j]["y2"], fex, fey));
+        let d1 = int(dist(path[j]["x1"], path[j]["y1"], data.fex,  data.fey));
+        let d2 = int(dist(path[j]["x2"], path[j]["y2"],  data.fex,  data.fey));
 
         if (d1 <= sliderStroke.value() || d2 <= sliderStroke.value()) {
           if (path.length != 0) {

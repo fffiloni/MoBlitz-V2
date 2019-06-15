@@ -245,10 +245,14 @@ class SCKT{
     });
 
     socket.on('eraseInFriend', function(data){
-      fex = data.point.px;
-      fey = data.point.py;
+      let dataToSend ={
+        fex: data.point.px,
+        fey: data.point.py,
+        folk:data.folkID
+      }
 
-      tracerClass.eraserFriends(data.folkID);
+
+      tracerClass.eraserFriends(dataToSend);
       scktClass.safeRedraw();
     });
 

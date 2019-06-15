@@ -79,12 +79,18 @@ class Play {
     //console.log("We just fired 'togglePlay'!");
     playing = !playing;
     if(playing == true){
+      if(onVirginFrame == true){
+        timelinePos = 0;
+      }
+      showSafetyLines = false;
       ableToDraw = false;
       $(".changeBtn").addClass("disableAllBtnPlaying");
       $("#stopButton").removeClass("hide");
       $("#playButton").addClass("hide");
       socket.emit('iamplaying');
     } else if (playing == false){
+
+      showSafetyLines = true;
       $(".changeBtn").removeClass("disableAllBtnPlaying");
       ableToDraw = true;
       $("#stopButton").addClass("hide");
@@ -98,9 +104,10 @@ class Play {
     if (playing) {
       if (isRecording == true) {
         recorder.frames = [];
+        timelinePos = 0;
       }
       // recorder = null;
-      timelinePos = 0;
+
       tm = setInterval(playClass.playFrames, 1000 / fps);
     } else {
       clearInterval(tm);
@@ -113,8 +120,14 @@ class Play {
     if (timelinePos == storeKeys[0].length) {
       if (loopTm == false) {
         timelinePos = storeKeys[0].length - 1;
+
         clearInterval(tm);
         playing = !playing;
+        $("#stopButton").addClass("hide");
+        $("#playButton").removeClass("hide");
+        $(".changeBtn").removeClass("disableAllBtnPlaying");
+        showSafetyLines = true;
+
         if (isRecording) {
           isRecording = false;
           showSafetyLines = true;
@@ -149,6 +162,15 @@ class Play {
   //Gif record PROCESS
   proposeGifDownload() {
     consoleClass.newMessage("——<br><br>GIF IS READY TO BE DOWLOADED<br><button id=\"downloadGifBtn\" class=\"controlBtns\" ontouchstart=\"playClass.downloadGif()\" onclick=\"playClass.downloadGif()\">Download GIF ?</button><br>", 'console', 'messageGifIsReady');
+
+    let downloadDiv = createDiv('');
+    downloadDiv.id('downloadDiv');
+    downloadDiv.parent('canvascontainer')
+    downloadDiv.style('width', cnvWidth + 'px');
+    downloadDiv.style('height', cnvHeight + 40 + 'px');
+    let downloadContent = createDiv('<i class="fas fa-layer-group" style="font-size: 60px;"></i><br><br><button class="downloadBtn" ontouchstart="playClass.downloadGif()" onclick="playClass.downloadGif()">Download GIF ?</button>');
+    downloadContent.id('downloadContent');
+    downloadContent.parent('downloadDiv');
   };
 
   chooseGifFormat() {
@@ -221,6 +243,7 @@ class Play {
   };
 
   downloadGif() {
+    $("#downloadDiv").remove();
     $(".feedback").remove();
     let waitDiv = createDiv('');
     waitDiv.id('waitSession');

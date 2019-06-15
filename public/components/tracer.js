@@ -162,18 +162,23 @@ class Tracer {
               for (let j = 0; j < opath.length; j++) {
                 graphicOnion.strokeCap(ROUND);
                 if (opath[j].strk !== undefined) {
-                  graphicOnion.strokeWeight(opath[j].strk);
+                  if (opath[j].strk == 1) {
+                    graphicOnion.strokeWeight(map(opath[j].pressure, 0, 1, 0, 2));
+                  } else if (opath[j].pressure === undefined) {
+                    graphicOnion.strokeWeight(2);
+                  } else {
+                    graphicOnion.strokeWeight(map(opath[j].pressure, 0, 1, 2, opath[j].strk * 2));
+                  }
                 } else {
                   graphicOnion.strokeWeight(2);
                 }
-                graphicOnion.line(opath[j].x1, opath[j].y1, opath[j].x2, opath[j].y2);
-                graphicOnion.line(opath[j].x3, opath[j].y3, opath[j].x4, opath[j].y4);
-                // beginShape();
-                // curveVertex(opath[j].x1, opath[j].y1);
-                // curveVertex(opath[j].x2, opath[j].y2);
-                // curveVertex(opath[j].x3, opath[j].y3);
-                // curveVertex(opath[j].x4, opath[j].y4);
-                // endShape();
+                graphicOnion.beginShape();
+                graphicOnion.noFill();
+                graphicOnion.curveVertex(opath[j].x1, opath[j].y1);
+                graphicOnion.curveVertex(opath[j].x2, opath[j].y2);
+                graphicOnion.curveVertex(opath[j].x3, opath[j].y3);
+                graphicOnion.curveVertex(opath[j].x4, opath[j].y4);
+                graphicOnion.endShape();
               }
             }
             // endShape();
@@ -351,7 +356,7 @@ class Tracer {
             let opath = onion[i];
             graphicOnion.strokeCap(SQUARE);
             if (onVirginFrame == true) {
-              graphicOnion.stroke(234, 162, 39, 80);
+              graphicOnion.stroke(234, 162, 39, 40);
             } else {
               graphicOnion.stroke(79, 202, 105, 80);
             }
@@ -399,19 +404,38 @@ class Tracer {
       for (let i = 0; i < painting.length; i++) {
         let path = painting[i];
         if (painting[i].length != 0) {
+
           lastPressure = path[path.length - 1].pressure;
+
           for (let j = 0; j < path.length; j++) {
             if (path[j].type == 'paint') {
+
               graphicBrush.strokeCap(ROUND);
               //takes colors data form each point in database
               if (path[j].strk !== undefined) {
-                graphicBrush.strokeWeight(path[j].strk);
+
+                if (path[j].pressure !== undefined) {
+                  if (path[j].strk == 1) {
+                    graphicBrush.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                  } else if (path[j].pressure === undefined) {
+                    graphicBrush.strokeWeight(2);
+                  } else {
+                    graphicBrush.strokeWeight(map(path[j].pressure, 0, 1, 2, path[j].strk * 2));
+                  }
+                }
               } else {
                 graphicBrush.strokeWeight(2);
               }
+
               graphicBrush.stroke(path[j].csR, path[j].csV, path[j].csB);
-              graphicBrush.line(path[j].x1, path[j].y1, path[j].x2, path[j].y2);
-              graphicBrush.line(path[j].x3, path[j].y3, path[j].x4, path[j].y4);
+              graphicBrush.beginShape();
+              graphicBrush.noFill();
+              graphicBrush.curveVertex(path[j].x1, path[j].y1);
+              graphicBrush.curveVertex(path[j].x2, path[j].y2);
+              graphicBrush.curveVertex(path[j].x3, path[j].y3);
+              graphicBrush.curveVertex(path[j].x4, path[j].y4);
+              graphicBrush.endShape();
+
             }
           }
         }

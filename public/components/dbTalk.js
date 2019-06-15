@@ -181,16 +181,19 @@ class DBTalk {
     //console.log("New DB created with this key: " + result.key);
     currentEnsemble = result.key;
     console.log('Key Ensemble: ' + currentEnsemble);
-
+    scktClass.createDBAsync().then(scktClass.createDBAsync())
+      // .then(scktClass.createDBAsync())
+      .then(scktClass.loadAllForMulti(currentEnsemble));
     socket.emit('join custom', result.key);
+
   }
 
   //Note: function pour amorcer la creéation de nouvelles db
   createNewDB() {
 
-    if (((newdbKeys.length) + (storeProjects[0].length - 1)) >= maxProjects || newdbKeys.length == maxProjects) {
+    if (storeProjects[0].length -1 >= maxProjects) {
       consoleClass.newMessage("<p>——</p>You reached the max number of projects allowed.", 'console', 0, 'feedback');
-    } else if (newdbKeys.length == 0 || newdbKeys.length < maxProjects) {
+    } else  {
       //console.log("——");
       //console.log("We just fired 'createNewDB'!");
       let ref = database.ref('/' + currentEnsemble);
@@ -215,8 +218,8 @@ class DBTalk {
       newdbKeys.push(result.key);
       let thisDB = newdbKeys[newdbKeys.indexOf(result.key)].toString();
 
-      let slotData = {db: thisDB, status: 'free'};
-      slots.push(slotData);
+      // let slotData = {db: thisDB, status: 'free'};
+      // slots.push(slotData);
     }
 
   } //Closing createNewDB function
@@ -241,6 +244,7 @@ class DBTalk {
     } else {
       console.log('not same');
       let indexCheckOccupied = slots.findIndex(i => i.db === dbkey);
+
       if(slots[indexCheckOccupied].status == 'occupied'){
         console.log("Seat is already taken");
       } else {
@@ -406,8 +410,8 @@ class DBTalk {
                     }
                   });
                   ahref.mouseOver(function(){
-                    if (key instanceof MouseEvent) {
-                      let key = this.id();
+                    // if (key instanceof MouseEvent) {
+                    //   let key = this.id();
 
                       if (optionPressed || ctrlFkeyPressed) {
                         if(layer.currentDisplayKey == key){
@@ -431,7 +435,7 @@ class DBTalk {
                           }
                         }
                       }
-                    }
+                    // }
                   });
                   span.parent(ahref);
                   ahref.parent(someoneTL);
@@ -462,7 +466,9 @@ class DBTalk {
 
 
   loadParamDB(dbkey) {
-
+    $('#gotEnsemblemsg').remove();
+    $('.class-keylink').remove();
+    // slots = [];
     framesClass.cleanTimelineElements();
     storeKeys = [];
     // //console.log(storeKeys.length);
@@ -482,6 +488,7 @@ class DBTalk {
 
     // CREATE A KEY ICON IN THE RIGHT CORNER
     let keyLink = createA('?id=' + dbkey, '<i class="fas fa-key"></i>');
+    keyLink.class('class-keylink')
     keyLink.parent('keyEnsemble');
     keyLink.style('color', '#ffdc00')
 
@@ -492,16 +499,24 @@ class DBTalk {
   getEnsembleDBs() {
     //GET FOLDERS/LAYERS FROM SESSION DATABASE
     let ref = database.ref('/' + currentEnsemble);
-    ref.once('value', dbTalkClass.gotDBsToShow, dbTalkClass.errData);
+    ref.on('value', dbTalkClass.gotDBsToShow, dbTalkClass.errData);
+
   }
 
   gotDBsToShow(data) {
+    let elts = selectAll('.one-project');
+    for (let i = 0; i < elts.length; i++) {
+      elts[i].remove();
+    }
+    let tempSlots = slots;
+    // slots = [];
+    layersArray = [];
     // Callback grom getEnsembleDBS
     //Displays the different layers/folders registered in the session
     console.log("fired GotDBToShow");
     $("#loadingDiv").addClass("hide");
     storeProjects = [];
-    slots = [];
+
 
     let projects = data.val();
     let keys = Object.keys(projects);
@@ -511,13 +526,26 @@ class DBTalk {
 
     for (let i = 0; i < storeProjects[0].length - 1; i++) {
 
-      let slotData = {db: storeProjects[0][i], status: 'free'};
-      slots.push(slotData);
+      let findSlot = tempSlots.findIndex(j => j.db == storeProjects[0][i] );
+      // if(tempSlots.length < maxProjects){
+      //   let slotData = {db: storeProjects[0][i], status: 'free'};
+      //   slots.push(slotData);
+      // } else {
+        if (findSlot == -1){
+          let slotData = {db: storeProjects[0][i], status: 'free'};
+          slots.push(slotData);
+
+        }
+      // }
+      console.log(slots);
+
+
+
 
       //Load folders/seats for different layers/sequences
-      consoleClass.newMessage("<button class=\"project-folder\" id=\"" + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>", 'folder-container');
+      consoleClass.newMessage("<button class=\"project-folder one-project\" id=\"" + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>", 'folder-container');
 
-      let createSlotButton = createDiv("<button class=\"start-slot-choice " + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>");
+      let createSlotButton = createDiv("<button class=\"start-slot-choice one-project " + storeProjects[0][i] + "\" ontouchstart=\"dbTalkClass.OfDBs('" + storeProjects[0][i] + "')\" onclick=\"dbTalkClass.loadOneOfDBs('" + storeProjects[0][i] + "')\"><i class=\"fas fa-user-circle\"></i></button>");
       createSlotButton.parent(slotsButton);
 
       // * TEST MULTI - On prepare un tableau pour display les differents folders/layers

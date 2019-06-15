@@ -27,17 +27,23 @@ class SCKT{
       } else {
         dbTalkClass.createNewEnsemble();
 
-        async function createDBAsync() {
-          dbTalkClass.createNewDB();
-        }
-        async function loadAllForMulti(){
-          dbTalkClass.loadParamDB(currentEnsemble);
-        }
-        createDBAsync().then(createDBAsync()).then(loadAllForMulti());
 
       }
+
     });
   };
+
+  async createDBAsync() {
+    dbTalkClass.createNewDB();
+  }
+  async loadAllForMulti(data){
+    dbTalkClass.loadParamDB(data);
+  }
+
+  async createNewDBFromIcon() {
+
+    return scktClass.createDBAsync();
+  }
 
   safeRedraw(){
     if (isDrawing == true ){
@@ -111,9 +117,18 @@ class SCKT{
     })
 
     socket.on('transfer slots array', function(data){
-      slots = [];
+      // slots = [];
       data.forEach(function(slot, index){
-        slots.push(slot);
+        let finder = slots.findIndex(i => i.db == slot.db);
+        if(finder != -1){
+          slots[finder].db = slot.db;
+          slots[finder].status = slot.status;
+          slots[finder].user = slot.user;
+          // slots.push(slot);
+        } else {
+          slots.push(slot);
+        }
+
 
       });
       slots.forEach(function(slot, index){
@@ -121,6 +136,13 @@ class SCKT{
         if (slot.status === 'occupied'){
             $("#" + slot.db).addClass("occupiedFolder");
             $("." + slot.db).addClass("occupiedFolder");
+
+            if(slot.db == currentLayerKey){
+              $("#" + slot.db).removeClass("occupiedFolder");
+
+              $("#" + slot.db).addClass("currentFolder");
+
+            }
 
         } else {
           $("#" + slot.db).removeClass("occupiedFolder");

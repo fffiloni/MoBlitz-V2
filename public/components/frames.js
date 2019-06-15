@@ -156,6 +156,7 @@ class Frames {
     //console.log("We will next load the last drawing as an onion layer...");
     framesClass.clearOnion();
     timelinePos = storeKeys[0].length;
+    // timelinePos = 0;
     onionPos = storeKeys[0].length - 1;
     postOnionPos = storeKeys[0].length + 1;
     document.getElementById('onionkey').value = storeKeys[0][onionPos];

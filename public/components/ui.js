@@ -181,9 +181,9 @@ class UI{
   watchLoopControl(){
     let displayLoop = select('#displayLoop');
     if (loopTm == true) {
-      displayLoop.html('loop');
+      displayLoop.html('<span class="badge">loop</span>');
     } else {
-      displayLoop.html('noLoop');
+      displayLoop.html('<span class="badge">noLoop</span>');
     }
   }
 

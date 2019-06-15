@@ -66,6 +66,8 @@ class SCKT{
       } else if(nbpeopleoncanvas == 0){
         //nobody is redrawing, you can do it
         redraw();
+      } else if (nbpeopleoncanvas < 0){
+        nbpeopleoncanvas = 0;
       }
     }
   }

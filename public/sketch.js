@@ -199,7 +199,10 @@ function draw() {
 		graphicFRONT.pop();
   }
 	folks.forEach((folk) => {
-		graphicPrivateDUO.text('. friend', folk.position.x, folk.position.y)
+		graphicPrivateDUO.push();
+		graphicPrivateDUO.strokeWeight(1);
+		graphicPrivateDUO.text('. friend', folk.position.x, folk.position.y);
+		graphicPrivateDUO.pop();
 	})
 
 

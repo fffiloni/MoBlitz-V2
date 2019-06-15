@@ -510,7 +510,7 @@ class DBTalk {
     }
     let tempSlots = slots;
     // slots = [];
-    layersArray = [];
+    // layersArray = [];
     // Callback grom getEnsembleDBS
     //Displays the different layers/folders registered in the session
     console.log("fired GotDBToShow");
@@ -549,12 +549,16 @@ class DBTalk {
       createSlotButton.parent(slotsButton);
 
       // * TEST MULTI - On prepare un tableau pour display les differents folders/layers
-      let oneLayer = {
-        folderKey: storeProjects[0][i],
-        storeKeysFolder: [],
-        folderDrawings: []
-      };
-      layersArray.push(oneLayer);
+      let findLayer = layersArray.findIndex(i => i.db == storeProjects[0][i] );
+      if(findLayer == -1){
+        let oneLayer = {
+          folderKey: storeProjects[0][i],
+          storeKeysFolder: [],
+          folderDrawings: []
+        };
+        layersArray.push(oneLayer);
+      }
+
 
     }
     if(folks.length > 0){

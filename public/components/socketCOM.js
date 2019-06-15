@@ -248,7 +248,7 @@ class SCKT{
       let dataToSend ={
         fex: data.point.px,
         fey: data.point.py,
-        folk:data.folkID
+        folk: data.folkID
       }
 
 

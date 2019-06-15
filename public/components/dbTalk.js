@@ -393,7 +393,7 @@ class DBTalk {
                       // console.log("same key man");
                       layer.folderDrawings = [];
                       $("#" + key).removeClass("private-activedraw-friend");
-                      redraw();
+                      scktClass.safeRedraw();
                     } else {
                       layer.currentDisplayKey = key;
                       console.log(layer.currentDisplayKey);
@@ -405,7 +405,7 @@ class DBTalk {
                         $(".listing-some-" + layer.folderKey).removeClass("private-activedraw-friend");
 
                         $("#" + key).addClass("private-activedraw-friend");
-                        redraw();
+                        scktClass.safeRedraw();
                       }
                     }
                   });
@@ -419,7 +419,7 @@ class DBTalk {
                           // console.log("same key man");
                           layer.folderDrawings = [];
                           $("#" + key).removeClass("private-activedraw-friend");
-                          redraw();
+                          scktClass.safeRedraw();
                         } else {
                           layer.currentDisplayKey = key;
                           console.log(layer.currentDisplayKey);
@@ -431,7 +431,7 @@ class DBTalk {
                             $(".listing-some-" + layer.folderKey).removeClass("private-activedraw-friend");
 
                             $("#" + key).addClass("private-activedraw-friend");
-                            redraw();
+                            scktClass.safeRedraw();
                           }
                         }
                       }

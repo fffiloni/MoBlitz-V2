@@ -549,7 +549,7 @@ class DBTalk {
       createSlotButton.parent(slotsButton);
 
       // * TEST MULTI - On prepare un tableau pour display les differents folders/layers
-      let findLayer = layersArray.findIndex(i => i.db == storeProjects[0][i] );
+      let findLayer = layersArray.findIndex(k => k.db == storeProjects[0][i] );
       if(findLayer == -1){
         let oneLayer = {
           folderKey: storeProjects[0][i],

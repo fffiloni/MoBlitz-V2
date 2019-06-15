@@ -151,6 +151,10 @@ class HowToDraw{
           tracerClass.eraserDrawings();
           if(folks.length > 0){
             let erasePoint = {px: px, py: py};
+            let dataToSend = {
+              folkID : yourID,
+              point: erasePoint
+            }
             socket.emit('eraseFriend', erasePoint);
           }
         }

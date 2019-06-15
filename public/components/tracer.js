@@ -600,9 +600,10 @@ class Tracer {
     }
   };
 
-  eraserFriends(){
-    for (let i = 0; i < duoDrawings.length; i++) {
-      let path = duoDrawings[i];
+  eraserFriends(folkID){
+    let finder = folks.findIndex(i => i.folk == folkID);
+    for (let i = 0; i < folks[finder].drawings.length; i++) {
+      let path = folks[finder].drawings[i];
       for (let j = 0; j < path.length; j++) {
         let d1 = int(dist(path[j]["x1"], path[j]["y1"], fex, fey));
         let d2 = int(dist(path[j]["x2"], path[j]["y2"], fex, fey));
@@ -613,7 +614,7 @@ class Tracer {
           }
 
           if (path.length == 0) {
-            duoDrawings.splice(duoDrawings.indexOf(path), 1)
+            folks[finder].drawings.splice(folks[finder].drawings.indexOf(path), 1)
           }
 
           // eraserUsed = true;

@@ -80,8 +80,8 @@
 				</div>
 
 				<div id="mainCtrls">
-					<button id="playButton" class="controlBtns" ontouchstart="playClass.togglePlay()" onclick="playClass.togglePlay()"><i class="fas fa-play" style="font-size: 20px;"></i><br> Play Animation</button>
-					<button id="stopButton" class="controlBtns hide" ontouchstart="playClass.togglePlay()" onclick="playClass.togglePlay()"><i class="fas fa-pause" style="font-size: 20px;"></i><br> Pause Animation</button>
+					<button id="playButton" class="controlBtns" ontouchstart="playClass.togglePlayCheckChained()" onclick="playClass.togglePlayCheckChained()"><i class="fas fa-play" style="font-size: 20px;"></i><br> Play Animation</button>
+					<button id="stopButton" class="controlBtns hide" ontouchstart="playClass.togglePlayCheckChained()" onclick="playClass.togglePlayCheckChained()"><i class="fas fa-pause" style="font-size: 20px;"></i><br> Pause Animation</button>
 					<button id="gifButton" class="controlBtns" ontouchstart="playClass.chooseGifFormat()" onclick="playClass.chooseGifFormat()"><i class="fas fa-magic" style="font-size: 20px;"></i> <i class="fas fa-layer-group" style="font-size: 20px;"></i><br>Create GIF</button>
 				</div>
 
@@ -105,7 +105,9 @@
 					<div id="frames"></div>
 					<div id="onionControls"></div>
 					<div id="inbetween">
-<div id="displayLoop"></div>
+						<div id="displayChain"></div>
+						<div id="displayLoop"></div>
+
 					</div>
 
 					<div id="fps">

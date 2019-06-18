@@ -751,3 +751,30 @@ div#substitute {
     flex: 1;
     border-radius: 4px;
 }
+
+.sub-layer-ctrls {
+  font-size: 12px;
+    color: rgb(168, 168, 168);
+    /* background: #50c969; */
+    flex: 1;
+    max-width: 100px;
+    min-width: 100px;
+    height: 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.sub-layer-ctrls > button{
+  color: white;
+  text-decoration: none;
+  z-index: 12;
+  cursor: pointer;
+  border: none;
+  background: none;
+
+}
+.sub-layer-ctrls > button > i{
+  pointer-events: none;
+}

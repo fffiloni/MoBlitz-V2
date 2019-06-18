@@ -7,6 +7,11 @@ let playing = false;
 let loopTm = true;
 let nframe;
 let onVirginFrame = true;
+let playKeys = 0;
+let playingAll = false;
+let tmAll;
+let layersAreChained = false;
+let layersColor = ['DeepPink', 'Aquamarine', 'SpringGreen'];
 
 //RECORDER GIF VARIABLES
 let recorder;
@@ -30,7 +35,7 @@ class Play {
     let calcNbAfter = (storeKeys[0].length - 1) - (storeKeys[0].indexOf(key));
     //console.log("Nb of frames after the displayed one: " + calcNbAfter);
     frameAfter = [];
-    // drawingsToKeep = [];
+
     for (let i = storeKeys[0].indexOf(key) + 1; i < storeKeys[0].length; i++) {
       frameAfter.push(storeKeys[0][i]);
     }
@@ -74,43 +79,221 @@ class Play {
     // }
   };
 
-  togglePlay() {
-    //console.log("——");
-    //console.log("We just fired 'togglePlay'!");
-    playing = !playing;
-    if(playing == true){
-      if(onVirginFrame == true){
-        timelinePos = 0;
-      }
-      showSafetyLines = false;
-      ableToDraw = false;
+  togglePlayCheckChained(){
+    if(layersAreChained == true){
+      playClass.togglePlayAll();
+    } else {
+      playClass.togglePlay();
+    }
+  }
+
+  safePlay(){
+    layersArray.forEach(function(layer){
+      layer.isPlaying = false;
+      clearInterval(layer.interval);
+    })
+  }
+
+  togglePlayAll(){
+
+    playingAll = !playingAll;
+    if(playingAll == true){
+        playClass.safePlay();
       $(".changeBtn").addClass("disableAllBtnPlaying");
       $("#stopButton").removeClass("hide");
       $("#playButton").addClass("hide");
-      socket.emit('iamplaying');
-    } else if (playing == false){
+      showSafetyLines = false;
+      timelinePos = 0;
+      framesClass.clearOnion();
 
-      showSafetyLines = true;
+      layersArray.forEach(function(layer){
+        if(layer.storeKeysFolder.length > playKeys){
+            playKeys = layer.storeKeysFolder.length;
+          }
+          console.log(playKeys);
+      });
+      tmAll = setInterval(playClass.playAll, 1000 / fps);
+    } else if (playingAll == false){
       $(".changeBtn").removeClass("disableAllBtnPlaying");
-      ableToDraw = true;
+      // ableToDraw = true;
       $("#stopButton").addClass("hide");
       $("#playButton").removeClass("hide");
-      socket.emit('iamnotplaying');
+      showSafetyLines = true;
+
+      playKeys = 0;
+      timelinePos = 0;
+      clearInterval(tmAll);
+      redraw();
     }
 
-    // showForeign = !showForeign;
-    framesClass.clearOnion();
-    //console.log("ANIMATION STARTED. (playing: " + playing + ")");
-    if (playing) {
-      if (isRecording == true) {
-        recorder.frames = [];
-        timelinePos = 0;
-      }
-      // recorder = null;
+  }
 
-      tm = setInterval(playClass.playFrames, 1000 / fps);
+  playOne(keySent){
+    let index = layersArray.findIndex(i => i.folderKey == keySent);
+
+    layersArray[index].layerTimelinePos += 1;
+    if(layersArray[index].loop == false){
+      if(layersArray[index].layerTimelinePos == layersArray[index].storeKeysFolder.length){
+        layersArray[index].isPlaying = false;
+        clearInterval(layersArray[index].interval);
+
+      layersArray[index].layerTimelinePos = 0;
+      }
     } else {
-      clearInterval(tm);
+      if(layersArray[index].layerTimelinePos == layersArray[index].storeKeysFolder.length){
+        layersArray[index].layerTimelinePos = 0;
+
+      }
+    }
+
+    playClass.keyShowOne(keySent);
+  };
+
+  keyShowOne(frameKeySent){
+    // console.log(frameKeySent);
+
+    let index = layersArray.findIndex(i => i.folderKey == frameKeySent);
+
+    if(layersArray[index].storeKeysFolder[layersArray[index].layerTimelinePos] != undefined){
+
+      layersArray[index].currentDisplayKey = layersArray[index].storeKeysFolder[layersArray[index].layerTimelinePos];
+      let playThisLayer = currentEnsemble + '/' + layersArray[index].folderKey + '/drawings/';
+      let ref = database.ref(playThisLayer + layersArray[index].currentDisplayKey );
+
+      ref.once('value', thisLayerShow, dbTalkClass.errData);
+      function thisLayerShow(data){
+        let dbdrawing = data.val();
+        layersArray[index].folderDrawings = dbdrawing.drawing;
+        $(".listing-some" + layersArray[index].folderKey).removeClass("private-activedraw-friend");
+        // $(".listing").removeClass("activedraw
+        // $('.listing').removeClass('private-activedraw-friend');
+        // $(".current-tl" + layer.currentDisplayKey).removeClass("private-activedraw-friend");
+        // $("#" + layer.currentDisplayKey).addClass("activedraw");
+        $("#" + layersArray[index].currentDisplayKey).addClass("private-activedraw-friend");
+        scktClass.safeRedraw();
+      }
+    } else {
+      layersArray[index].folderDrawings = [];
+      layersArray[index].currentDisplayKey = null;
+      $(".listing-some" + layersArray[index].folderKey).removeClass("private-activedraw-friend");
+      scktClass.safeRedraw();
+    }
+  }
+
+  playAll(){
+    timelinePos += 1;
+    if(loopTm == false){
+      if(timelinePos == playKeys){
+        playingAll = !playingAll;
+        clearInterval(tmAll);
+        playKeys = 0;
+        timelinePos = 0;
+        showSafetyLines = true;
+      }
+    } else {
+      if(timelinePos == playKeys){
+        timelinePos = 0;
+
+      }
+    }
+
+    playClass.keyShowAll(timelinePos);
+  }
+
+  keyShowAll(cursorPos){
+
+
+      if(storeKeys[0][cursorPos] != undefined){
+        framesClass.showDrawing(storeKeys[0][cursorPos]);
+
+      } else {
+        framesClass.cleanUp();
+        $(".listing").removeClass("activedraw");
+        countPathNew = 0;
+        countPathOld = 0;
+
+      }
+
+
+    layersArray.forEach(function(layer){
+
+      if(layer.folderKey == currentLayerKey){
+
+      } else {
+
+        if(layer.storeKeysFolder[cursorPos] != undefined){
+
+          layer.currentDisplayKey = layer.storeKeysFolder[cursorPos];
+          let playThisDB = currentEnsemble + '/' + layer.folderKey + '/drawings/';
+          let ref = database.ref(playThisDB + layer.currentDisplayKey );
+
+          ref.once('value', thisDBShow, dbTalkClass.errData);
+          function thisDBShow(data){
+            let dbdrawing = data.val();
+            layer.folderDrawings = dbdrawing.drawing;
+            $(".listing-some" + layer.folderKey).removeClass("private-activedraw-friend");
+            // $(".listing").removeClass("activedraw
+            // $('.listing').removeClass('private-activedraw-friend');
+            // $(".current-tl" + layer.currentDisplayKey).removeClass("private-activedraw-friend");
+            // $("#" + layer.currentDisplayKey).addClass("activedraw");
+            $("#" + layer.currentDisplayKey).addClass("private-activedraw-friend");
+            scktClass.safeRedraw();
+          }
+        } else {
+          layer.folderDrawings = [];
+          layer.currentDisplayKey = null;
+          $(".listing-some" + layer.folderKey).removeClass("private-activedraw-friend");
+          scktClass.safeRedraw();
+        }
+      }
+
+    })
+  }
+
+  togglePlay() {
+    //console.log("——");
+    //console.log("We just fired 'togglePlay'!");
+    if(layersAreChained == true){
+      playClass.togglePlayAll();
+    } else {
+
+      playing = !playing;
+      if(playing == true){
+
+
+        if(onVirginFrame == true){
+          timelinePos = 0;
+        }
+        showSafetyLines = false;
+        ableToDraw = false;
+        $(".changeBtn").addClass("disableAllBtnPlaying");
+        $("#stopButton").removeClass("hide");
+        $("#playButton").addClass("hide");
+        socket.emit('iamplaying');
+      } else if (playing == false){
+
+        showSafetyLines = true;
+        $(".changeBtn").removeClass("disableAllBtnPlaying");
+        ableToDraw = true;
+        $("#stopButton").addClass("hide");
+        $("#playButton").removeClass("hide");
+        socket.emit('iamnotplaying');
+      }
+
+      // showForeign = !showForeign;
+      framesClass.clearOnion();
+      //console.log("ANIMATION STARTED. (playing: " + playing + ")");
+      if (playing) {
+        if (isRecording == true) {
+          recorder.frames = [];
+          timelinePos = 0;
+        }
+        // recorder = null;
+
+        tm = setInterval(playClass.playFrames, 1000 / fps);
+      } else {
+        clearInterval(tm);
+      }
     }
   };
 

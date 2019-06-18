@@ -625,40 +625,43 @@ class Tracer {
 
   traceDUO(){
     folks.forEach(function(folk){
-      //Shows the current drawing if there any data in drawing array
-      for (let i = 0; i < folk.drawings.length; i++) {
-        let path = folk.drawings[i];
-        if (folk.drawings[i].length != 0) {
-          // beginShape();
-          lastStroke = path[path.length - 1].pressure;
-          for (let j = 0; j < path.length; j++) {
+      if(folk.display != 'hidden'){
 
-            if (path[j].type == 'trait') {
+        //Shows the current drawing if there any data in drawing array
+        for (let i = 0; i < folk.drawings.length; i++) {
+          let path = folk.drawings[i];
+          if (folk.drawings[i].length != 0) {
+            // beginShape();
+            lastStroke = path[path.length - 1].pressure;
+            for (let j = 0; j < path.length; j++) {
 
-              graphicDUO.strokeCap(SQUARE);
-              //takes colors data form each point in database
-              if (path[j].strk !== undefined) {
+              if (path[j].type == 'trait') {
 
-                if (path[j].pressure !== undefined) {
-                  if (path[j].strk == 1) {
-                    graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
-                  } else if (path[j].pressure === undefined) {
-                    graphicDUO.strokeWeight(2);
-                  } else {
-                    graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                graphicDUO.strokeCap(SQUARE);
+                //takes colors data form each point in database
+                if (path[j].strk !== undefined) {
+
+                  if (path[j].pressure !== undefined) {
+                    if (path[j].strk == 1) {
+                      graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                    } else if (path[j].pressure === undefined) {
+                      graphicDUO.strokeWeight(2);
+                    } else {
+                      graphicDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                    }
                   }
+                } else {
+                  graphicDUO.strokeWeight(2);
                 }
-              } else {
-                graphicDUO.strokeWeight(2);
+                graphicDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 255);
+                graphicDUO.beginShape();
+                graphicDUO.noFill();
+                graphicDUO.curveVertex(path[j].x1, path[j].y1);
+                graphicDUO.curveVertex(path[j].x2, path[j].y2);
+                graphicDUO.curveVertex(path[j].x3, path[j].y3);
+                graphicDUO.curveVertex(path[j].x4, path[j].y4);
+                graphicDUO.endShape();
               }
-              graphicDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
-              graphicDUO.beginShape();
-              graphicDUO.noFill();
-              graphicDUO.curveVertex(path[j].x1, path[j].y1);
-              graphicDUO.curveVertex(path[j].x2, path[j].y2);
-              graphicDUO.curveVertex(path[j].x3, path[j].y3);
-              graphicDUO.curveVertex(path[j].x4, path[j].y4);
-              graphicDUO.endShape();
             }
           }
         }
@@ -670,6 +673,17 @@ class Tracer {
     layersArray.forEach(function(multi){
       //Shows the current drawing if there any data in drawing array
       let multiDraw = multi.folderDrawings;
+      let layerTransparency;
+
+      if(multi.transparency == 'on'){
+        layerTransparency = 80;
+      } else if (multi.transparency == 'off'){
+        layerTransparency = 255;
+      } else if (multi.transparency == undefined){
+        layerTransparency = 80;
+      }
+
+
 
       for (let i = 0; i < multiDraw.length; i++) {
         let path = multiDraw[i];
@@ -696,7 +710,17 @@ class Tracer {
               } else {
                 graphicDUO.strokeWeight(2);
               }
-              graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, 80);
+
+              if(multi.colored == 'on'){
+                graphicPrivateDUO.stroke(multi.csR, multi.csV, multi.csB, 255);
+              } else if (multi.colored == 'off'){
+                graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, layerTransparency);
+              } else if (multi.colored == undefined){
+                graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, layerTransparency);
+              }
+
+
+
               graphicPrivateDUO.beginShape();
               graphicPrivateDUO.noFill();
               graphicPrivateDUO.curveVertex(path[j].x1, path[j].y1);

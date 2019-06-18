@@ -98,7 +98,8 @@ class SCKT{
             folk: folk,
             position: {x: -1, y: -1},
             currentPoint: [],
-            drawings: []
+            drawings: [],
+            display: 'not hidden'
           }
           folks.push(folkData);
         }

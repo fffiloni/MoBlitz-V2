@@ -187,6 +187,22 @@ class UI{
     }
   }
 
+  setChainControl(){
+    let displayChain = select('#displayChain');
+    displayChain.touchStarted(toggleChain);
+    displayChain.style('cursor', 'pointer');
+    displayChain.style('margin-right', '20px');
+  };
+
+  watchLayerChainControl(){
+    let displayChain = select('#displayChain');
+    if (layersAreChained == true) {
+      displayChain.html('<span class="badge">chained</span>');
+    } else {
+      displayChain.html('<span class="badge">unchained</span>');
+    }
+  }
+
   //////////////////////////////////////////
   // Little Buttons controlling onion frames
   //////////////////////////////////////////
@@ -398,6 +414,78 @@ class UI{
     }
   };
 
+  toggleLayerPlay(sentLayerKey){
+    console.log("try to play layer nb: " + sentLayerKey);
+    let index = layersArray.findIndex(i => i.folderKey == sentLayerKey);
+
+    if (layersArray[index].isPlaying == true){
+      layersArray[index].isPlaying = false;
+      clearInterval(layersArray[index].interval); //nommer cette variable dynamiquement
+    } else if (layersArray[index].isPlaying == false){
+      layersArray[index].isPlaying = true;
+      let newInterval = setInterval("playClass.playOne('"+sentLayerKey+"')", 1000 / fps);
+      layersArray[index].interval = newInterval;
+    }
+
+    scktClass.safeRedraw();
+  };
+
+  toggleFolkShow(sentLayerKey){
+    console.log("try to show hide layer nb: " + sentLayerKey);
+    let index = slots.findIndex(i => i.db == sentLayerKey);
+    let folk = folks.findIndex(j => j.folk == slots[index].user);
+
+    if(folks[folk] != undefined){
+      if(folks[folk].display == 'hidden'){
+        folks[folk].display = 'not hidden';
+      } else if (folks[folk].display == 'not hidden'){
+        folks[folk].display = 'hidden';
+      } else if (folks[folk].display == undefined){
+        folks[folk].display = 'not hidden';
+      }
+    }
+
+    scktClass.safeRedraw();
+  };
+
+  toggleLayerTransparency(sentLayerKey){
+
+    console.log("try to change transparency on layer nb: " + sentLayerKey);
+    let index = layersArray.findIndex(i => i.folderKey == sentLayerKey);
+    if (layersArray[index].transparency == 'on'){
+      layersArray[index].transparency = 'off';
+
+    } else if (layersArray[index].transparency == 'off'){
+      layersArray[index].transparency = 'on';
+
+    } else if (layersArray[index].transparency == undefined){
+      layersArray[index].transparency = 'off';
+
+    }
+
+    scktClass.safeRedraw();
+
+  };
+
+  toggleLayerColor(sentLayerKey){
+
+
+    console.log("try to change color display for layer nb: " + sentLayerKey);
+    let index = layersArray.findIndex(i => i.folderKey == sentLayerKey);
+    if (layersArray[index].colored == 'on'){
+      layersArray[index].colored = 'off';
+
+    } else if (layersArray[index].colored == 'off'){
+      layersArray[index].colored = 'on';
+
+    } else if (layersArray[index].colored == undefined){
+      layersArray[index].colored = 'on';
+
+    }
+
+    scktClass.safeRedraw();
+  };
+
   watchUIinDraw(){
     // HANDLE UI CHANGES //
 
@@ -407,6 +495,7 @@ class UI{
     uiClass.toggleStatePreOnion();
     uiClass.watchFPSControl();
     uiClass.watchLoopControl();
+    uiClass.watchLayerChainControl();
 
     //
 

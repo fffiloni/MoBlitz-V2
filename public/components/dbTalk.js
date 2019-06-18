@@ -138,7 +138,7 @@ class DBTalk {
           let span = createElement('span');
           span.id(key);
           let ahref = createA('javascript:', '');
-          ahref.class('listing');
+          ahref.class('listing current-tl' + key);
           ahref.id(key);
 
           ahref.mouseOver(showAnim);
@@ -301,13 +301,24 @@ class DBTalk {
           currentLayerKey = dbkey;
 
           layersArray.forEach(function(layer, index){
+            layer.loop = true;
+            layer.layerTimelinePos = 0;
+            layer.isPlaying = false;
+            layer.interval = null;
+            layer.randomcolor = random(layersColor);
+
+            layer.csR = random(50, 255);
+            layer.csV = random(100, 250);
+            layer.csB = random(180, 255);
 
             $("#" + layer.folderKey + '-tl').remove();
 
             let someoneTL = createDiv('');
             someoneTL.id(layer.folderKey + '-tl');
-            someoneTL.class(layer.folderKey);
+            someoneTL.class('someonetl ' + layer.folderKey);
             someoneTL.parent('someoneslist');
+
+
 
             let someoneDB = currentEnsemble + '/' + layer.folderKey + '/drawings/';
             let refSomeone = database.ref(someoneDB);
@@ -321,12 +332,13 @@ class DBTalk {
 
             refSomeone.on('value', function(data){
 
-              let elts = selectAll('.listing-some-' + layer.folderKey);
+              let elts = selectAll('.listing-some' + layer.folderKey);
               for (let i = 0; i < elts.length; i++) {
                 elts[i].remove();
               }
 
               $("#substitute" + layer.folderKey).remove();
+              $('#' + layer.folderKey + '-ctrls').remove();
 
               // console.log(data);
               console.log("someone number " + index + " has new data to show");
@@ -385,7 +397,7 @@ class DBTalk {
                   let span = createElement('span');
                   span.id(key);
                   let ahref = createA('javascript:', '');
-                  ahref.class('listing-some-' + layer.folderKey);
+                  ahref.class('listing-some' + layer.folderKey);
                   ahref.id(key);
                   ahref.touchStarted(function(){
                     if(layer.currentDisplayKey == key){
@@ -402,7 +414,7 @@ class DBTalk {
                       function onePrivateSomeone(data){
                         let dbdrawing = data.val();
                         layer.folderDrawings = dbdrawing.drawing;
-                        $(".listing-some-" + layer.folderKey).removeClass("private-activedraw-friend");
+                        $(".listing-some" + layer.folderKey).removeClass("private-activedraw-friend");
 
                         $("#" + key).addClass("private-activedraw-friend");
                         scktClass.safeRedraw();
@@ -428,7 +440,7 @@ class DBTalk {
                           function onePrivateSomeone(data){
                             let dbdrawing = data.val();
                             layer.folderDrawings = dbdrawing.drawing;
-                            $(".listing-some-" + layer.folderKey).removeClass("private-activedraw-friend");
+                            $(".listing-some" + layer.folderKey).removeClass("private-activedraw-friend");
 
                             $("#" + key).addClass("private-activedraw-friend");
                             scktClass.safeRedraw();
@@ -446,17 +458,35 @@ class DBTalk {
 
 
                 }
+
+
                 if(layer.folderKey == currentLayerKey){
                   $("#" + layer.folderKey + '-tl').remove();
                 }
+
+
+
                 if(layer.storeKeysFolder.length == 1){
                   let sublayer = createElement('span');
                   sublayer.id('substitute'+ layer.folderKey)
                   sublayer.class('someone-empty');
                   sublayer.parent(someoneTL);
+
                 }
 
+                let someoneCtrls = createDiv('');
+                someoneCtrls.html("" +
+                "<button id=\"playLayerBtn" + layer.folderKey + "\"onclick=\"uiClass.toggleLayerPlay('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleLayerPlay('" + layer.folderKey + "')\"><i class=\"fas fa-play-circle\"></i></button>  " +
+                "<button id=\"friendBtn" + layer.folderKey + "\" onclick=\"uiClass.toggleFolkShow('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleFolkShow('" + layer.folderKey + "')\"><i class=\"fas fa-user-circle\"></i></button>  " +
+                "<button id=\"transparencyBtn" + layer.folderKey + "\" onclick=\"uiClass.toggleLayerTransparency('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleLayerTransparency('" + layer.folderKey + "')\"><i class=\"far fa-dot-circle\"></i></button>  " +
+                "<button id=\"colorBtn" + layer.folderKey + "\" onclick=\"uiClass.toggleLayerColor('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleLayerColor('" + layer.folderKey + "')\"><i class=\"far fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i></button>");
+                someoneCtrls.id(layer.folderKey + '-ctrls');
+                someoneCtrls.class('sub-layer-ctrls');
+                someoneCtrls.parent(someoneTL);
+
+
               };
+
           });
         });
       }
@@ -564,6 +594,12 @@ class DBTalk {
     }
     if(folks.length > 0){
       socket.emit('get slots array');
+    } else {
+      let findWhereIam = layersArray.findIndex(k => k.folderKey == currentLayerKey);
+      if(findWhereIam != -1){
+        $("#" + layersArray[findWhereIam].folderKey).addClass("currentFolder");
+      }
+
     }
 
   }

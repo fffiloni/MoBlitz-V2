@@ -104,6 +104,7 @@ function setup() {
 	uiClass.setOnionControls();
 	uiClass.setLoopControl();
 	uiClass.setFPSControl();
+	uiClass.setChainControl();
 
 } // END SETUP
 
@@ -114,6 +115,54 @@ function draw() {
 
 	// HANDLE UI CHANGES //
 	uiClass.watchUIinDraw();
+
+	if(folks.length > 0){
+		folks.forEach(function(folk){
+			let index = slots.findIndex(i => i.user == folk.folk);
+			if(index != -1){
+
+				if (folk.display != undefined){
+					if(folk.display == 'hidden'){
+						$('#friendBtn' + slots[index].db).html("<i class=\"far fa-user-circle\"></i>");
+
+
+					} else if (folk.display == 'not hidden'){
+						$('#friendBtn' + slots[index].db).html("<i class=\"fas fa-user-circle\"></i>");
+					}
+				}
+			}
+
+
+		})
+	}
+
+	layersArray.forEach(function(layer){
+		//IS PLAYING LAYER ?
+		if (layer.isPlaying == false){
+			$('#playLayerBtn' + layer.folderKey).html("<i class=\"fas fa-play-circle\"></i>");
+		} else if (layer.isPlaying == true){
+			$('#playLayerBtn' + layer.folderKey).html("<i class=\"fas fa-pause-circle\" style=\"color: #ff847b;\"></i>");
+		} else if (layer.isPlaying == undefined){
+
+		}
+
+		//TRANSPARENCY LAYER
+		if (layer.transparency == 'off'){
+			$('#transparencyBtn' + layer.folderKey).html("<i class=\"fas fa-circle\"></i>");
+		} else if (layer.transparency == 'on'){
+			$('#transparencyBtn' + layer.folderKey).html("<i class=\"far fa-dot-circle\"></i>");
+		} else if (layer.transparency == undefined){
+
+		}
+		// COLORED LAYER
+		if (layer.colored == 'off'){
+			select('#colorBtn' + layer.folderKey).html("<i class=\"far fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i>");
+    } else if (layer.colored == 'on'){
+    	select('#colorBtn' + layer.folderKey).html("<i class=\"fas fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i>");
+    } else if (layer.colored == undefined){
+
+    }
+	});
 
 
   if (ctrlGkeyPressed == true) {
@@ -171,8 +220,10 @@ function draw() {
 	if (showForeign == true){
 		// MULTI — SHOW FRIENDS DRAWINGS
 		tracerClass.traceDUO();
-		tracerClass.tracePrivateDUO();
+
 	}
+
+	tracerClass.tracePrivateDUO();
 
 	// C. TRACE TOOLS LAYER CONTENT
   if (showBrushLayer) {
@@ -464,6 +515,11 @@ function delGuide() {
 
 function toggleLoop() {
   loopTm = !loopTm;
+  redraw();
+}
+
+function toggleChain() {
+  layersAreChained = !layersAreChained;
   redraw();
 }
 

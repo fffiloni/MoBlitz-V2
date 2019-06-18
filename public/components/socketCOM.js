@@ -185,7 +185,7 @@ class SCKT{
       slots[index].status = 'free';
       slots[index].user = undefined;
       $("#" + slots[index].db).removeClass("occupiedFolder");
-      $(".listing-some-" + slots[index].db).removeClass("activedraw-friend");
+      $(".listing-some" + slots[index].db).removeClass("activedraw-friend");
       slots.forEach(function(slot, index){
         console.log(slot.db + " : " + slot.status + " | user: " + slot.user)
       })
@@ -272,7 +272,7 @@ class SCKT{
       let index = folks.findIndex(i => i.folk == data.folkID);
   		folks[index].drawings = [];
       folks[index].currentDisplayKey = null;
-      $(".listing-some-" + data.layerID).removeClass("activedraw-friend");
+      $(".listing-some" + data.layerID).removeClass("activedraw-friend");
   		scktClass.safeRedraw();
   	});
 
@@ -304,7 +304,7 @@ class SCKT{
         function oneFromSomeone(data){
           let dbdrawing = data.val();
           folks[folkfinder].drawings = dbdrawing.drawing;
-          $(".listing-some-" + layersArray[index].folderKey).removeClass("activedraw-friend");
+          $(".listing-some" + layersArray[index].folderKey).removeClass("activedraw-friend");
 
           $("#" + folks[folkfinder].currentDisplayKey).addClass("activedraw-friend");
           // redraw();

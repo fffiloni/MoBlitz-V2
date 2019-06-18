@@ -181,6 +181,7 @@ class DBTalk {
     //console.log("New DB created with this key: " + result.key);
     currentEnsemble = result.key;
     console.log('Key Ensemble: ' + currentEnsemble);
+    ChangeUrl('Page1', '?id=' + currentEnsemble);
     scktClass.createDBAsync().then(scktClass.createDBAsync())
       // .then(scktClass.createDBAsync())
       .then(scktClass.loadAllForMulti(currentEnsemble));
@@ -224,12 +225,16 @@ class DBTalk {
 
   } //Closing createNewDB function
 
+
+
+
   loadOneOfDBs(dbkey) {
 
     layersArray.forEach(function(layerToClean){
       layerToClean.folderDrawings = [];
       layerToClean.currentDisplayKey = null;
-
+      layerToClean.isPlaying = false;
+      clearInterval(layerToClean.interval);
     });
     redraw();
 
@@ -493,7 +498,195 @@ class DBTalk {
     }
   }
 
+  loadTheNewDB(layerKey){
+    let index = layersArray.findIndex(i => i.folderKey == layerKey);
+    let layer = layersArray[index];
 
+    layer.loop = true;
+    layer.layerTimelinePos = 0;
+    layer.isPlaying = false;
+    layer.interval = null;
+    layer.randomcolor = random(layersColor);
+    layer.transparency = 'on';
+    layer.colored = 'off';
+    layer.csR = random(50, 255);
+    layer.csV = random(100, 250);
+    layer.csB = random(180, 255);
+
+    let someoneTL = createDiv('');
+    someoneTL.id(layer.folderKey + '-tl');
+    someoneTL.class('someonetl ' + layer.folderKey);
+    someoneTL.parent('someoneslist');
+
+    let someoneDB = currentEnsemble + '/' + layer.folderKey + '/drawings/';
+    let refSomeone = database.ref(someoneDB);
+
+    let data = {
+      layerKey: layer.folderKey,
+      refToOff: refSomeone
+    }
+
+    referencesArray.push(data);
+
+    refSomeone.on('value', function(data){
+
+      let elts = selectAll('.listing-some' + layer.folderKey);
+      for (let i = 0; i < elts.length; i++) {
+        elts[i].remove();
+      }
+
+      $("#substitute" + layer.folderKey).remove();
+      $('#' + layer.folderKey + '-ctrls').remove();
+
+      // console.log(data);
+      console.log("someone number " + index + " has new data to show");
+
+      let someoneTempKeys;
+
+      let drawings = data.val();
+      let keys = Object.keys(drawings);
+      //console.log(keys);
+
+
+      return orderSomeoneKeys(keys).then(displaySomeoneKeys(someoneTempKeys));
+
+      // ASYNC FUNCTIONS FOR ORDERING AND DISPLAYING KEYFRAMES IN RIGTH ORDER
+      // 1. ORDERING
+      async function orderSomeoneKeys (keys){
+        console.log("async function someone orderKeys");
+        waitSafeDelete = true;
+        someoneTempKeys = keys;
+
+        for (let k of someoneTempKeys){
+          let ref = database.ref(someoneDB + k);
+          ref.once('value', moveSomeoneKey, dbTalkClass.errData);
+
+          function moveSomeoneKey(data){
+            let dbdrawing = data.val();
+
+            if (dbdrawing.nearPrevKey != null){
+              let wichkey = keys.indexOf(dbdrawing.nearPrevKey);
+              console.log("j'ai trouvé une clefs d'insertion!: " + wichkey);
+
+              let movingKey = keys.indexOf(k);
+              let arrivalKey = wichkey + 1;
+              dbTalkClass.move(someoneTempKeys, movingKey, arrivalKey);
+
+              movingKey = null;
+              arrivalKey = null;
+            } else {
+              //do as usual
+            }
+
+          };
+        };
+      };
+
+      // 2. DISPLAYING
+      async function displaySomeoneKeys(someoneTempKeys){
+        console.log("async function someone displayKeys");
+        waitSafeDelete = false;
+
+        layer.storeKeysFolder = someoneTempKeys;
+
+        for (let i = 1; i < someoneTempKeys.length; i++) {
+          let key = someoneTempKeys[i];
+
+          let span = createElement('span');
+          span.id(key);
+          let ahref = createA('javascript:', '');
+          ahref.class('listing-some' + layer.folderKey);
+          ahref.id(key);
+          ahref.touchStarted(function(){
+            if(layer.currentDisplayKey == key){
+              layer.currentDisplayKey = null;
+              // console.log("same key man");
+              layer.folderDrawings = [];
+              $("#" + key).removeClass("private-activedraw-friend");
+              scktClass.safeRedraw();
+            } else {
+              layer.currentDisplayKey = key;
+              console.log(layer.currentDisplayKey);
+              let ref = database.ref(someoneDB + key);
+              ref.once('value', onePrivateSomeone, dbTalkClass.errData);
+              function onePrivateSomeone(data){
+                let dbdrawing = data.val();
+                layer.folderDrawings = dbdrawing.drawing;
+                $(".listing-some" + layer.folderKey).removeClass("private-activedraw-friend");
+
+                $("#" + key).addClass("private-activedraw-friend");
+                scktClass.safeRedraw();
+              }
+            }
+          });
+          ahref.mouseOver(function(){
+            // if (key instanceof MouseEvent) {
+            //   let key = this.id();
+
+              if (optionPressed || ctrlFkeyPressed) {
+                if(layer.currentDisplayKey == key){
+                  layer.currentDisplayKey = null;
+                  // console.log("same key man");
+                  layer.folderDrawings = [];
+                  $("#" + key).removeClass("private-activedraw-friend");
+                  scktClass.safeRedraw();
+                } else {
+                  layer.currentDisplayKey = key;
+                  console.log(layer.currentDisplayKey);
+                  let ref = database.ref(someoneDB + key);
+                  ref.once('value', onePrivateSomeone, dbTalkClass.errData);
+                  function onePrivateSomeone(data){
+                    let dbdrawing = data.val();
+                    layer.folderDrawings = dbdrawing.drawing;
+                    $(".listing-some" + layer.folderKey).removeClass("private-activedraw-friend");
+
+                    $("#" + key).addClass("private-activedraw-friend");
+                    scktClass.safeRedraw();
+                  }
+                }
+              }
+            // }
+          });
+          span.parent(ahref);
+          ahref.parent(someoneTL);
+
+          if(layer.currentDisplayKey != null){
+            $("#" + layer.currentDisplayKey).addClass("private-activedraw-friend");
+          }
+
+
+        }
+
+
+        if(layer.folderKey == currentLayerKey){
+          $("#" + layer.folderKey + '-tl').remove();
+        }
+
+
+
+        if(layer.storeKeysFolder.length == 1){
+          let sublayer = createElement('span');
+          sublayer.id('substitute'+ layer.folderKey)
+          sublayer.class('someone-empty');
+          sublayer.parent(someoneTL);
+
+        }
+
+        let someoneCtrls = createDiv('');
+        someoneCtrls.html("" +
+        "<button id=\"playLayerBtn" + layer.folderKey + "\"onclick=\"uiClass.toggleLayerPlay('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleLayerPlay('" + layer.folderKey + "')\"><i class=\"fas fa-play-circle\"></i></button>  " +
+        "<button id=\"friendBtn" + layer.folderKey + "\" onclick=\"uiClass.toggleFolkShow('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleFolkShow('" + layer.folderKey + "')\"><i class=\"fas fa-user-circle\"></i></button>  " +
+        "<button id=\"transparencyBtn" + layer.folderKey + "\" onclick=\"uiClass.toggleLayerTransparency('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleLayerTransparency('" + layer.folderKey + "')\"><i class=\"far fa-dot-circle\"></i></button>  " +
+        "<button id=\"colorBtn" + layer.folderKey + "\" onclick=\"uiClass.toggleLayerColor('" + layer.folderKey + "')\" ontouchstart=\"uiClass.toggleLayerColor('" + layer.folderKey + "')\"><i class=\"far fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i></button>");
+        someoneCtrls.id(layer.folderKey + '-ctrls');
+        someoneCtrls.class('sub-layer-ctrls');
+        someoneCtrls.parent(someoneTL);
+
+
+      };
+
+  });
+  }
 
   loadParamDB(dbkey) {
     $('#gotEnsemblemsg').remove();
@@ -588,6 +781,7 @@ class DBTalk {
           folderDrawings: []
         };
         layersArray.push(oneLayer);
+        dbTalkClass.loadTheNewDB(storeProjects[0][i]);
       }
 
 
@@ -601,7 +795,7 @@ class DBTalk {
       }
 
     }
-
+    scktClass.safeRedraw();
   }
 
   //DANGEROUS ! THIS WILL DELETE ALL EXISTING SESSIONS

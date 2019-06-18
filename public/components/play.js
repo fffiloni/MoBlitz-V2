@@ -87,7 +87,7 @@ class Play {
     }
   }
 
-  safePlay(){
+  clearPlayingLayers(){
     layersArray.forEach(function(layer){
       layer.isPlaying = false;
       clearInterval(layer.interval);
@@ -98,7 +98,7 @@ class Play {
 
     playingAll = !playingAll;
     if(playingAll == true){
-        playClass.safePlay();
+      playClass.clearPlayingLayers();
       $(".changeBtn").addClass("disableAllBtnPlaying");
       $("#stopButton").removeClass("hide");
       $("#playButton").addClass("hide");
@@ -141,7 +141,7 @@ class Play {
       }
     } else {
       if(layersArray[index].layerTimelinePos == layersArray[index].storeKeysFolder.length){
-        layersArray[index].layerTimelinePos = 0;
+        layersArray[index].layerTimelinePos = 1;
 
       }
     }

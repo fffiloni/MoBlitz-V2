@@ -156,9 +156,9 @@ function draw() {
 		}
 		// COLORED LAYER
 		if (layer.colored == 'off'){
-			select('#colorBtn' + layer.folderKey).html("<i class=\"far fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i>");
+			$('#colorBtn' + layer.folderKey).html("<i class=\"far fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i>");
     } else if (layer.colored == 'on'){
-    	select('#colorBtn' + layer.folderKey).html("<i class=\"fas fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i>");
+    	$('#colorBtn' + layer.folderKey).html("<i class=\"fas fa-circle\" style=\"color: rgb(" + layer.csR + ", " + layer.csV + "," + layer.csB + ")!important;\"></i>");
     } else if (layer.colored == undefined){
 
     }
@@ -522,6 +522,15 @@ function toggleChain() {
   layersAreChained = !layersAreChained;
   redraw();
 }
+
+function ChangeUrl(page, url) {
+        if (typeof (history.pushState) != "undefined") {
+            var obj = { Page: page, Url: url };
+            history.pushState(obj, obj.Page, obj.Url);
+        } else {
+            alert("Browser does not support HTML5.");
+        }
+    }
 
 var moblitzCB = function() {
   consoleClass.newMessage("——<br><br>YOUR GIF HAS BEEN DOWNLOADED<br>", 'console', 0, 0, '#54db54');

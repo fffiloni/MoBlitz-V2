@@ -106,6 +106,11 @@ class Play {
       timelinePos = 0;
       framesClass.clearOnion();
 
+      if (isRecording == true) {
+        recorder.frames = [];
+        timelinePos = 0;
+      }
+
       layersArray.forEach(function(layer){
         if(layer.storeKeysFolder.length > playKeys){
             playKeys = layer.storeKeysFolder.length;
@@ -165,10 +170,6 @@ class Play {
         let dbdrawing = data.val();
         layersArray[index].folderDrawings = dbdrawing.drawing;
         $(".listing-some" + layersArray[index].folderKey).removeClass("private-activedraw-friend");
-        // $(".listing").removeClass("activedraw
-        // $('.listing').removeClass('private-activedraw-friend');
-        // $(".current-tl" + layer.currentDisplayKey).removeClass("private-activedraw-friend");
-        // $("#" + layer.currentDisplayKey).addClass("activedraw");
         $("#" + layersArray[index].currentDisplayKey).addClass("private-activedraw-friend");
         scktClass.safeRedraw();
       }
@@ -189,8 +190,17 @@ class Play {
         playKeys = 0;
         timelinePos = 0;
         showSafetyLines = true;
+        if (isRecording) {
+          isRecording = false;
+          playClass.proposeGifDownload();
+        }
       }
     } else {
+      if (isRecording) {
+        if (timelinePos != 0) {
+          recorder.addFrame();
+        }
+      }
       if(timelinePos == playKeys){
         timelinePos = 0;
 

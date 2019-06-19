@@ -14,7 +14,7 @@ let autoUpdate = false;
 let friendIsErasing = false;
 let pressure, lastPressure, lastStroke, getStrokeValue, strkVal, tempPressure;
 let loopActivated = false;
-
+let frameHasBeenSaved = false;
 
 class HowToDraw{
 
@@ -39,6 +39,7 @@ class HowToDraw{
 
   //1. Put the pen on canvas
   startPath(){
+    frameHasBeenSaved = false;
     //Activate virginframe if not selected while we are on frame #0
     if (timelinePos == 0) { framesClass.goVirgin() };
 
@@ -60,6 +61,9 @@ class HowToDraw{
         if (brushing) {
           if (showBrushLayer == true) {
             painting.push(currentPath);
+            if(onVirginFrame == true){
+              backupPaintings.push(currentPath);
+            }
             currentPath.splice(0, 1);
           } else {
             return;
@@ -84,6 +88,10 @@ class HowToDraw{
 
           if (showDrawingLayer == true) {
             drawing.push(currentPath);
+            if(onVirginFrame == true){
+              backupDrawings.push(currentPath);
+            }
+
             if(folks.length > 0){
               if(playing == false){
                 socket.emit('startToDuo', yourID);
@@ -213,10 +221,17 @@ class HowToDraw{
       drawClass.endPath();
       if (brushing) {
         painting.pop();
+        if(onVirginFrame == true){
+          backupPaintings.pop();
+        }
       } else if (roughing) {
         roughs.pop();
       } else {
         drawing.pop();
+        if(onVirginFrame == true){
+          backupDrawings.pop();
+        }
+
       }
       ableToDraw = true;
 
@@ -268,12 +283,18 @@ class HowToDraw{
   undoLastPath() {
     if (brushing == true) {
       painting.pop();
+      if(onVirginFrame == true){
+        backupPaintings.pop();
+      }
     } else if (roughing == true) {
       roughs.pop();
     } else if (makingLine == true) {
       guidelines.pop();
     } else if (penciling == true) {
       drawing.pop();
+      if(onVirginFrame == true){
+        backupDrawings.pop();
+      }
       if(folks.length > 0){
         socket.emit('undoForeign');
       }

@@ -5,8 +5,10 @@ class UI{
   // ACTION BUTTONS //
 
   setActionButtons(){
+    let undoButton = select('#undoButton');
+    undoButton.touchStarted(drawClass.undoLastPath);
     let clearButton = select('#clearButton');
-    clearButton.touchStarted(framesClass.goVirgin);
+    clearButton.touchStarted(framesClass.clearPad);
   	let clearOnionBtn = select('#clearOnion');
   	clearOnionBtn.touchStarted(framesClass.clearOnion);
   	let showOnionBtn = select('#showOnion');

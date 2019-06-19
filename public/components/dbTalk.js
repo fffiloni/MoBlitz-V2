@@ -235,6 +235,7 @@ class DBTalk {
       layerToClean.currentDisplayKey = null;
       layerToClean.isPlaying = false;
       clearInterval(layerToClean.interval);
+      framesClass.cleanUp();
     });
     redraw();
 

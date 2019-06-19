@@ -12,6 +12,9 @@ let blank_data = [
   }]
 ];
 
+let backupDrawings = [];
+let backupPaintings = [];
+
 class Frames {
 
   cleanUp() {
@@ -134,7 +137,7 @@ class Frames {
 
       console.log("Success! Your new frame has been saved!");
       consoleClass.newMessage('Frame has been saved! <br>Back on track for the next one !', 'console', 0, 'feedback');
-
+      frameHasBeenSaved = true;
       framesClass.goVirgin();
       redraw();
     }
@@ -152,6 +155,13 @@ class Frames {
 
     //dataReady = [];
     framesClass.cleanUp();
+    if(frameHasBeenSaved == true){
+      backupDrawings = [];
+      backupPaintings = [];
+    } else {
+      drawing = backupDrawings;
+      painting = backupPaintings;
+    }
     //console.log("Now, drawing array is very empty.");
     //console.log("We will next load the last drawing as an onion layer...");
     framesClass.clearOnion();
@@ -174,20 +184,18 @@ class Frames {
     }
   };
 
-  clearDrawing() {
-    //console.log("——");
-    //console.log("We just fired 'clearDrawing'!");
-    // keyToUpdate = null;
-    // onVirginFrame = true;
-    // ableDelete = ableInsert = ableUpdate = false;
-    // $(".listing").removeClass("activedraw");
-    // $(".current").addClass("activelast");
-    // $(".changeBtn").addClass("disableAllBtn");
+  clearPad() {
+    if(onVirginFrame == true){
+      backupDrawings = [];
+      backupPaintings = [];
+      framesClass.cleanUp();
+    } else {
+      backupDrawings = [];
+      backupPaintings = [];
+    }
 
     //dataReady = [];
-    drawing = blank_data;
-    painting = blank_data;
-    roughs = blank_data;
+
     //console.log("Now, drawing array is very empty.");
     //console.log("We will next load the last drawing as an onion layer...");
     framesClass.clearOnion();

@@ -493,6 +493,49 @@ class Tracer {
   };
 
   traceDrawings(){
+    if(onVirginFrame == false){
+
+      //Shows the current BACKUP drawing if there any data in drawing array
+      for (let i = 0; i < backupDrawings.length; i++) {
+        let path = backupDrawings[i];
+        if (backupDrawings[i].length != 0) {
+          // beginShape();
+          lastStroke = path[path.length - 1].pressure;
+          for (let j = 0; j < path.length; j++) {
+
+            if (path[j].type == 'trait') {
+
+              graphicFRONT.strokeCap(ROUND);
+              //takes colors data form each point in database
+              if (path[j].strk !== undefined) {
+
+                if (path[j].pressure !== undefined) {
+                  if (path[j].strk == 1) {
+                    graphicFRONT.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                  } else if (path[j].pressure === undefined) {
+                    graphicFRONT.strokeWeight(2);
+                  } else {
+                    graphicFRONT.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                  }
+                }
+              } else {
+                graphicFRONT.strokeWeight(2);
+              }
+              graphicFRONT.stroke(84, 182, 233);
+              graphicFRONT.beginShape();
+              graphicFRONT.noFill();
+              graphicFRONT.curveVertex(path[j].x1, path[j].y1);
+              graphicFRONT.curveVertex(path[j].x2, path[j].y2);
+              graphicFRONT.curveVertex(path[j].x3, path[j].y3);
+              graphicFRONT.curveVertex(path[j].x4, path[j].y4);
+              graphicFRONT.endShape();
+            }
+          }
+        }
+
+      }
+    }
+
     //Shows the current drawing if there any data in drawing array
     for (let i = 0; i < drawing.length; i++) {
       let path = drawing[i];

@@ -167,6 +167,13 @@ button#clearButton {
     padding: 6px;
     margin: 0 10px;
 }
+button#undoButton {
+    max-width: 75px;
+    border-radius: 4px;
+    background: #526169;
+    padding: 6px;
+    margin: 0 10px;
+}
 
 /* inspector-stylesheet.css */
 
@@ -660,7 +667,7 @@ div#onionControls {
     flex-direction: row;
     justify-content: center;
     /* flex: 1; */
-    margin-left: 132px;
+    margin-left: 178px;
 }
 
 div#preonionBtn {

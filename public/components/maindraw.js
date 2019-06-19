@@ -14,7 +14,13 @@ let autoUpdate = false;
 let friendIsErasing = false;
 let pressure, lastPressure, lastStroke, getStrokeValue, strkVal, tempPressure;
 let loopActivated = false;
+let backupDrawings = [];
+let backupPaintings = [];
 let frameHasBeenSaved = false;
+let backupUpdatedDrawings = [];
+let backupUpdatedPaintings = [];
+let frameHasBeenUpdated = false;
+let backupUpdate = [];
 
 class HowToDraw{
 
@@ -40,6 +46,7 @@ class HowToDraw{
   //1. Put the pen on canvas
   startPath(){
     frameHasBeenSaved = false;
+    frameHasBeenUpdated = false;
     //Activate virginframe if not selected while we are on frame #0
     if (timelinePos == 0) { framesClass.goVirgin() };
 
@@ -63,6 +70,22 @@ class HowToDraw{
             painting.push(currentPath);
             if(onVirginFrame == true){
               backupPaintings.push(currentPath);
+            } else {
+
+              backupUpdatedPaintings.push(currentPath);
+
+              let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+              if(check == -1){
+                let backupData = {
+                  key: keyToUpdate,
+                  beenUpdated: 'not yet',
+                  content: {backupPaintings: backupUpdatedDrawings}
+                };
+                backupUpdate.push(backupData);
+              } else {
+                backupUpdate[check].content.backupPaintings = backupUpdatedPaintings;
+              }
+
             }
             currentPath.splice(0, 1);
           } else {
@@ -90,6 +113,22 @@ class HowToDraw{
             drawing.push(currentPath);
             if(onVirginFrame == true){
               backupDrawings.push(currentPath);
+            } else {
+
+              backupUpdatedDrawings.push(currentPath);
+
+              let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+              if(check == -1){
+                let backupData = {
+                  key: keyToUpdate,
+                  beenUpdated: 'not yet',
+                  content: {backupDrawings: backupUpdatedDrawings}
+                };
+                backupUpdate.push(backupData);
+              } else {
+                backupUpdate[check].content.backupDrawings = backupUpdatedDrawings;
+              }
+
             }
 
             if(folks.length > 0){
@@ -223,6 +262,8 @@ class HowToDraw{
         painting.pop();
         if(onVirginFrame == true){
           backupPaintings.pop();
+        } else {
+          backupUpdatedPaintings.pop();
         }
       } else if (roughing) {
         roughs.pop();
@@ -230,6 +271,8 @@ class HowToDraw{
         drawing.pop();
         if(onVirginFrame == true){
           backupDrawings.pop();
+        } else {
+          backupUpdatedDrawings.pop();
         }
 
       }
@@ -285,6 +328,8 @@ class HowToDraw{
       painting.pop();
       if(onVirginFrame == true){
         backupPaintings.pop();
+      } else {
+        backupUpdatedPaintings.pop();
       }
     } else if (roughing == true) {
       roughs.pop();
@@ -294,6 +339,8 @@ class HowToDraw{
       drawing.pop();
       if(onVirginFrame == true){
         backupDrawings.pop();
+      } else {
+        backupUpdatedDrawings.pop();
       }
       if(folks.length > 0){
         socket.emit('undoForeign');

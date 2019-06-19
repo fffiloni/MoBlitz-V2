@@ -12,8 +12,7 @@ let blank_data = [
   }]
 ];
 
-let backupDrawings = [];
-let backupPaintings = [];
+
 
 class Frames {
 
@@ -213,6 +212,9 @@ class Frames {
 
   showDrawing(key) {
 
+    backupUpdatedDrawings = [];
+    backupUpdatedPaintings = [];
+
     this.key = key;
 
     countPathNew = null;
@@ -287,6 +289,29 @@ class Frames {
 
         countPathOld = drawing.length + painting.length + roughs.length;
 
+        let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+        if(check != -1){
+          if(backupUpdate[check].content.backupDrawings != undefined){
+
+            backupUpdate[check].content.backupDrawings.forEach((newpath) => {
+
+              drawing.push(newpath);
+              backupUpdatedDrawings.push(newpath);
+
+            });
+          }
+          if(backupUpdate[check].content.backupPaintings != undefined){
+
+            backupUpdate[check].content.backupPaintings.forEach((newpath) => {
+
+              painting.push(newpath);
+              backupUpdatedPaintings.push(newpath);
+
+            });
+          }
+        }
+
+
         eraserUsed = false;
         timelinePos = storeKeys[0].indexOf(key);
         onionPos = timelinePos - 1;
@@ -300,80 +325,6 @@ class Frames {
 
     }
     redraw();
-  }
-
-  // showDrawingFriend(key) {
-  //   this.key = key;
-  //
-  //   //console.log("——");
-  //   //console.log("We just fired 'showDrawing'!");
-  //   if (key instanceof MouseEvent) {
-  //     var key = this.id();
-  //   }
-  //
-  //
-  //   let ref = database.ref(friendDB + key);
-  //   //console.log("——");
-  //   //console.log("We try to fire 'oneDrawing'.");
-  //   ref.once('value', oneDrawingFriend, dbTalkClass.errData);
-  //
-  //   function oneDrawingFriend(data) {
-  //     if (!waitFriendDB) {
-  //       //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
-  //       //console.log("oneDrawing success!");
-  //       let dbdrawing = data.val();
-  //       duoDrawings = dbdrawing.drawing;
-  //
-  //       timelinePosFriend = storeKeysFriend[0].indexOf(key);
-  //       // onionPos = timelinePos - 1;
-  //       // postOnionPos = timelinePos + 1;
-  //       // document.getElementById('onionkey').value = storeKeys[0][onionPos];
-  //       // document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-  //       //console.log('Index in storeKeys: ' + storeKeys[0].indexOf(key) + ' | Timeline Position: ' +  timelinePos + ' | Onion Position: ' + onionPos);
-  //     } else {
-  //       console.log("We wait for gotData ...");
-  //     }
-  //
-  //   }
-  //   scktClass.safeRedraw();
-  // }
-
-  showPrivateDrawingFriend(key) {
-    this.key = key;
-
-    //console.log("——");
-    //console.log("We just fired 'showDrawing'!");
-    if (key instanceof MouseEvent) {
-      var key = this.id();
-    }
-
-
-    let ref = database.ref(friendDB + key);
-    //console.log("——");
-    //console.log("We try to fire 'oneDrawing'.");
-    ref.once('value', onePrivateDrawingFriend, dbTalkClass.errData);
-
-    function onePrivateDrawingFriend(data) {
-      if (!waitFriendDB) {
-        //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
-        //console.log("oneDrawing success!");
-        let dbdrawing = data.val();
-        duoPrivateDrawings = dbdrawing.drawing;
-        $(".listing-friend").removeClass("activedraw-friend");
-
-        $("#" + key).addClass("activedraw-friend");
-        // timelinePosFriend = storeKeysFriend[0].indexOf(key);
-        // onionPos = timelinePos - 1;
-        // postOnionPos = timelinePos + 1;
-        // document.getElementById('onionkey').value = storeKeys[0][onionPos];
-        // document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-        //console.log('Index in storeKeys: ' + storeKeys[0].indexOf(key) + ' | Timeline Position: ' +  timelinePos + ' | Onion Position: ' + onionPos);
-      } else {
-        console.log("We wait for gotData ...");
-      }
-
-    }
-    scktClass.safeRedraw();
   }
 
   newInsertFrame(){
@@ -765,6 +716,12 @@ class Frames {
             eraserUsed = false;
             countPathNew = null;
             countPathOld = null;
+            let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+            if(check != 1){
+              backupUpdate.splice(check, 1);
+            }
+            backupUpdatedDrawings = [];
+            backupUpdatedPaintings = [];
             $("#updateButton").addClass("disableBtn");
             $("#" + keyToUpdate).removeClass("isupdatingdraw");
             $("#" + keyToUpdate).addClass("updateddraw");

@@ -72,6 +72,27 @@ class Play {
       //console.log(drawing);
       //console.log("nb elements in drawing: " + drawing.length);
     countPathOld = drawing.length + painting.length + roughs.length;
+    let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+    if(check != -1){
+      if(backupUpdate[check].content.backupDrawings != undefined){
+
+        backupUpdate[check].content.backupDrawings.forEach((newpath) => {
+
+          drawing.push(newpath);
+          backupUpdatedDrawings.push(newpath);
+
+        });
+      }
+      if(backupUpdate[check].content.backupPaintings != undefined){
+
+        backupUpdate[check].content.backupPaintings.forEach((newpath) => {
+
+          painting.push(newpath);
+          backupUpdatedPaintings.push(newpath);
+
+        });
+      }
+    }
     eraserUsed = false;
     }
     // if(foreignDrawing == false){

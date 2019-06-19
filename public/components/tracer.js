@@ -597,6 +597,25 @@ class Tracer {
         }
       }
     }
+    for (let i = 0; i < backupUpdatedPaintings.length; i++) {
+      let path = backupUpdatedPaintings[i];
+      for (let j = 0; j < path.length; j++) {
+        let d1 = int(dist(path[j]["x1"], path[j]["y1"], px, py));
+        let d2 = int(dist(path[j]["x2"], path[j]["y2"], px, py));
+
+        if (d1 <= sliderStroke.value() || d2 <= sliderStroke.value()) {
+          if (path.length != 0) {
+            path.splice(path.indexOf(path[j]), 1);
+          }
+
+          if (path.length == 0) {
+            backupUpdatedPaintings.splice(backupUpdatedPaintings.indexOf(path), 1)
+          }
+
+          eraserUsed = true;
+        }
+      }
+    }
   };
 
   eraserRoughs(){
@@ -635,6 +654,25 @@ class Tracer {
 
           if (path.length == 0) {
             drawing.splice(drawing.indexOf(path), 1)
+          }
+
+          eraserUsed = true;
+        }
+      }
+    }
+    for (let i = 0; i < backupUpdatedDrawings.length; i++) {
+      let path = backupUpdatedDrawings[i];
+      for (let j = 0; j < path.length; j++) {
+        let d1 = int(dist(path[j]["x1"], path[j]["y1"], px, py));
+        let d2 = int(dist(path[j]["x2"], path[j]["y2"], px, py));
+
+        if (d1 <= sliderStroke.value() || d2 <= sliderStroke.value()) {
+          if (path.length != 0) {
+            path.splice(path.indexOf(path[j]), 1);
+          }
+
+          if (path.length == 0) {
+            backupUpdatedDrawings.splice(backupUpdatedDrawings.indexOf(path), 1)
           }
 
           eraserUsed = true;

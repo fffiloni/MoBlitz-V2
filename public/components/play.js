@@ -191,6 +191,10 @@ class Play {
         playKeys = 0;
         timelinePos = 0;
         showSafetyLines = true;
+        $(".changeBtn").removeClass("disableAllBtnPlaying");
+        // ableToDraw = true;
+        $("#stopButton").addClass("hide");
+        $("#playButton").removeClass("hide");
         if (isRecording) {
           isRecording = false;
           playClass.proposeGifDownload();

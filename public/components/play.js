@@ -107,6 +107,7 @@ class Play {
       framesClass.clearOnion();
 
       if (isRecording == true) {
+
         recorder.frames = [];
         timelinePos = 0;
       }
@@ -196,11 +197,7 @@ class Play {
         }
       }
     } else {
-      if (isRecording) {
-        if (timelinePos != 0) {
-          recorder.addFrame();
-        }
-      }
+
       if(timelinePos == playKeys){
         timelinePos = 0;
 
@@ -208,6 +205,11 @@ class Play {
     }
 
     playClass.keyShowAll(timelinePos);
+    if (isRecording) {
+      if (timelinePos != 0) {
+        recorder.addFrame();
+      }
+    }
   }
 
   keyShowAll(cursorPos){

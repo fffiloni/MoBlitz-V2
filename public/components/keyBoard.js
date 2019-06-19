@@ -47,7 +47,7 @@ class KeyBoard{
         toolClass.selectPencilTool();
       }
       if (keyName === 'x') {
-        framesClass.clearDrawing();
+        framesClass.clearPad();
       }
       if (keyName === 'r') {
         toolClass.selectRoughTool();

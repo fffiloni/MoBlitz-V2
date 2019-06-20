@@ -293,10 +293,15 @@ class Frames {
         if(check != -1){
           if(backupUpdate[check].content.backupDrawings != undefined){
 
-            backupUpdate[check].content.backupDrawings.forEach((newpath) => {
+            backupUpdate[check].content.backupDrawings.forEach((newpath, index) => {
 
               drawing.push(newpath);
-              backupUpdatedDrawings.push(newpath);
+              if(newpath.length != 0){
+                backupUpdatedDrawings.push(newpath);
+              } else {
+                backupUpdate[check].content.backupDrawings.splice(index, 1);
+              }
+
 
             });
           }
@@ -305,7 +310,11 @@ class Frames {
             backupUpdate[check].content.backupPaintings.forEach((newpath) => {
 
               painting.push(newpath);
-              backupUpdatedPaintings.push(newpath);
+              if(newpath.length != 0){
+                backupUpdatedPaintings.push(newpath);
+              } else {
+                backupUpdate[check].content.backupPaintings.splice(index, 1);
+              }
 
             });
           }
@@ -684,7 +693,7 @@ class Frames {
         if(countPathNew != countPathOld || eraserUsed == true){
           $("#" + keyToUpdate).removeClass("activedraw");
           $("#" + keyToUpdate).addClass("isupdatingdraw");
-          setTimeout(function(){
+          // setTimeout(function(){
 
             //console.log("——");
             //console.log("We just updated the frame key: " + keyToUpdate);
@@ -725,13 +734,13 @@ class Frames {
             $("#updateButton").addClass("disableBtn");
             $("#" + keyToUpdate).removeClass("isupdatingdraw");
             $("#" + keyToUpdate).addClass("updateddraw");
-            setTimeout(function() {
+            // setTimeout(function() {
               $("#" + keyToUpdate).removeClass("updateddraw");
               framesClass.showDrawing(keyToUpdate);
-            }, 300);
-
+            // }, 100);
+            $("#" + keyToUpdate).removeClass("needupdate");
             consoleClass.newMessage('You updated the frame.', 'console', 0, 'feedback', 'white');
-          }, 200);
+          // }, 200);
         }
 
 
@@ -770,6 +779,7 @@ class Frames {
       $("#saveButton").addClass("secondarySave");
       $("#updateButton").removeClass("disableBtn");
       ableUpdate = true;
+
     } else if (countPathNew == null) {
 
       $("#updateButton").removeClass("disableBtn");
@@ -792,6 +802,31 @@ class Frames {
       ableInsert = false;
       ableDuplicate = false;
     }
+
+    let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+    if(check != -1){
+      if(backupUpdate[check].content.backupDrawings != undefined){
+
+        if(backupUpdate[check].content.backupDrawings.length != 0){
+          $("#" + keyToUpdate).addClass("needupdate");
+        }
+      }
+      if(backupUpdate[check].content.backupPaintings != undefined){
+
+        if(backupUpdate[check].content.backupPaintings.length != 0){
+          $("#" + keyToUpdate).addClass("needupdate");
+        }
+      }
+
+      // if(backupUpdate[check].backupPaintings != undefined && backupUpdate[check].backupDrawings != undefined){
+      //   if(backupUpdate[check].backupPaintings.length + backupUpdate[check].backupDrawings.length == 0){
+      //     $("#" + keyToUpdate).removeClass("needupdate");
+      //   }
+      // }
+
+
+    }
+
   };
 
 }

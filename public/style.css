@@ -165,9 +165,12 @@ span.waitingText, #peopleReady > p {
 .hideImportant{
   display: none!important;
 }
+.needupdate {
+    background: skyblue;
+}
 
 .activedraw {
-  background: #ffc900;
+  background: #ffc900!important;
 }
 .private-activedraw-friend {
   background: #ddaf57!important;

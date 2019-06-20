@@ -20,7 +20,10 @@ let fps = 12;
 
 class Play {
   keyShowing() {
+
     onVirginFrame = false;
+    backupUpdatedDrawings = [];
+    backupUpdatedPaintings = [];
     $(".changeBtn").removeClass("disableAllBtn");
     ableDelete = true;
     ableUpdate = true;
@@ -76,10 +79,15 @@ class Play {
     if(check != -1){
       if(backupUpdate[check].content.backupDrawings != undefined){
 
-        backupUpdate[check].content.backupDrawings.forEach((newpath) => {
+        backupUpdate[check].content.backupDrawings.forEach((newpath, index) => {
 
           drawing.push(newpath);
-          backupUpdatedDrawings.push(newpath);
+          if(newpath.length != 0){
+            backupUpdatedDrawings.push(newpath);
+          } else {
+            backupUpdate[check].content.backupDrawings.splice(index, 1);
+          }
+
 
         });
       }
@@ -88,7 +96,11 @@ class Play {
         backupUpdate[check].content.backupPaintings.forEach((newpath) => {
 
           painting.push(newpath);
-          backupUpdatedPaintings.push(newpath);
+          if(newpath.length != 0){
+            backupUpdatedPaintings.push(newpath);
+          } else {
+            backupUpdate[check].content.backupPaintings.splice(index, 1);
+          }
 
         });
       }

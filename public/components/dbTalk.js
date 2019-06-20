@@ -144,9 +144,13 @@ class DBTalk {
           ahref.mouseOver(showAnim);
           ahref.touchStarted(framesClass.showDrawing);
 
-
           span.parent(ahref);
           ahref.parent('drawinglist');
+
+          let find = backupUpdate.findIndex(j => j.key == key);
+          if(find != -1){
+            $('#' + key).addClass('needupdate');
+          }
         }
         let spancurrent = createElement('span');
         spancurrent.class('listing current');

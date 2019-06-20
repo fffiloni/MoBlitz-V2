@@ -472,6 +472,7 @@ class DBTalk {
 
                 if(layer.folderKey == currentLayerKey){
                   $("#" + layer.folderKey + '-tl').remove();
+                  
                 }
 
 

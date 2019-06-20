@@ -46,6 +46,9 @@ let frameAfter = [];
 // let dataToKeep = drawingsToKeep = paintingsToKeep = roughsToKeep = [];
 let bg;
 
+let checkPaintCount, checkRoughCount;
+let checkPrivateDuoCount, prevCheckCountPrivateDuo = 0;
+
 
 function preload() {
 	//Here we load components
@@ -179,7 +182,7 @@ function draw() {
 
 	// START MULTI LABELED
 	graphicDUO.clear();
-	graphicPrivateDUO.clear();
+	// graphicPrivateDUO.clear();
 	// END MULTI LABELED
 
   graphicBrush.clear();
@@ -192,7 +195,7 @@ function draw() {
     graphicKeyPoses.clear();
     graphicFixed.clear();
 
-    graphicOnion.clear();
+
   }
 
 	magmaCNV.safetyLinesBehavior();
@@ -214,6 +217,8 @@ function draw() {
     tracerClass.traceKeyPoses();
 
 		// B. TRACING ONIONS POST AND PREVIOUS FOR EACH TOOL //
+		
+		graphicOnion.clear();
     drawClass.tracePreAndPost();
   }
 

@@ -751,65 +751,76 @@ class Tracer {
   };
 
   tracePrivateDUO(){
+
     layersArray.forEach(function(multi){
-      //Shows the current drawing if there any data in drawing array
-      let multiDraw = multi.folderDrawings;
-      let layerTransparency;
+      if(multi.folderKey != currentLayerKey){
 
-      if(multi.transparency == 'on'){
-        layerTransparency = 80;
-      } else if (multi.transparency == 'off'){
-        layerTransparency = 255;
-      } else if (multi.transparency == undefined){
-        layerTransparency = 80;
-      }
+        //Shows the current drawing if there any data in drawing array
+        let multiDraw = multi.folderDrawings;
+        let layerTransparency;
 
+        if(multi.transparency == 'on'){
+          layerTransparency = 80;
+        } else if (multi.transparency == 'off'){
+          layerTransparency = 255;
+        } else if (multi.transparency == undefined){
+          layerTransparency = 80;
+        }
+        checkPrivateDuoCount = 0;
+        checkPrivateDuoCount += multi.folderDrawings.length;
 
+        if(checkPrivateDuoCount != prevCheckCountPrivateDuo){
+          prevCheckCountPrivateDuo = checkPrivateDuoCount;
+          // console.log("we redraw");
+          graphicPrivateDUO.clear();
+          
+          for (let i = 0; i < multiDraw.length; i++) {
+            let path = multiDraw[i];
+            if (multiDraw[i].length != 0) {
+              // beginShape();
+              lastStroke = path[path.length - 1].pressure;
+              for (let j = 0; j < path.length; j++) {
 
-      for (let i = 0; i < multiDraw.length; i++) {
-        let path = multiDraw[i];
-        if (multiDraw[i].length != 0) {
-          // beginShape();
-          lastStroke = path[path.length - 1].pressure;
-          for (let j = 0; j < path.length; j++) {
+                if (path[j].type == 'trait') {
 
-            if (path[j].type == 'trait') {
+                  graphicPrivateDUO.strokeCap(SQUARE);
+                  //takes colors data form each point in database
+                  if (path[j].strk !== undefined) {
 
-              graphicPrivateDUO.strokeCap(SQUARE);
-              //takes colors data form each point in database
-              if (path[j].strk !== undefined) {
-
-                if (path[j].pressure !== undefined) {
-                  if (path[j].strk == 1) {
-                    graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
-                  } else if (path[j].pressure === undefined) {
-                    graphicPrivateDUO.strokeWeight(2);
+                    if (path[j].pressure !== undefined) {
+                      if (path[j].strk == 1) {
+                        graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                      } else if (path[j].pressure === undefined) {
+                        graphicPrivateDUO.strokeWeight(2);
+                      } else {
+                        graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                      }
+                    }
                   } else {
-                    graphicPrivateDUO.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
+                    graphicDUO.strokeWeight(2);
                   }
+
+                  if(multi.colored == 'on'){
+                    graphicPrivateDUO.stroke(multi.csR, multi.csV, multi.csB, 255);
+                  } else if (multi.colored == 'off'){
+                    graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, layerTransparency);
+                  } else if (multi.colored == undefined){
+                    graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, layerTransparency);
+                  }
+
+
+
+                  graphicPrivateDUO.beginShape();
+                  graphicPrivateDUO.noFill();
+                  graphicPrivateDUO.curveVertex(path[j].x1, path[j].y1);
+                  graphicPrivateDUO.curveVertex(path[j].x2, path[j].y2);
+                  graphicPrivateDUO.curveVertex(path[j].x3, path[j].y3);
+                  graphicPrivateDUO.curveVertex(path[j].x4, path[j].y4);
+                  graphicPrivateDUO.endShape();
                 }
-              } else {
-                graphicDUO.strokeWeight(2);
               }
-
-              if(multi.colored == 'on'){
-                graphicPrivateDUO.stroke(multi.csR, multi.csV, multi.csB, 255);
-              } else if (multi.colored == 'off'){
-                graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, layerTransparency);
-              } else if (multi.colored == undefined){
-                graphicPrivateDUO.stroke(path[j].csR, path[j].csV, path[j].csB, layerTransparency);
-              }
-
-
-
-              graphicPrivateDUO.beginShape();
-              graphicPrivateDUO.noFill();
-              graphicPrivateDUO.curveVertex(path[j].x1, path[j].y1);
-              graphicPrivateDUO.curveVertex(path[j].x2, path[j].y2);
-              graphicPrivateDUO.curveVertex(path[j].x3, path[j].y3);
-              graphicPrivateDUO.curveVertex(path[j].x4, path[j].y4);
-              graphicPrivateDUO.endShape();
             }
+
           }
         }
 

@@ -45,6 +45,7 @@ class HowToDraw{
 
   //1. Put the pen on canvas
   startPath(){
+    $('body').addClass('block-scrolling');
     frameHasBeenSaved = false;
     frameHasBeenUpdated = false;
     //Activate virginframe if not selected while we are on frame #0
@@ -302,6 +303,7 @@ class HowToDraw{
     isDrawing = false;
     noLoop();
     loopActivated = false;
+    $('body').removeClass('block-scrolling');
 
   	socket.emit('iamnotdrawing');
     if(folks.length > 0){

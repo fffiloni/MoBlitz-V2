@@ -535,3 +535,7 @@ div#faq-elements {
 .faq-element {
   max-width: unset;
 }
+
+.block-scroll {
+  overflow: hidden;
+}

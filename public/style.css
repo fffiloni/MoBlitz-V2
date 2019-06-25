@@ -543,3 +543,7 @@ div#faq-elements {
 ::-webkit-scrollbar {
     display: none;
 }
+
+html, .someonetl {
+    scrollbar-width: none;
+}

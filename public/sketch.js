@@ -255,10 +255,10 @@ function draw() {
 		graphicFRONT.pop();
   }
 	folks.forEach((folk) => {
-		graphicPrivateDUO.push();
-		graphicPrivateDUO.strokeWeight(1);
-		graphicPrivateDUO.text('. friend', folk.position.x, folk.position.y);
-		graphicPrivateDUO.pop();
+		graphicDUO.push();
+		graphicDUO.strokeWeight(1);
+		graphicDUO.text('. friend', folk.position.x, folk.position.y);
+		graphicDUO.pop();
 	})
 
 

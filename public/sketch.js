@@ -331,6 +331,9 @@ function keyPressed() {
 			postOnionPos = 1;
 			posKey = storeKeys[0][timelinePos];
 			playClass.keyShowing();
+			framesClass.clearOnion();
+			framesClass.showOnion();
+
 		} else {
 
 			//console.log("——");
@@ -381,6 +384,8 @@ function keyPressed() {
 			 postOnionPos = 2;
 			 posKey = storeKeys[0][timelinePos];
 			 playClass.keyShowing();
+			 framesClass.clearOnion();
+			 framesClass.showOnion();
 		 } else {
 
 			 //console.log("——");

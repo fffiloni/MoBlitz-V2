@@ -217,7 +217,7 @@ function draw() {
     tracerClass.traceKeyPoses();
 
 		// B. TRACING ONIONS POST AND PREVIOUS FOR EACH TOOL //
-		
+
 		graphicOnion.clear();
     drawClass.tracePreAndPost();
   }
@@ -325,64 +325,104 @@ function toggleBrush() {
 
 function keyPressed() {
   if (keyCode === LEFT_ARROW) {
-    //console.log("——");
-    //console.log("Move left | Go backward.");
-    timelinePos -= 1;
-    if (timelinePos < 1) {
-      timelinePos = storeKeys[0].length - 1;
-      onionPos = timelinePos - 1;
-      if (stateLoopOnion == true) {
-        postOnionPos = 1;
-      }
-    } else if (timelinePos == 1) {
-      if (stateLoopOnion == true) {
-        onionPos = storeKeys[0].length - 1;
-      }
-      postOnionPos = timelinePos + 1;
-    } else {
-      onionPos = timelinePos - 1;
-      postOnionPos = timelinePos + 1;
-    }
-    posKey = storeKeys[0][timelinePos];
+		if(onVirginFrame == true){
+			timelinePos = storeKeys[0].length - 1;
+			onionPos = timelinePos - 1;
+			postOnionPos = 1;
+			posKey = storeKeys[0][timelinePos];
+			playClass.keyShowing();
+		} else {
 
-    document.getElementById('onionkey').value = storeKeys[0][onionPos];
-    document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-    //console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
-    //console.log("TimelinePos: " + timelinePos);
-    //console.log("StoreKey length - 1: " + (storeKeys[0].length - 1));
-    //console.log("Key of this frame (posKey): " + posKey)
-    //console.log("OnionPos: " + onionPos);
-    //console.log("Post OnionPos: " + postOnionPos);
-    //console.log("WE FIRE keyShowing()");
-    playClass.keyShowing();
-    framesClass.clearOnion();
-    framesClass.showOnion();
+			//console.log("——");
+			//console.log("Move left | Go backward.");
+			timelinePos -= 1;
+			if (timelinePos < 1) {
+				timelinePos = storeKeys[0].length;
+				framesClass.goVirgin();
+				onionPos = timelinePos - 1;
+				if (stateLoopOnion == true) {
+					postOnionPos = 1;
+				}
+			}
+			else if (timelinePos == 1) {
+				if (stateLoopOnion == true) {
+					onionPos = storeKeys[0].length - 1;
+				}
+				postOnionPos = timelinePos + 1;
+			} else {
+				onionPos = timelinePos - 1;
+				postOnionPos = timelinePos + 1;
+			}
+			posKey = storeKeys[0][timelinePos];
+
+			document.getElementById('onionkey').value = storeKeys[0][onionPos];
+			document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+			//console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
+			//console.log("TimelinePos: " + timelinePos);
+			//console.log("StoreKey length - 1: " + (storeKeys[0].length - 1));
+			//console.log("Key of this frame (posKey): " + posKey)
+			//console.log("OnionPos: " + onionPos);
+			//console.log("Post OnionPos: " + postOnionPos);
+			//console.log("WE FIRE keyShowing()");
+			if(onVirginFrame == true){
+
+			} else {
+				playClass.keyShowing();
+			}
+
+			framesClass.clearOnion();
+			framesClass.showOnion();
+		}
   } else if (keyCode === RIGHT_ARROW) {
-    //console.log("——");
-    //console.log("Move right | Go forward.");
-    timelinePos += 1;
-    if (timelinePos > storeKeys[0].length - 1) {
-      timelinePos = 1;
-      if (stateLoopOnion == true) {
-        onionPos = storeKeys[0].length - 1;
-      }
-      postOnionPos = timelinePos + 1;
-    } else if (timelinePos == storeKeys[0].length - 1) {
-      onionPos = timelinePos - 1;
-      if (stateLoopOnion == true) {
-        postOnionPos = 1;
-      }
-    } else {
-      onionPos = timelinePos - 1;
-      postOnionPos = timelinePos + 1;
-    }
-    posKey = storeKeys[0][timelinePos];
-    document.getElementById('onionkey').value = storeKeys[0][onionPos];
-    document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-    //console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
-    playClass.keyShowing();
-    framesClass.clearOnion();
-    framesClass.showOnion();
+
+		 if(onVirginFrame == true){
+			 timelinePos = 1;
+			 onionPos = storeKeys[0].length - 1;
+			 postOnionPos = 2;
+			 posKey = storeKeys[0][timelinePos];
+			 playClass.keyShowing();
+		 } else {
+
+			 //console.log("——");
+			 //console.log("Move right | Go forward.");
+			 timelinePos += 1;
+			 if (timelinePos == storeKeys[0].length ) {
+				 timelinePos = storeKeys[0].length;
+				 framesClass.goVirgin();
+				 if (stateLoopOnion == true) {
+					 onionPos = storeKeys[0].length - 1;
+				 }
+				 postOnionPos = 1;
+			 }
+			 else if (timelinePos > storeKeys[0].length ) {
+				 timelinePos = 1;
+
+				 if (stateLoopOnion == true) {
+					 onionPos = storeKeys[0].length - 1;
+				 }
+				 postOnionPos = 2;
+			 }
+			 else if (timelinePos == storeKeys[0].length - 1) {
+				 onionPos = timelinePos - 1;
+				 if (stateLoopOnion == true) {
+					 postOnionPos = 1;
+				 }
+			 } else {
+				 onionPos = timelinePos - 1;
+				 postOnionPos = timelinePos + 1;
+			 }
+			 posKey = storeKeys[0][timelinePos];
+			 document.getElementById('onionkey').value = storeKeys[0][onionPos];
+			 document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+			 //console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
+			 if(onVirginFrame == true){
+
+			 } else {
+				 playClass.keyShowing();
+			 }
+			 framesClass.clearOnion();
+			 framesClass.showOnion();
+		 }
   } else if (keyCode === 32) {
     // preventDefault();
     playClass.togglePlay();

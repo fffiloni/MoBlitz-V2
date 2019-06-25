@@ -536,6 +536,10 @@ div#faq-elements {
   max-width: unset;
 }
 
-.block-scroll {
+.block-scrolling {
   overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }

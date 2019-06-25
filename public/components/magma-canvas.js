@@ -32,6 +32,8 @@ class MagmaCanvas{
     frameRate(24);
     noLoop();
 
+    $("#magma-canvas").bind("wheel mousewheel", function(e) {e.preventDefault()});
+
     let formatTopWindow = document.getElementById('topwindow');
     formatTopWindow.style.width = "cnvWidth";
     let formatDrawingList = document.getElementById('drawinglist');

@@ -75,14 +75,17 @@ function preload() {
   wlcm.parent('console');
 
   // socket = io.connect('https://magmanin.nanomenta.com/');
-  // socket = io.connect('http://localhost:4000');
-	socket = io.connect('https://mb-duo.herokuapp.com/');
+  socket = io.connect('http://localhost:4000');
+	// socket = io.connect('https://mb-duo.herokuapp.com/');
 	scktClass.initializeDB();
 
 } //END PRELOAD
 
 
 function setup() {
+
+
+
 	frameRate(60);
 
 	//Here we load actions fired from the server via socket.
@@ -452,6 +455,8 @@ function keyPressed() {
 // function mouseDown(){
 // 	console.log("mouse is down");
 // }
+
+
 
 window.onkeydown = function(event) {
   if (event.keyCode === 32) {

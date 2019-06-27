@@ -772,8 +772,8 @@ class Tracer {
         if(checkPrivateDuoCount != prevCheckCountPrivateDuo){
           prevCheckCountPrivateDuo = checkPrivateDuoCount;
           // console.log("we redraw");
-          graphicPrivateDUO.clear();
-          
+          // graphicPrivateDUO.clear();
+
           for (let i = 0; i < multiDraw.length; i++) {
             let path = multiDraw[i];
             if (multiDraw[i].length != 0) {

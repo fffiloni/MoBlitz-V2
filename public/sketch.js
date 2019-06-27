@@ -185,6 +185,7 @@ function draw() {
 
 	// START MULTI LABELED
 	graphicDUO.clear();
+
 	graphicPrivateDUO.clear();
 	// END MULTI LABELED
 

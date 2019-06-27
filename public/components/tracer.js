@@ -767,10 +767,10 @@ class Tracer {
           layerTransparency = 80;
         }
         checkPrivateDuoCount = 0;
-        checkPrivateDuoCount += multi.folderDrawings.length;
+        // checkPrivateDuoCount += multi.folderDrawings.length;
 
-        if(checkPrivateDuoCount != prevCheckCountPrivateDuo){
-          prevCheckCountPrivateDuo = checkPrivateDuoCount;
+        // if(checkPrivateDuoCount != prevCheckCountPrivateDuo){
+        //   prevCheckCountPrivateDuo = checkPrivateDuoCount;
           // console.log("we redraw");
           // graphicPrivateDUO.clear();
 
@@ -822,7 +822,7 @@ class Tracer {
             }
 
           }
-        }
+        // }
 
       }
     });

@@ -16,6 +16,7 @@ class SCKT{
       firebase.initializeApp(config);
       database = firebase.database();
 
+
       //Get session ID from URL if exists
       var params = getURLParams();
       //console.log(params);

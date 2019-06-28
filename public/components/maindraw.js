@@ -22,6 +22,8 @@ let backupUpdatedPaintings = [];
 let frameHasBeenUpdated = false;
 let backupUpdate = [];
 
+let paintGraphicStock = [];
+
 class HowToDraw{
 
   //*PRESSURE LIBRARY
@@ -390,6 +392,98 @@ class HowToDraw{
     }
   };
 
+  traceFRONTLayerWithAll(){
+    if ( isDrawing == true ){
+
+      if ( showDrawingLayer == true ){
+
+        if ( penciling == true ){
+
+          graphicFRONT.clear();
+          tracerClass.traceDrawings();
+
+        }
+
+      }
+
+      if ( showRoughs == true ){
+
+        if ( roughing == true ){
+
+          graphicRough.clear();
+          tracerClass.traceRoughs();
+
+        }
+
+      }
+
+      if ( showRoughs == true ){
+
+        if ( brushing == true ){
+
+          if (onVirginFrame == false){
+            let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
+            paintGraphicStock[findpaintkey].graphic.clear();
+          } else {
+            graphicBrush.clear();
+          }
+
+
+          tracerClass.tracePainting();
+
+        }
+
+      }
+
+    } else if ( isDrawing == false ){
+
+      // ADDONS //
+
+      // graphicKeyPoses.clear();
+      // graphicFixed.clear();
+      // tracerClass.traceFixedParts();
+      // tracerClass.traceKeyPoses();
+
+      // TRACING ONIONS POST AND PREVIOUS FOR EACH TOOL //
+
+      graphicOnion.clear();
+      drawClass.tracePreAndPost();
+
+      // TRACE TOOLS LAYER CONTENT
+      if (showBrushLayer) {
+        if(onVirginFrame == false){
+
+          if(paintGraphicStock.length != 0){
+
+            let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
+
+            if(paintGraphicStock[findpaintkey].alreadydrown == 'no'){
+              paintGraphicStock[findpaintkey].alreadydrown = 'yes';
+              paintGraphicStock[findpaintkey].graphic.clear();
+              tracerClass.tracePainting();
+            }
+          }
+        } else {
+          graphicBrush.clear();
+          tracerClass.tracePainting();
+        }
+
+      }
+
+      if (showRoughs == true) {
+        graphicRough.clear();
+        tracerClass.traceRoughs();
+      }
+
+      if (showDrawingLayer == true) {
+        graphicFRONT.clear();
+        tracerClass.traceDrawings();
+      }
+
+
+    }
+  }
+
   // * HOW WE HANDLE DIFFERENT GRAPHIC CANVAS PARTS //
 
   loadAllGraphics(){
@@ -400,7 +494,19 @@ class HowToDraw{
     image(graphicKeyPoses, 0, 0);
     image(graphicGuides, 0, 0);
     image(graphicOnion, 0, 0);
-    image(graphicBrush, 0, 0);
+
+    if(onVirginFrame == false){
+      let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
+      if(findpaintkey != -1){
+        image(paintGraphicStock[findpaintkey].graphic, 0, 0);
+      }
+    } else {
+      image(graphicBrush, 0, 0);
+    }
+
+
+
+
     image(graphicRough, 0, 0);
     image(graphicFRONT, 0, 0);
   };

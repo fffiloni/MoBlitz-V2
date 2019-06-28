@@ -78,7 +78,7 @@ class DBTalk {
       let keys = Object.keys(drawings);
       // console.log("keys from db: " + keys);
 
-      return orderKeys(keys).then(displayKeys(tempKeys));
+      return orderKeys(keys).then(displayKeys(tempKeys).then(stockGraphicPaint()));
 
       // ASYNC FUNCTIONS FOR ORDERING AND DISPLAYING KEYFRAMES IN RIGTH ORDER
       // 1. ORDERING
@@ -160,6 +160,28 @@ class DBTalk {
         ableDelete = true;
         waitFriendDB = false;
       };
+
+      // 3. CREATE GRAPHIC FOR PAINTINGS IF NECESSARY
+      async function stockGraphicPaint (){
+        storeKeys[0].forEach(function(paintkey, index){
+          // WE CHECK IF WE ALREADY HAVE PAINT DATA FOR THIS IMAGE
+          let paintkeyindex = paintGraphicStock.findIndex(i => i.key == paintkey);
+
+          if (paintkeyindex == -1) {
+
+            let newgraphic = createGraphics(cnvWidth, cnvHeight);
+
+            let newgraphichandler = {
+              key: paintkey,
+              graphic: newgraphic,
+              alreadydrown: 'no'
+            }
+
+            paintGraphicStock.push(newgraphichandler);
+
+          }
+        })
+      }
 
     } else {
       console.log("wait for safety delete")
@@ -472,7 +494,7 @@ class DBTalk {
 
                 if(layer.folderKey == currentLayerKey){
                   $("#" + layer.folderKey + '-tl').remove();
-                  
+
                 }
 
 

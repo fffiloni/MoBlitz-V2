@@ -665,9 +665,11 @@ class Frames {
             console.log("SUCCESS! THE FRAME HAS BEEN DELETED!");
 
             consoleClass.newMessage('You deleted a frame.', 'console', 0, 'feedback');
-
+            let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
+            paintGraphicStock.splice(findpaintkey, 1);
             console.log("We now display the previous one in the TL...");
-            framesClass.showDrawing(storeKeys[0][timelinePos])
+            framesClass.showDrawing(storeKeys[0][timelinePos]);
+
           }
 
 

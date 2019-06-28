@@ -399,6 +399,15 @@ class Tracer {
   };
 
   tracePainting(){
+
+    let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
+    let keyGraphic;
+    if(onVirginFrame == true){
+      keyGraphic = graphicBrush;
+    } else {
+      keyGraphic = paintGraphicStock[findpaintkey].graphic;
+    }
+
     if (painting.length !== 0) {
       //Shows the current Paintings if there any data in drawing array
       for (let i = 0; i < painting.length; i++) {
@@ -410,31 +419,31 @@ class Tracer {
           for (let j = 0; j < path.length; j++) {
             if (path[j].type == 'paint') {
 
-              graphicBrush.strokeCap(ROUND);
+              keyGraphic.strokeCap(ROUND);
               //takes colors data form each point in database
               if (path[j].strk !== undefined) {
 
                 if (path[j].pressure !== undefined) {
                   if (path[j].strk == 1) {
-                    graphicBrush.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
+                    keyGraphic.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
                   } else if (path[j].pressure === undefined) {
-                    graphicBrush.strokeWeight(2);
+                    keyGraphic.strokeWeight(2);
                   } else {
-                    graphicBrush.strokeWeight(map(path[j].pressure, 0, 1, 2, path[j].strk * 2));
+                    keyGraphic.strokeWeight(map(path[j].pressure, 0, 1, 2, path[j].strk * 2));
                   }
                 }
               } else {
-                graphicBrush.strokeWeight(2);
+                keyGraphic.strokeWeight(2);
               }
 
-              graphicBrush.stroke(path[j].csR, path[j].csV, path[j].csB);
-              graphicBrush.beginShape();
-              graphicBrush.noFill();
-              graphicBrush.curveVertex(path[j].x1, path[j].y1);
-              graphicBrush.curveVertex(path[j].x2, path[j].y2);
-              graphicBrush.curveVertex(path[j].x3, path[j].y3);
-              graphicBrush.curveVertex(path[j].x4, path[j].y4);
-              graphicBrush.endShape();
+              keyGraphic.stroke(path[j].csR, path[j].csV, path[j].csB);
+              keyGraphic.beginShape();
+              keyGraphic.noFill();
+              keyGraphic.curveVertex(path[j].x1, path[j].y1);
+              keyGraphic.curveVertex(path[j].x2, path[j].y2);
+              keyGraphic.curveVertex(path[j].x3, path[j].y3);
+              keyGraphic.curveVertex(path[j].x4, path[j].y4);
+              keyGraphic.endShape();
 
             }
           }

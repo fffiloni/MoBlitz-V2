@@ -183,24 +183,8 @@ function draw() {
 
   graphicBG.background(setBG); // BG FIRST
 
-	// START MULTI LABELED
-	graphicDUO.clear();
-
-	graphicPrivateDUO.clear();
-	// END MULTI LABELED
-
-  graphicBrush.clear();
-  graphicRough.clear();
-  graphicFRONT.clear();
-
-  graphicGuides.clear(); // GUIDELINES
-
-  if (isDrawing == false) {
-    graphicKeyPoses.clear();
-    graphicFixed.clear();
 
 
-  }
 
 	magmaCNV.safetyLinesBehavior();
   framesClass.buttonsBehaviorOnFrameChanges();
@@ -212,41 +196,22 @@ function draw() {
 
   if (isRecording == false) {
 		// A. GUIDELINES DOES NOT APPEAR WHILE CREATING GIF
+		graphicGuides.clear(); // GUIDELINES
     tracerClass.traceGuidelines();
   }
 
-  if (isDrawing == false) {
-
-		tracerClass.traceFixedParts();
-    tracerClass.traceKeyPoses();
-
-		// B. TRACING ONIONS POST AND PREVIOUS FOR EACH TOOL //
-
-		graphicOnion.clear();
-    drawClass.tracePreAndPost();
-  }
-
+  // MULTI — SHOW FRIENDS DRAWINGS
 	if (showForeign == true){
-		// MULTI — SHOW FRIENDS DRAWINGS
-		tracerClass.traceDUO();
 
+		graphicDUO.clear();
+		tracerClass.traceDUO();
 	}
 
+	graphicPrivateDUO.clear();
 	tracerClass.tracePrivateDUO();
 
-	// C. TRACE TOOLS LAYER CONTENT
-  if (showBrushLayer) {
-    tracerClass.tracePainting();
-  }
+	drawClass.traceFRONTLayerWithAll();
 
-  if (showRoughs == true) {
-    tracerClass.traceRoughs();
-  }
-
-  if (showDrawingLayer == true) {
-    graphicFRONT.clear();
-    tracerClass.traceDrawings();
-  }
 
   // fill();
   // stroke(120);

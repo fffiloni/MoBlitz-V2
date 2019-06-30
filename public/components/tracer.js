@@ -405,7 +405,12 @@ class Tracer {
     if(onVirginFrame == true){
       keyGraphic = graphicBrush;
     } else {
-      keyGraphic = paintGraphicStock[findpaintkey].graphic;
+      if(findpaintkey != -1){
+        keyGraphic = paintGraphicStock[findpaintkey].graphic;
+      } else {
+        keyGraphic = graphicBrush;
+      }
+
     }
 
     if (painting.length !== 0) {

@@ -217,8 +217,8 @@ class Frames {
 
     this.key = key;
 
-    countPathNew = null;
-    countPathOld = null;
+    countPathNew = 0;
+    countPathOld = 0;
 
     onVirginFrame = false;
     $("#updateButton").removeClass("disableAllBtn");

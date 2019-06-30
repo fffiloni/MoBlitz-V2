@@ -82,7 +82,7 @@ class HowToDraw{
                 let backupData = {
                   key: keyToUpdate,
                   beenUpdated: 'not yet',
-                  content: {backupPaintings: backupUpdatedDrawings}
+                  content: {backupPaintings: backupUpdatedPaintings}
                 };
                 backupUpdate.push(backupData);
               } else {
@@ -267,6 +267,9 @@ class HowToDraw{
           backupPaintings.pop();
         } else {
           backupUpdatedPaintings.pop();
+          if(backupUpdatedPaintings.length + backupUpdatedDrawings.length == 0){
+            $("#" + keyToUpdate).removeClass("needupdate");
+          }
         }
       } else if (roughing) {
         roughs.pop();
@@ -276,6 +279,9 @@ class HowToDraw{
           backupDrawings.pop();
         } else {
           backupUpdatedDrawings.pop();
+          if(backupUpdatedPaintings.length + backupUpdatedDrawings.length == 0){
+            $("#" + keyToUpdate).removeClass("needupdate");
+          }
         }
 
       }
@@ -305,6 +311,7 @@ class HowToDraw{
     isDrawing = false;
     noLoop();
     loopActivated = false;
+    redraw();
     $('body').removeClass('block-scrolling');
 
   	socket.emit('iamnotdrawing');
@@ -456,12 +463,17 @@ class HowToDraw{
           if(paintGraphicStock.length != 0){
 
             let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
-
-            if(paintGraphicStock[findpaintkey].alreadydrown == 'no'){
-              paintGraphicStock[findpaintkey].alreadydrown = 'yes';
-              paintGraphicStock[findpaintkey].graphic.clear();
-              tracerClass.tracePainting();
+            if(findpaintkey != -1){
+              if(paintGraphicStock[findpaintkey].alreadydrown == 'no'){
+                paintGraphicStock[findpaintkey].alreadydrown = 'yes';
+                paintGraphicStock[findpaintkey].graphic.clear();
+                tracerClass.tracePainting();
+              } else {
+                paintGraphicStock[findpaintkey].graphic.clear();
+                tracerClass.tracePainting();
+              }
             }
+
           }
         } else {
           graphicBrush.clear();
@@ -497,9 +509,14 @@ class HowToDraw{
 
     if(onVirginFrame == false){
       let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
-      if(findpaintkey != -1){
-        image(paintGraphicStock[findpaintkey].graphic, 0, 0);
+      if(waitForLoopBack == false){
+        if(findpaintkey != -1){
+          image(paintGraphicStock[findpaintkey].graphic, 0, 0);
+        }
+      } else {
+        image(graphicBrush, 0, 0);
       }
+
     } else {
       image(graphicBrush, 0, 0);
     }

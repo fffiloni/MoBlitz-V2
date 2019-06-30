@@ -11,6 +11,7 @@ let playKeys = 0;
 let playingAll = false;
 let tmAll;
 let layersAreChained = false;
+let waitForLoopBack = false;
 let layersColor = ['DeepPink', 'Aquamarine', 'SpringGreen'];
 
 //RECORDER GIF VARIABLES
@@ -75,6 +76,7 @@ class Play {
       //console.log(drawing);
       //console.log("nb elements in drawing: " + drawing.length);
     countPathOld = drawing.length + painting.length + roughs.length;
+    countPathNew = drawing.length + painting.length + roughs.length;
     let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
     if(check != -1){
       if(backupUpdate[check].content.backupDrawings != undefined){
@@ -82,6 +84,7 @@ class Play {
         backupUpdate[check].content.backupDrawings.forEach((newpath, index) => {
 
           drawing.push(newpath);
+          countPathNew++;
           if(newpath.length != 0){
             backupUpdatedDrawings.push(newpath);
           } else {
@@ -96,6 +99,7 @@ class Play {
         backupUpdate[check].content.backupPaintings.forEach((newpath) => {
 
           painting.push(newpath);
+          countPathNew++;
           if(newpath.length != 0){
             backupUpdatedPaintings.push(newpath);
           } else {
@@ -104,6 +108,8 @@ class Play {
 
         });
       }
+
+
     }
     eraserUsed = false;
     }
@@ -137,6 +143,7 @@ class Play {
       $("#playButton").addClass("hide");
       showSafetyLines = false;
       timelinePos = 0;
+      waitForLoopBack = false;
       framesClass.clearOnion();
 
       if (isRecording == true) {
@@ -161,6 +168,7 @@ class Play {
 
       playKeys = 0;
       timelinePos = 0;
+      waitForLoopBack = false;
       clearInterval(tmAll);
       redraw();
     }
@@ -223,6 +231,9 @@ class Play {
         clearInterval(tmAll);
         playKeys = 0;
         timelinePos = 0;
+
+        waitForLoopBack = false;
+
         showSafetyLines = true;
         $(".changeBtn").removeClass("disableAllBtnPlaying");
         // ableToDraw = true;
@@ -236,8 +247,8 @@ class Play {
     } else {
 
       if(timelinePos == playKeys){
-        timelinePos = 0;
-
+        timelinePos = 1;
+        waitForLoopBack = false;
       }
     }
 
@@ -261,6 +272,8 @@ class Play {
         countPathNew = 0;
         countPathOld = 0;
 
+        keyToUpdate = undefined;
+        waitForLoopBack = true;
       }
 
 

@@ -469,8 +469,15 @@ class HowToDraw{
                 paintGraphicStock[findpaintkey].graphic.clear();
                 tracerClass.tracePainting();
               } else {
-                paintGraphicStock[findpaintkey].graphic.clear();
-                tracerClass.tracePainting();
+                if (playing == false){
+                  if(countPathNew != countPathOld){
+                    paintGraphicStock[findpaintkey].graphic.clear();
+                    tracerClass.tracePainting();
+
+                  }
+
+                }
+
               }
             }
 
@@ -480,6 +487,13 @@ class HowToDraw{
           tracerClass.tracePainting();
         }
 
+      } else {
+          let findpaintkey = paintGraphicStock.findIndex(k => k.key == keyToUpdate);
+          if(findpaintkey != -1){
+            paintGraphicStock[findpaintkey].graphic.clear();
+            paintGraphicStock[findpaintkey].alreadydrown = 'no';
+          }
+            graphicBrush.clear();
       }
 
       if (showRoughs == true) {

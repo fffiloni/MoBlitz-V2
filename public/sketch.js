@@ -45,7 +45,7 @@ let maxIsReached = false;
 let frameAfter = [];
 // let dataToKeep = drawingsToKeep = paintingsToKeep = roughsToKeep = [];
 let bg;
-
+let dropdata;
 let checkPaintCount, checkRoughCount;
 let checkPrivateDuoCount, prevCheckCountPrivateDuo = 0;
 
@@ -259,7 +259,9 @@ function gotFile(file){
 
 	console.log(file);
 	if(file.type == "image"){
+		dropdata = file;
 		bgdropped = createImg(file.data).hide();
+		
 		setTimeout(function(){
 			redraw();
 		}, 200);

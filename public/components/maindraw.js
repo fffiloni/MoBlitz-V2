@@ -23,6 +23,8 @@ let frameHasBeenUpdated = false;
 let backupUpdate = [];
 
 let paintGraphicStock = [];
+let bgdroppedState = 0;
+
 
 class HowToDraw{
 
@@ -513,12 +515,49 @@ class HowToDraw{
   // * HOW WE HANDLE DIFFERENT GRAPHIC CANVAS PARTS //
 
   loadAllGraphics(){
+    //image(graphicBG, 0, 0);
 
-
-    image(graphicBG, 0, 0);
     if (bgdropped) {
-     image(bgdropped, 20, 20, width-40, height-40);
+
+
+        //image(bgdropped, 20, 20, width-40, height-40);
+
+        image(graphicBG, 0, 0);
+        push();
+        // if(toggledDropState != bgdroppedState){
+
+          if(bgdroppedState == 0){
+            graphicBGDrop.image(bgdropped, 20, 20, width-40, height-40);
+
+          } else if(bgdroppedState == 1) {
+            graphicBGDrop.image(bgdropped, 20, 20, width-40, height-40);
+            graphicBGDrop.fill('rgba(255,255,255, 0.2)');
+            graphicBGDrop.rect(0,0,width, height);
+
+          } else if(bgdroppedState == 2) {
+            graphicBGDrop.image(bgdropped, 20, 20, width-40, height-40);
+            graphicBGDrop.fill('rgba(255,255,255, 0.5)');
+          graphicBGDrop.rect(0,0,width, height);
+
+        } else if(bgdroppedState == 3) {
+            graphicBGDrop.image(bgdropped, 20, 20, width-40, height-40);
+            graphicBGDrop.fill('rgba(255,255,255, 0.8)');
+            graphicBGDrop.rect(0,0,width, height);
+
+          }
+
+        //}
+
+        image(graphicBGDrop, 0, 0);
+        pop();
+
+
+
+    } else {
+      image(graphicBG, 0, 0);
     }
+
+
     image(graphicExport, 0, 0);
   	image(graphicDUO, 0, 0);
   	image(graphicPrivateDUO, 0, 0);

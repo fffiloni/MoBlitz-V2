@@ -134,14 +134,26 @@ class Tools {
   };
 
   toggleBGBtn(){
-    if (darkmode == false) {
-      setBG = 'rgb(37, 32, 39)';
-      darkmode = !darkmode;
-    } else {
+    if(bgdropped){
+      if(bgdroppedState < 3 ){
 
-      setBG = 'rgb(255, 255, 248)';
-      darkmode = !darkmode;
+        bgdroppedState++;
+
+      } else {
+
+        bgdroppedState = 0;
+      }
+    } else {
+      if (darkmode == false) {
+        setBG = 'rgb(37, 32, 39)';
+        darkmode = !darkmode;
+      } else {
+
+        setBG = 'rgb(255, 255, 248)';
+        darkmode = !darkmode;
+      }
     }
+
     redraw();
   }
 }

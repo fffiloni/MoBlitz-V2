@@ -1,7 +1,7 @@
 let canvas, cnvWidth, cnvHeight , expWidthF , expHeightF , expTopF , expLeftF, expWidthSq, expHeightSq, expTopSq, expLeftSq, expWidthSc, expHeightSc, expTopSc, expLeftSc;
 
 let graphicBG, graphicFixed, graphicKeyPoses, graphicGuides, graphicOnion, graphicBrush, graphicRough, graphicFRONT, graphicDUO, graphicPrivateDUO, graphicExport;
-
+let graphicBGDrop;
 let timer;
 
 class MagmaCanvas{
@@ -88,7 +88,7 @@ class MagmaCanvas{
   initializeGraphics(){
     graphicBG = createGraphics(cnvWidth, cnvHeight);
     graphicBG.background(setBG);
-
+    graphicBGDrop = createGraphics(cnvWidth, cnvHeight);
     graphicFixed = createGraphics(cnvWidth, cnvHeight);
     graphicKeyPoses = createGraphics(cnvWidth, cnvHeight);
     graphicGuides = createGraphics(cnvWidth, cnvHeight);

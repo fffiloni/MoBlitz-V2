@@ -10,7 +10,7 @@ Array.prototype.mbmove = function(from_index, to_index) {
 p5.disableFriendlyErrors = true;
 let database, socket;
 let magmaCNV, drawClass, scktClass, consoleClass, uiClass, toolClass, colorClass, framesClass, dbTalkClass, playClass, tracerClass, keyBoardClass;
-
+let bgdropped;
 let startDiv;
 let setBG = 'rgb(255, 255, 248)';
 let darkmode = false;
@@ -112,7 +112,12 @@ function setup() {
 	uiClass.setFPSControl();
 	uiClass.setChainControl();
 
+	canvas.drop(gotFile);
 } // END SETUP
+
+
+
+
 
 function draw() {
 
@@ -181,7 +186,9 @@ function draw() {
   // GRAPHICS BEHAVIOR //
 	// 1. CLEANING CANVAS
 
-  graphicBG.background(setBG); // BG FIRST
+		graphicBG.background(setBG); // BG FIRST
+
+
 
 
 
@@ -245,6 +252,19 @@ function mouseDragged() {
 	if(loopActivated == false){
 		redraw();
 	}
+
+}
+
+function gotFile(file){
+
+	console.log(file);
+	if(file.type == "image"){
+		bgdropped = createImg(file.data).hide();
+		setTimeout(function(){
+			redraw();
+		}, 200);
+	}
+
 
 }
 

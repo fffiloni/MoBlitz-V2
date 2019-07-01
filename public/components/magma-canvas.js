@@ -1,6 +1,6 @@
 let canvas, cnvWidth, cnvHeight , expWidthF , expHeightF , expTopF , expLeftF, expWidthSq, expHeightSq, expTopSq, expLeftSq, expWidthSc, expHeightSc, expTopSc, expLeftSc;
 
-let graphicBG, graphicFixed, graphicKeyPoses, graphicGuides, graphicOnion, graphicBrush, graphicRough, graphicFRONT, graphicDUO, graphicPrivateDUO;
+let graphicBG, graphicFixed, graphicKeyPoses, graphicGuides, graphicOnion, graphicBrush, graphicRough, graphicFRONT, graphicDUO, graphicPrivateDUO, graphicExport;
 
 let timer;
 
@@ -98,6 +98,7 @@ class MagmaCanvas{
     graphicFRONT = createGraphics(cnvWidth, cnvHeight);
   	graphicDUO = createGraphics(cnvWidth, cnvHeight);
     graphicPrivateDUO = createGraphics(cnvWidth, cnvHeight);
+    graphicExport = createGraphics(cnvWidth, cnvHeight);
   };
 
   ////////////////////////
@@ -173,7 +174,10 @@ class MagmaCanvas{
       }
 
       if (btnSquareOver) {
-        graphicBG.stroke(0, 0, 255);
+        graphicExport.stroke(50);
+        graphicExport.stroke(0, 0, 255);
+        graphicExport.line(20 + ((cnvWidth - cnvHeight) / 2), 20, 20 + ((cnvWidth - cnvHeight) / 2), cnvHeight - 20); // gauche vertical
+        graphicExport.line(canvas.width - 20 - ((cnvWidth - cnvHeight) / 2), 20, canvas.width - 20 - ((cnvWidth - cnvHeight) / 2), cnvHeight - 20); // droite vertical
       }
       graphicBG.line(20 + ((cnvWidth - cnvHeight) / 2), 20, 20 + ((cnvWidth - cnvHeight) / 2), cnvHeight - 20); // gauche vertical
       graphicBG.line(canvas.width - 20 - ((cnvWidth - cnvHeight) / 2), 20, canvas.width - 20 - ((cnvWidth - cnvHeight) / 2), cnvHeight - 20); // droite vertical
@@ -185,7 +189,10 @@ class MagmaCanvas{
         graphicBG.stroke(230);
       }
       if (btnScopeOver) {
-        graphicBG.stroke(0, 0, 255);
+        graphicExport.stroke(50);
+        graphicExport.stroke(0, 0, 255);
+        graphicExport.line(20, (cnvHeight - expHeightSc) / 2, cnvWidth - 20, (cnvHeight - expHeightSc) / 2); // haut horizontal
+        graphicExport.line(20, cnvHeight - expTopSc, cnvWidth - 20, cnvHeight - expTopSc); //bas horizontal
       }
       graphicBG.line(20, (cnvHeight - expHeightSc) / 2, cnvWidth - 20, (cnvHeight - expHeightSc) / 2); // haut horizontal
       graphicBG.line(20, cnvHeight - expTopSc, cnvWidth - 20, cnvHeight - expTopSc); //bas horizontal
@@ -204,7 +211,12 @@ class MagmaCanvas{
         graphicBG.stroke(150);
       }
       if (btnFullOver) {
-        graphicBG.stroke(0, 0, 255);
+        graphicExport.stroke(50);
+        graphicExport.stroke(0, 0, 255);
+        graphicExport.line(20, 20, canvas.width - 20, 20);
+        graphicExport.line(20, canvas.height - 20, canvas.width - 20, canvas.height - 20);
+        graphicExport.line(20, 20, 20, canvas.height - 20);
+        graphicExport.line(canvas.width - 20, 20, canvas.width - 20, canvas.height - 20);
       }
       graphicBG.line(20, 20, canvas.width - 20, 20);
       graphicBG.line(20, canvas.height - 20, canvas.width - 20, canvas.height - 20);

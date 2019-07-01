@@ -513,7 +513,13 @@ class HowToDraw{
   // * HOW WE HANDLE DIFFERENT GRAPHIC CANVAS PARTS //
 
   loadAllGraphics(){
+
+
     image(graphicBG, 0, 0);
+    if (bgdropped) {
+     image(bgdropped, 20, 20, width-40, height-40);
+    }
+    image(graphicExport, 0, 0);
   	image(graphicDUO, 0, 0);
   	image(graphicPrivateDUO, 0, 0);
     image(graphicFixed, 0, 0);

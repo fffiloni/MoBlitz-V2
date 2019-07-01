@@ -441,6 +441,7 @@ class Play {
       })
       .mouseOut(function() {
         btnSquareOver = false;
+        graphicExport.clear();
         redraw();
       });
     let scopeOver = select('#scopeBtn')
@@ -450,6 +451,7 @@ class Play {
       })
       .mouseOut(function() {
         btnScopeOver = false;
+        graphicExport.clear();
         redraw();
       });
     let fullOver = select('#fullBtn')
@@ -459,6 +461,7 @@ class Play {
       })
       .mouseOut(function() {
         btnFullOver = false;
+        graphicExport.clear();
         redraw();
       });
   };
@@ -490,6 +493,8 @@ class Play {
   downloadGif() {
     $("#downloadDiv").remove();
     $(".feedback").remove();
+    graphicExport.clear();
+    redraw();
     let waitDiv = createDiv('');
     waitDiv.id('waitSession');
     waitDiv.parent('canvascontainer')

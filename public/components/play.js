@@ -327,6 +327,7 @@ class Play {
           timelinePos = 0;
         }
         showSafetyLines = false;
+        graphicExport.clear();
         ableToDraw = false;
         $(".changeBtn").addClass("disableAllBtnPlaying");
         $("#stopButton").removeClass("hide");

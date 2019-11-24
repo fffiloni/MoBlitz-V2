@@ -9,6 +9,7 @@ let nframe;
 let onVirginFrame = true;
 let playKeys = 0;
 let playingAll = false;
+let playingWithSound = false;
 let tmAll;
 let layersAreChained = false;
 let waitForLoopBack = false;
@@ -161,7 +162,6 @@ class Play {
       tmAll = setInterval(playClass.playAll, 1000 / fps);
     } else if (playingAll == false){
       $(".changeBtn").removeClass("disableAllBtnPlaying");
-      // ableToDraw = true;
       $("#stopButton").addClass("hide");
       $("#playButton").removeClass("hide");
       showSafetyLines = true;
@@ -312,11 +312,93 @@ class Play {
     })
   }
 
+  togglePlayWithSound(){
+    playing = !playing;
+    if(playing == true){
+      // playClass.clearPlayingLayers();
+      $(".changeBtn").addClass("disableAllBtnPlaying");
+      $("#stopButton").removeClass("hide");
+      $("#playButton").addClass("hide");
+      showSafetyLines = false;
+      timelinePos = 0;
+      waitForLoopBack = false;
+      framesClass.clearOnion();
+      //tmSound = setInterval(playClass.playWithSound, 1000 / fps);
+      if(loopTm == true){
+        soundFile.setLoop(true);
+      } else {
+        soundFile.setLoop(false);
+      }
+      soundFile.play();
+
+
+    } else if(playing == false){
+
+      showSafetyLines = true;
+      // timelinePos = 0;
+      waitForLoopBack = false;
+      //clearInterval(tmSound);
+      soundFile.stop();
+      soundFile.setLoop(false);
+      $(".changeBtn").removeClass("disableAllBtnPlaying");
+      $("#stopButton").addClass("hide");
+      $("#playButton").removeClass("hide");
+      redraw();
+    }
+  }
+
+  playWithSound (timelinePos){
+
+    // timelinePos += 1;
+    playClass.keyShowWithSound(timelinePos)
+    if(loopTm == false){
+      if(timelinePos == totalSoundFrames){
+        playing = !playing;
+        //clearInterval(tmSound);
+        timelinePos = 0;
+
+        waitForLoopBack = false;
+
+        showSafetyLines = true;
+        $(".changeBtn").removeClass("disableAllBtnPlaying");
+        $("#stopButton").addClass("hide");
+        $("#playButton").removeClass("hide");
+
+      }
+    } else {
+
+      if(timelinePos == totalSoundFrames){
+        timelinePos = 0;
+        waitForLoopBack = false;
+      }
+    }
+  }
+
+  keyShowWithSound(timelinePos) {
+    if(timelinePos < storeKeys[0].length){
+      $(".changeBtn").removeClass("disableAllBtnPlaying");
+      framesClass.cleanUp();
+      framesClass.showDrawing(storeKeys[0][timelinePos]);
+
+    } else if(timelinePos >= storeKeys[0].length){
+      framesClass.cleanUp();
+      $(".listing").removeClass("activedraw");
+      keyToUpdate = undefined;
+      $(".changeBtn").addClass("disableAllBtnPlaying");
+      countPathNew = 0;
+      countPathOld = 0;
+    }
+  }
+
   togglePlay() {
     //console.log("——");
     //console.log("We just fired 'togglePlay'!");
     if(layersAreChained == true){
       playClass.togglePlayAll();
+    } else if(soundComponentIsActive == true){
+       if(soundIsChained == true){
+        playClass.togglePlayWithSound();
+      }
     } else {
 
       playing = !playing;
@@ -362,7 +444,7 @@ class Play {
 
   playFrames() {
     timelinePos += 1;
-    //saveCanvas(canvas, 'myCanvas' + timelinePos, 'jpg');
+
     if (timelinePos == storeKeys[0].length) {
       if (loopTm == false) {
         timelinePos = storeKeys[0].length - 1;

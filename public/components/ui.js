@@ -105,7 +105,7 @@ class UI{
   	separator.style('color', 'white');
   	separator.style('text-align', 'center');
   	separator.style('margin', '0 0 16px');
-    toolClass.createNewTool('fa-pen', 'Line', 'lineBtn', toolClass.selectLineTool);
+    // toolClass.createNewTool('fa-pen', 'Line', 'lineBtn', toolClass.selectLineTool);
 
     let addGuideBtn = createButton('<i class="fas fa-ruler" style="font-size: 20px;transform: rotate(-15deg);"></i><br>Guide');
     addGuideBtn.id('addGuideBtn');
@@ -158,12 +158,24 @@ class UI{
     let fpsplus = select('#fpsp');
     fpsplus.touchStarted(function() {
       fps += 1;
+      if(videoFile){
+        videoTrimmer.frameRate += 1;
+
+        atFrameRateFloatVideo = Math.round(map(getVideoFloat, 0, 999, 1, fps));
+        totalVideoFrames = Math.floor(videoEl.duration) * fps + atFrameRateFloatVideo;
+
+      }
       // recorder.settings.framerate = fps;
       redraw();
     });
     let fpsminus = select('#fpsm');
     fpsminus.touchStarted(function() {
       fps -= 1;
+      if(videoFile){
+        videoTrimmer.frameRate -= 1;
+        atFrameRateFloatVideo = Math.round(map(getVideoFloat, 0, 999, 1, fps));
+        totalVideoFrames = Math.floor(videoEl.duration) * fps + atFrameRateFloatVideo;
+      }
       // recorder.settings.framerate = fps;
       redraw();
     });
@@ -204,6 +216,32 @@ class UI{
       displayChain.html('<span class="badge">unchained</span>');
     }
   }
+
+
+    setChainSoundControl(){
+        if(soundComponentIsActive == true){
+          let displayChainSound = select('#displayChainSound');
+          displayChainSound.touchStarted(toggleChainSound);
+          displayChainSound.style('cursor', 'pointer');
+          displayChainSound.style('margin-right', '20px');
+        }
+
+    };
+
+    watchLayerChainSoundControl(){
+      if(soundComponentIsActive == true){
+        let displayChainSound = select('#displayChainSound');
+        if (soundIsChained == true) {
+          displayChainSound.html('<span class="badge">sound</span>');
+        } else {
+          displayChainSound.html('<span class="badge">noSound</span>');
+        }
+      }
+
+    }
+
+
+
 
   //////////////////////////////////////////
   // Little Buttons controlling onion frames
@@ -498,6 +536,11 @@ class UI{
     uiClass.watchFPSControl();
     uiClass.watchLoopControl();
     uiClass.watchLayerChainControl();
+
+    if(soundComponentIsActive == true){
+      uiClass.watchLayerChainSoundControl();
+    }
+
 
     //
 

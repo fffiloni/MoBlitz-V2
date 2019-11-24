@@ -49,6 +49,9 @@ let dropdata;
 let checkPaintCount, checkRoughCount;
 let checkPrivateDuoCount, prevCheckCountPrivateDuo = 0;
 
+let soundComponentIsActive = false;
+let rotoComponentIsActive = false;
+
 
 function preload() {
 	//Here we load components
@@ -84,8 +87,6 @@ function preload() {
 
 function setup() {
 
-
-
 	frameRate(60);
 
 	//Here we load actions fired from the server via socket.
@@ -112,7 +113,16 @@ function setup() {
 	uiClass.setFPSControl();
 	uiClass.setChainControl();
 
+	if(soundComponentIsActive == true){
+		uiClass.setChainSoundControl();
+	}
+
+
 	canvas.drop(gotFile);
+
+
+
+
 } // END SETUP
 
 
@@ -120,6 +130,7 @@ function setup() {
 
 
 function draw() {
+
 
 	touchX = mouseX;
   touchY = mouseY;
@@ -186,13 +197,7 @@ function draw() {
   // GRAPHICS BEHAVIOR //
 	// 1. CLEANING CANVAS
 
-		graphicBG.background(setBG); // BG FIRST
-
-
-
-
-
-
+	graphicBG.background(setBG); // BG FIRST
 	magmaCNV.safetyLinesBehavior();
   framesClass.buttonsBehaviorOnFrameChanges();
 	keyBoardClass.watchKeyboardDown();
@@ -223,13 +228,13 @@ function draw() {
   // fill();
   // stroke(120);
   // strokeWeight(1);
-  if(isDrawing){
-		graphicFRONT.push();
-		graphicFRONT.noStroke();
-		graphicFRONT.fill('rgb(' + csR + ',' + csV + ',' + csB + ')');
-    graphicFRONT.ellipse(mouseX,mouseY,map(pressure, 0, 1, 0, sliderStroke.value()/5));
-		graphicFRONT.pop();
-  }
+  // if(isDrawing){
+	// 	graphicFRONT.push();
+	// 	graphicFRONT.noStroke();
+	// 	graphicFRONT.fill('rgb(' + csR + ',' + csV + ',' + csB + ')');
+  //   graphicFRONT.ellipse(mouseX,mouseY,map(pressure, 0, 1, 0, sliderStroke.value()/5));
+	// 	graphicFRONT.pop();
+  // }
 	folks.forEach((folk) => {
 		graphicDUO.push();
 		graphicDUO.strokeWeight(1);
@@ -252,7 +257,6 @@ function mouseDragged() {
 	if(loopActivated == false){
 		redraw();
 	}
-
 }
 
 function gotFile(file){
@@ -261,13 +265,23 @@ function gotFile(file){
 	if(file.type == "image"){
 		dropdata = file;
 		bgdropped = createImg(file.data).hide();
-		
+
 		setTimeout(function(){
 			redraw();
 		}, 200);
+	} else if(file.type == "video"){
+		if(videoFile){
+    	videoFile.remove();
+  	}
+	  console.log(file.type);
+	  currentFrame = 0;
+	  videoFile = createVideo(file.data).hide();
+	  videoFile.id("myVideo");
+	  videoEl = document.getElementById("myVideo");
+	  videoEl.addEventListener('loadeddata', function() {
+	   	calculateFrames();
+	 	}, false);
 	}
-
-
 }
 
 // function mouseIsPressed() {
@@ -314,130 +328,6 @@ function toggleBrush() {
   redraw();
 }
 
-function keyPressed() {
-  if (keyCode === LEFT_ARROW) {
-		if(onVirginFrame == true){
-			timelinePos = storeKeys[0].length - 1;
-			onionPos = timelinePos - 1;
-			postOnionPos = 1;
-			posKey = storeKeys[0][timelinePos];
-			playClass.keyShowing();
-			framesClass.clearOnion();
-			framesClass.showOnion();
-
-		} else {
-
-			//console.log("——");
-			//console.log("Move left | Go backward.");
-			timelinePos -= 1;
-			if (timelinePos < 1) {
-				timelinePos = storeKeys[0].length;
-				framesClass.goVirgin();
-				onionPos = timelinePos - 1;
-				if (stateLoopOnion == true) {
-					postOnionPos = 1;
-				}
-			}
-			else if (timelinePos == 1) {
-				if (stateLoopOnion == true) {
-					onionPos = storeKeys[0].length - 1;
-				}
-				postOnionPos = timelinePos + 1;
-			} else {
-				onionPos = timelinePos - 1;
-				postOnionPos = timelinePos + 1;
-			}
-			posKey = storeKeys[0][timelinePos];
-
-			document.getElementById('onionkey').value = storeKeys[0][onionPos];
-			document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-			//console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
-			//console.log("TimelinePos: " + timelinePos);
-			//console.log("StoreKey length - 1: " + (storeKeys[0].length - 1));
-			//console.log("Key of this frame (posKey): " + posKey)
-			//console.log("OnionPos: " + onionPos);
-			//console.log("Post OnionPos: " + postOnionPos);
-			//console.log("WE FIRE keyShowing()");
-			if(onVirginFrame == true){
-
-			} else {
-				playClass.keyShowing();
-			}
-
-			framesClass.clearOnion();
-			framesClass.showOnion();
-		}
-  } else if (keyCode === RIGHT_ARROW) {
-
-		 if(onVirginFrame == true){
-			 timelinePos = 1;
-			 onionPos = storeKeys[0].length - 1;
-			 postOnionPos = 2;
-			 posKey = storeKeys[0][timelinePos];
-			 playClass.keyShowing();
-			 framesClass.clearOnion();
-			 framesClass.showOnion();
-		 } else {
-
-			 //console.log("——");
-			 //console.log("Move right | Go forward.");
-			 timelinePos += 1;
-			 if (timelinePos == storeKeys[0].length ) {
-				 timelinePos = storeKeys[0].length;
-				 framesClass.goVirgin();
-				 if (stateLoopOnion == true) {
-					 onionPos = storeKeys[0].length - 1;
-				 }
-				 postOnionPos = 1;
-			 }
-			 else if (timelinePos > storeKeys[0].length ) {
-				 timelinePos = 1;
-
-				 if (stateLoopOnion == true) {
-					 onionPos = storeKeys[0].length - 1;
-				 }
-				 postOnionPos = 2;
-			 }
-			 else if (timelinePos == storeKeys[0].length - 1) {
-				 onionPos = timelinePos - 1;
-				 if (stateLoopOnion == true) {
-					 postOnionPos = 1;
-				 }
-			 } else {
-				 onionPos = timelinePos - 1;
-				 postOnionPos = timelinePos + 1;
-			 }
-			 posKey = storeKeys[0][timelinePos];
-			 document.getElementById('onionkey').value = storeKeys[0][onionPos];
-			 document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-			 //console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
-			 if(onVirginFrame == true){
-
-			 } else {
-				 playClass.keyShowing();
-			 }
-			 framesClass.clearOnion();
-			 framesClass.showOnion();
-		 }
-  } else if (keyCode === 32) {
-    // preventDefault();
-    playClass.togglePlay();
-  } else if (keyCode === UP_ARROW) {
-    if (sliderStroke.value() != 50) {
-      sliderStroke.value(sliderStroke.value() + 1);
-      strkVal = sliderStroke.value();
-      getStrokeValue.html(strkVal);
-      redraw();
-    }
-  } else if (keyCode === DOWN_ARROW) {
-    if (sliderStroke.value() != 1) {
-      sliderStroke.value(sliderStroke.value() - 1);
-      strkVal = sliderStroke.value();
-      getStrokeValue.html(strkVal);
-      redraw();
-    }
-  }
-}
 
 // document.getElementById("magma-canvas").addEventListener("mousedown", mouseDown);
 // function mouseDown(){
@@ -563,6 +453,12 @@ function toggleLoop() {
 
 function toggleChain() {
   layersAreChained = !layersAreChained;
+  redraw();
+}
+
+function toggleChainSound() {
+  soundIsChained = !soundIsChained;
+	console.log("sound is chained ?: " + soundIsChained)
   redraw();
 }
 

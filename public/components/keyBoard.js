@@ -3,6 +3,12 @@ let optionPressed = ctrlPressed = ctrlGkeyPressed = ctrlFkeyPressed = false;
 class KeyBoard{
 
   setKeyboardShortcuts(){
+    document.addEventListener('keyup', e => {
+      const keyName = event.key;
+      if (keyName === 't') {
+        letterTisDown = false;
+      }
+    });
     document.addEventListener('keydown', (event) => {
       const keyName = event.key;
       if (keyName === 'Control') {
@@ -15,6 +21,10 @@ class KeyBoard{
       }
       if (keyName === 'u') {
         framesClass.updateFrame();
+      }
+
+      if (keyName === 't') {
+        letterTisDown = true;
       }
       if (keyName === 'k') {
         makeThisFixed();
@@ -53,6 +63,138 @@ class KeyBoard{
         toolClass.selectRoughTool();
       }
 
+      if (keyName === 'ArrowLeft') {
+        if(onVirginFrame == true){
+    			timelinePos = storeKeys[0].length - 1;
+    			onionPos = timelinePos - 1;
+    			postOnionPos = 1;
+    			posKey = storeKeys[0][timelinePos];
+    			playClass.keyShowing();
+    			framesClass.clearOnion();
+    			framesClass.showOnion();
+
+    		} else {
+
+    			//console.log("——");
+    			//console.log("Move left | Go backward.");
+    			timelinePos -= 1;
+    			if (timelinePos < 1) {
+    				timelinePos = storeKeys[0].length;
+    				framesClass.goVirgin();
+    				onionPos = timelinePos - 1;
+    				if (stateLoopOnion == true) {
+    					postOnionPos = 1;
+    				}
+    			}
+    			else if (timelinePos == 1) {
+    				if (stateLoopOnion == true) {
+    					onionPos = storeKeys[0].length - 1;
+    				}
+    				postOnionPos = timelinePos + 1;
+    			} else {
+    				onionPos = timelinePos - 1;
+    				postOnionPos = timelinePos + 1;
+    			}
+    			posKey = storeKeys[0][timelinePos];
+
+    			document.getElementById('onionkey').value = storeKeys[0][onionPos];
+    			document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+    			//console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
+    			//console.log("TimelinePos: " + timelinePos);
+    			//console.log("StoreKey length - 1: " + (storeKeys[0].length - 1));
+    			//console.log("Key of this frame (posKey): " + posKey)
+    			//console.log("OnionPos: " + onionPos);
+    			//console.log("Post OnionPos: " + postOnionPos);
+    			//console.log("WE FIRE keyShowing()");
+    			if(onVirginFrame == true){
+
+    			} else {
+    				playClass.keyShowing();
+    			}
+
+    			framesClass.clearOnion();
+    			framesClass.showOnion();
+        }
+      }
+
+      if (keyName === 'ArrowRight') {
+        if(onVirginFrame == true){
+   			 timelinePos = 1;
+   			 onionPos = storeKeys[0].length - 1;
+   			 postOnionPos = 2;
+   			 posKey = storeKeys[0][timelinePos];
+   			 playClass.keyShowing();
+   			 framesClass.clearOnion();
+   			 framesClass.showOnion();
+   		 } else {
+
+   			 //console.log("——");
+   			 //console.log("Move right | Go forward.");
+   			 timelinePos += 1;
+   			 if (timelinePos == storeKeys[0].length ) {
+   				 timelinePos = storeKeys[0].length;
+   				 framesClass.goVirgin();
+   				 if (stateLoopOnion == true) {
+   					 onionPos = storeKeys[0].length - 1;
+   				 }
+   				 postOnionPos = 1;
+   			 }
+   			 else if (timelinePos > storeKeys[0].length ) {
+   				 timelinePos = 1;
+
+   				 if (stateLoopOnion == true) {
+   					 onionPos = storeKeys[0].length - 1;
+   				 }
+   				 postOnionPos = 2;
+   			 }
+   			 else if (timelinePos == storeKeys[0].length - 1) {
+   				 onionPos = timelinePos - 1;
+   				 if (stateLoopOnion == true) {
+   					 postOnionPos = 1;
+   				 }
+   			 } else {
+   				 onionPos = timelinePos - 1;
+   				 postOnionPos = timelinePos + 1;
+   			 }
+   			 posKey = storeKeys[0][timelinePos];
+   			 document.getElementById('onionkey').value = storeKeys[0][onionPos];
+   			 document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+   			 //console.log(timelinePos, (storeKeys[0].length) - 1, posKey, onionPos, postOnionPos);
+   			 if(onVirginFrame == true){
+
+   			 } else {
+   				 playClass.keyShowing();
+   			 }
+   			 framesClass.clearOnion();
+   			 framesClass.showOnion();
+   		 }
+      }
+
+      if (keyName === 'ArrowUp') {
+
+        if (sliderStroke.value() != 50) {
+          sliderStroke.value(sliderStroke.value() + 1);
+          strkVal = sliderStroke.value();
+          getStrokeValue.html(strkVal);
+          redraw();
+        }
+
+      }
+
+      if (keyName === 'ArrowDown') {
+
+        if (sliderStroke.value() != 1) {
+          sliderStroke.value(sliderStroke.value() - 1);
+          strkVal = sliderStroke.value();
+          getStrokeValue.html(strkVal);
+          redraw();
+        }
+      }
+
+      if (keyName === " "){
+          playClass.togglePlay();
+      }
+
       if (event.ctrlKey) {
         // Even though event.key is not 'Control' (i.e. 'a' is pressed),
         // event.ctrlKey may be true if Ctrl key is pressed at the time.
@@ -69,10 +211,15 @@ class KeyBoard{
           //console.log(storeKeys[0]);
         }
         if (keyName === 'z') {
-  				//socket.emit('toutou');
-          drawClass.undoLastPath();
-  				console.log("undo")
-          //socket.emit('undoForeign');
+          if(mouseOnCanvas){
+            lipsync.pop();
+          } else {
+
+            //socket.emit('toutou');
+            drawClass.undoLastPath();
+            console.log("undo")
+            //socket.emit('undoForeign');
+          }
         }
         if (keyName === 'd') {
           framesClass.duplicateFrame();

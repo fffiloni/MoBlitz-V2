@@ -567,9 +567,8 @@ class Tracer {
               if (path[j].pressure !== undefined) {
                 if (path[j].strk == 1) {
                   graphicFRONT.strokeWeight(map(path[j].pressure, 0, 1, 0, 2));
-                } else if (path[j].pressure === undefined) {
-                  graphicFRONT.strokeWeight(2);
-                } else {
+                } 
+                else {
                   graphicFRONT.strokeWeight(map(path[j].pressure, 0, 1, 0, path[j].strk + 1));
                 }
               }

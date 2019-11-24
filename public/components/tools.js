@@ -115,7 +115,7 @@ class Tools {
       $("#lineBtn").addClass("selectedTool");
 
       consoleClass.newMessage('You are tracing straigth guidelines.', 'console', 0, 'feedback');
-      updateScroll();
+      consoleClass.updateScroll();
     } else if (ctrlGkeyPressed == true) {
       showGuidelines = !showGuidelines;
     }
@@ -134,7 +134,8 @@ class Tools {
   };
 
   toggleBGBtn(){
-    if(bgdropped){
+    // if(bgdropped || videoFile){
+      if(bgdropped){
       if(bgdroppedState < 3 ){
 
         bgdroppedState++;

@@ -212,128 +212,135 @@ class Frames {
 
   showDrawing(key) {
 
-    backupUpdatedDrawings = [];
-    backupUpdatedPaintings = [];
+    if(waitForLoopBack == true){
+      //
+    } else {
 
-    this.key = key;
+      backupUpdatedDrawings = [];
+      backupUpdatedPaintings = [];
 
-    countPathNew = 0;
-    countPathOld = 0;
+      this.key = key;
 
-    onVirginFrame = false;
-    $("#updateButton").removeClass("disableAllBtn");
-    //console.log("——");
-    //console.log("We just fired 'showDrawing'!");
-    if (key instanceof MouseEvent) {
-      var key = this.id();
-      // consoleClass.newMessage(key, 'console', 0, 'feedback');
-      //console.log("The key is instance of MouseEvent");
-      //console.log("Key: " + key);
+      countPathNew = 0;
+      countPathOld = 0;
 
-      calcNbAfter = (storeKeys[0].length - 1) - (storeKeys[0].indexOf(key));
-      //console.log("Nb of frames after the displayed one: " + calcNbAfter);
+      onVirginFrame = false;
+      $("#updateButton").removeClass("disableAllBtn");
+      //console.log("——");
+      //console.log("We just fired 'showDrawing'!");
+      if (key instanceof MouseEvent) {
+        var key = this.id();
+        // consoleClass.newMessage(key, 'console', 0, 'feedback');
+        //console.log("The key is instance of MouseEvent");
+        //console.log("Key: " + key);
 
-      $(".changeBtn").removeClass("disableAllBtn");
-      ableDelete = true;
-      ableUpdate = true;
-      if (timelinePos != storeKeys[0].length - 1) {
-        ableInsert = true;
-      } else if (onVirginFrame) {
-        ableInsert = false;
-      }
-    }
+        calcNbAfter = (storeKeys[0].length - 1) - (storeKeys[0].indexOf(key));
+        //console.log("Nb of frames after the displayed one: " + calcNbAfter);
 
-    if(folks.length > 0){
-      // envoie aux sockets signal
-      let data = {
-        folkID: yourID,
-        layerID: currentLayerKey,
-        keyDisplayed: key
-      }
-      // let layerID = currentLayerKey;
-      socket.emit('iamchangingkey', data);
-    }
-
-
-    let ref = database.ref(currentDB + key);
-    //console.log("——");
-    //console.log("We try to fire 'oneDrawing'.");
-    ref.once('value', oneDrawing, dbTalkClass.errData);
-
-    function oneDrawing(data) {
-      if (!waitDB) {
-        //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
-        //console.log("oneDrawing success!");
-        let dbdrawing = data.val();
-        drawing = dbdrawing.drawing;
-        // socket.emit('showForeign', key);
-        painting = dbdrawing.painting;
-        roughs = dbdrawing.roughs;
-        keyToUpdate = key;
-        if (dbdrawing.nearPrevKey){
-          previousKeyfromInsert = dbdrawing.nearPrevKey;
+        $(".changeBtn").removeClass("disableAllBtn");
+        ableDelete = true;
+        ableUpdate = true;
+        if (timelinePos != storeKeys[0].length - 1) {
+          ableInsert = true;
+        } else if (onVirginFrame) {
+          ableInsert = false;
         }
-        //console.log("Key displayed: " + key);
-        //console.log("Key to update loaded: " + keyToUpdate);
-        //console.log("Let see the content of drawing array: ")
-        //console.log(drawing);
-        $(".current").removeClass("activelast");
-        $(".listing").removeClass("activedraw");
-        $("#" + previouskey).removeClass("braceFrame");
-        $("#" + nextkey).removeClass("braceFrame");
-        $("#" + key).addClass("activedraw");
-
-        framesClass.clearOnion();
-        //console.log("Onion Cleared");
-        //console.log("Now updating TL and Onion positions...");
-
-        countPathOld = drawing.length + painting.length + roughs.length;
-
-        let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
-        if(check != -1){
-          if(backupUpdate[check].content.backupDrawings != undefined){
-
-            backupUpdate[check].content.backupDrawings.forEach((newpath, index) => {
-
-              drawing.push(newpath);
-              if(newpath.length != 0){
-                backupUpdatedDrawings.push(newpath);
-              } else {
-                backupUpdate[check].content.backupDrawings.splice(index, 1);
-              }
-
-
-            });
-          }
-          if(backupUpdate[check].content.backupPaintings != undefined){
-
-            backupUpdate[check].content.backupPaintings.forEach((newpath) => {
-
-              painting.push(newpath);
-              if(newpath.length != 0){
-                backupUpdatedPaintings.push(newpath);
-              } else {
-                backupUpdate[check].content.backupPaintings.splice(index, 1);
-              }
-
-            });
-          }
-        }
-
-
-        eraserUsed = false;
-        timelinePos = storeKeys[0].indexOf(key);
-        onionPos = timelinePos - 1;
-        postOnionPos = timelinePos + 1;
-        document.getElementById('onionkey').value = storeKeys[0][onionPos];
-        document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
-        //console.log('Index in storeKeys: ' + storeKeys[0].indexOf(key) + ' | Timeline Position: ' +  timelinePos + ' | Onion Position: ' + onionPos);
-      } else {
-        console.log("We wait for gotData ...");
       }
 
-    }
+      if(folks.length > 0){
+        // envoie aux sockets signal
+        let data = {
+          folkID: yourID,
+          layerID: currentLayerKey,
+          keyDisplayed: key
+        }
+        // let layerID = currentLayerKey;
+        socket.emit('iamchangingkey', data);
+      }
+
+
+      let ref = database.ref(currentDB + key);
+      //console.log("——");
+      //console.log("We try to fire 'oneDrawing'.");
+      ref.once('value', oneDrawing, dbTalkClass.errData);
+
+      function oneDrawing(data) {
+        if (!waitDB) {
+          //console.log("It's OK, we don't have to wait for DB (waitDB is " + waitDB + ")");
+          //console.log("oneDrawing success!");
+          let dbdrawing = data.val();
+          drawing = dbdrawing.drawing;
+          // socket.emit('showForeign', key);
+          painting = dbdrawing.painting;
+          roughs = dbdrawing.roughs;
+          keyToUpdate = key;
+          if (dbdrawing.nearPrevKey){
+            previousKeyfromInsert = dbdrawing.nearPrevKey;
+          }
+          //console.log("Key displayed: " + key);
+          //console.log("Key to update loaded: " + keyToUpdate);
+          //console.log("Let see the content of drawing array: ")
+          //console.log(drawing);
+          $(".current").removeClass("activelast");
+          $(".listing").removeClass("activedraw");
+          $("#" + previouskey).removeClass("braceFrame");
+          $("#" + nextkey).removeClass("braceFrame");
+          $("#" + key).addClass("activedraw");
+
+          framesClass.clearOnion();
+          //console.log("Onion Cleared");
+          //console.log("Now updating TL and Onion positions...");
+
+          countPathOld = drawing.length + painting.length + roughs.length;
+
+          let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
+          if(check != -1){
+            if(backupUpdate[check].content.backupDrawings != undefined){
+
+              backupUpdate[check].content.backupDrawings.forEach((newpath, index) => {
+
+                drawing.push(newpath);
+                if(newpath.length != 0){
+                  backupUpdatedDrawings.push(newpath);
+                } else {
+                  backupUpdate[check].content.backupDrawings.splice(index, 1);
+                }
+
+
+              });
+            }
+            if(backupUpdate[check].content.backupPaintings != undefined){
+
+              backupUpdate[check].content.backupPaintings.forEach((newpath) => {
+
+                painting.push(newpath);
+                if(newpath.length != 0){
+                  backupUpdatedPaintings.push(newpath);
+                } else {
+                  backupUpdate[check].content.backupPaintings.splice(index, 1);
+                }
+
+              });
+            }
+          }
+
+
+          eraserUsed = false;
+          timelinePos = storeKeys[0].indexOf(key);
+          onionPos = timelinePos - 1;
+          postOnionPos = timelinePos + 1;
+          document.getElementById('onionkey').value = storeKeys[0][onionPos];
+          document.getElementById('postonionkey').value = storeKeys[0][postOnionPos];
+          //console.log('Index in storeKeys: ' + storeKeys[0].indexOf(key) + ' | Timeline Position: ' +  timelinePos + ' | Onion Position: ' + onionPos);
+        } else {
+          console.log("We wait for gotData ...");
+        }
+
+      }
+
+
     redraw();
+  }
   }
 
   newInsertFrame(){

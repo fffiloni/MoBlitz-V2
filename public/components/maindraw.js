@@ -8,7 +8,7 @@ let eraserUsed = false;
 let safetyEraser = true;
 let brushing = roughing = makingLine = false;
 let penciling = true;
-let lineTracing = [];
+
 let showGuidelines = true;
 let autoUpdate = false;
 let friendIsErasing = false;
@@ -49,7 +49,9 @@ class HowToDraw{
 
   //1. Put the pen on canvas
   startPath(){
+    //Make sure screen is not scrolling while drawing within some navigators
     $('body').addClass('block-scrolling');
+    //reinitialize the current drawing in case we slip on nearest frame
     frameHasBeenSaved = false;
     frameHasBeenUpdated = false;
     //Activate virginframe if not selected while we are on frame #0
@@ -69,14 +71,13 @@ class HowToDraw{
 
       if (!erasing) {
         currentPath = [];
-
+        //Are we using the brush tool ?
         if (brushing) {
           if (showBrushLayer == true) {
             painting.push(currentPath);
             if(onVirginFrame == true){
               backupPaintings.push(currentPath);
             } else {
-
               backupUpdatedPaintings.push(currentPath);
 
               let check = backupUpdate.findIndex(i => i.key == keyToUpdate);
@@ -97,7 +98,8 @@ class HowToDraw{
             return;
           }
 
-        } else if (roughing) {
+        } //Are we using the rough tool ?
+          else if (roughing) {
           if (showRoughs == true) {
             roughs.push(currentPath);
             currentPath.splice(0, 1);
@@ -108,12 +110,14 @@ class HowToDraw{
         } else if (makingLine) {
 
           let firstPoint = { x: mouseX, y: mouseY };
+          console.log(firstPoint)
           lineTracing = [];
           lineTracing.push(firstPoint);
+
           // redraw();
 
         } else {
-
+          //Else we are using the regular pen tool
           if (showDrawingLayer == true) {
             drawing.push(currentPath);
             if(onVirginFrame == true){
@@ -148,7 +152,6 @@ class HowToDraw{
           }
 
         }
-        // nbdrawingupdated += 1;
       }
       //console.log("A new array of points is pushed in 'drawing'");
       //console.log(currentPath);
@@ -229,86 +232,103 @@ class HowToDraw{
 
   //3. Release the pen from canvas
   safeEndPath(){
-    //Here we check for breaking cases, due to pen accidents
-    if (currentPath.length === 0) {
-      console.log("OUPS | SLOW DOWN JOLLY JUMPER!");
-      ableToDraw = false;
 
-      //We create a safetyPoint to fill the void
-      let safetyPoint = {
-        type: typeOfTool,
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        x3: 0,
-        y3: 0,
-        x4: 0,
-        y4: 0,
-        csR: csR,
-        csV: csV,
-        csB: csB,
-        pressure: 0,
-        strk: 0
-      }
+      //Here we check for breaking cases, due to pen accidents
+      if (currentPath.length === 0) {
+        console.log("OUPS | SLOW DOWN JOLLY JUMPER!");
+        ableToDraw = false;
 
-      currentPath.push(safetyPoint);
-      drawClass.endPath();
-      //Then user can continue to draw
-      ableToDraw = true;
-
-    } else if (currentPath.length === 1) {
-      //console.log("OUPS | SLOW DOWN JOLLY JUMPER!");
-      ableToDraw = false;
-      let safetyPoint = currentPath[0];
-      currentPath.push(safetyPoint);
-      drawClass.endPath();
-      if (brushing) {
-        painting.pop();
-        if(onVirginFrame == true){
-          backupPaintings.pop();
-        } else {
-          backupUpdatedPaintings.pop();
-          if(backupUpdatedPaintings.length + backupUpdatedDrawings.length == 0){
-            $("#" + keyToUpdate).removeClass("needupdate");
-          }
-        }
-      } else if (roughing) {
-        roughs.pop();
-      } else {
-        drawing.pop();
-        if(onVirginFrame == true){
-          backupDrawings.pop();
-        } else {
-          backupUpdatedDrawings.pop();
-          if(backupUpdatedPaintings.length + backupUpdatedDrawings.length == 0){
-            $("#" + keyToUpdate).removeClass("needupdate");
-          }
+        //We create a safetyPoint to fill the void
+        let safetyPoint = {
+          type: typeOfTool,
+          x1: 0,
+          y1: 0,
+          x2: 0,
+          y2: 0,
+          x3: 0,
+          y3: 0,
+          x4: 0,
+          y4: 0,
+          csR: csR,
+          csV: csV,
+          csB: csB,
+          pressure: 0,
+          strk: 0
         }
 
-      }
-      ableToDraw = true;
+        currentPath.push(safetyPoint);
+        drawClass.endPath();
+        //Then user can continue to draw
+        ableToDraw = true;
 
-    } else {
-      //If everything OK, we close the path
-      ableToDraw = false;
-      drawClass.endPath();
-      ableToDraw = true;
-    }
-    // redraw();
+      }
+      else if (currentPath.length === 1) {
+        //console.log("OUPS | SLOW DOWN JOLLY JUMPER!");
+        ableToDraw = false;
+        let safetyPoint = currentPath[0];
+        currentPath.push(safetyPoint);
+        drawClass.endPath();
+        if (brushing) {
+          painting.pop();
+          if(onVirginFrame == true){
+            backupPaintings.pop();
+          } else {
+            backupUpdatedPaintings.pop();
+            if(backupUpdatedPaintings.length + backupUpdatedDrawings.length == 0){
+              $("#" + keyToUpdate).removeClass("needupdate");
+            }
+          }
+        } else if (roughing) {
+          roughs.pop();
+        } else {
+          drawing.pop();
+          if(onVirginFrame == true){
+            backupDrawings.pop();
+          } else {
+            backupUpdatedDrawings.pop();
+            if(backupUpdatedPaintings.length + backupUpdatedDrawings.length == 0){
+              $("#" + keyToUpdate).removeClass("needupdate");
+            }
+          }
+
+        }
+        ableToDraw = true;
+
+      }
+      else {
+
+        //If everything OK, we close the path
+
+
+        // let point = {
+        //   type: typeOfTool,
+        //   x1: sx,
+        //   y1: sy,
+        //   x2: ppx,
+        //   y2: ppy,
+        //   x3: px,
+        //   y3: py,
+        //   x4: px,
+        //   y4: py,
+        //   csR: csR,
+        //   csV: csV,
+        //   csB: csB,
+        //   pressure: pressure,
+        //   strk: sliderStroke.value()
+        // }
+        //
+        // currentPath.push(point);
+
+        ableToDraw = false;
+        drawClass.endPath();
+        ableToDraw = true;
+      }
+      // redraw();
+
   };
 
   //4. Last step before full ending path
   endPath(){
-    if (makingLine) {
-      let newLine = {
-        x1: lineTracing[0].x,
-        y1: lineTracing[0].y,
-        x2: mouseX,
-        y2: mouseY
-      }
-      guidelines.push(newLine);
-    }
 
     isDrawing = false;
     noLoop();
@@ -525,7 +545,7 @@ class HowToDraw{
         image(graphicBG, 0, 0);
         push();
         // if(toggledDropState != bgdroppedState){
-
+          //imageMode(CENTER)
           if(bgdroppedState == 0){
             graphicBGDrop.image(bgdropped, 20, 20, width-40, height-40);
 
@@ -557,6 +577,50 @@ class HowToDraw{
       image(graphicBG, 0, 0);
     }
 
+    if(rotoComponentIsActive == true){
+      if(videoFile){
+        videoFile.size(canvas.width, canvas.height);
+        //console.log(videoEl.currentTime);
+        // if(videoFile){
+      	// 	videoEl.currentTime = map(trimSlider.value(), 0, videoEl.duration*1000, 0, videoEl.duration);
+      	// 	console.log(videoEl.currentTime);
+        //
+      	// }
+
+        push();
+        // if(toggledDropState != bgdroppedState){
+
+          if(bgdroppedState == 0){
+            graphicForVideo.image(videoFile, 0, 0);
+
+          } else if(bgdroppedState == 1) {
+            graphicForVideo.image(videoFile, 0, 0);
+            graphicForVideo.fill('rgba(255,255,255, 0.2)');
+            graphicForVideo.rect(0,0,width, height);
+
+          } else if(bgdroppedState == 2) {
+            graphicForVideo.image(videoFile, 0, 0);
+            graphicForVideo.fill('rgba(255,255,255, 0.5)');
+            graphicForVideo.rect(0,0,width, height);
+
+        } else if(bgdroppedState == 3) {
+            graphicForVideo.image(videoFile, 0, 0);
+            graphicForVideo.fill('rgba(255,255,255, 0.8)');
+            graphicForVideo.rect(0,0,width, height);
+
+          }
+
+        //}
+
+
+
+        pop();
+      }
+    }
+
+if(rotoComponentIsActive == true){
+  image(graphicForVideo, 0, 0);
+}
 
     image(graphicExport, 0, 0);
   	image(graphicDUO, 0, 0);
@@ -579,9 +643,6 @@ class HowToDraw{
     } else {
       image(graphicBrush, 0, 0);
     }
-
-
-
 
     image(graphicRough, 0, 0);
     image(graphicFRONT, 0, 0);

@@ -99,6 +99,11 @@ class MagmaCanvas{
   	graphicDUO = createGraphics(cnvWidth, cnvHeight);
     graphicPrivateDUO = createGraphics(cnvWidth, cnvHeight);
     graphicExport = createGraphics(cnvWidth, cnvHeight);
+
+    if(rotoComponentIsActive == true){
+      graphicForVideo = createGraphics(cnvWidth, cnvHeight);
+    }
+
   };
 
   ////////////////////////

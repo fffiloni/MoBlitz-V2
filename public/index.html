@@ -24,6 +24,7 @@
 
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.js"></script> -->
 	<script src="libraries/p5.dom.js"></script>
+	<script src="libraries/p5.sound.js"></script>
 	<script src="sketch.js"></script>
 	<script src="libraries/p5gif.min.js"></script>
 
@@ -39,6 +40,7 @@
 	<script src="components/play.js"></script>
 	<script src="components/tracer.js"></script>
 	<script src="components/keyBoard.js"></script>
+
 
 </head>
 
@@ -108,6 +110,7 @@
 					<div id="frames"></div>
 					<div id="onionControls"></div>
 					<div id="inbetween">
+						<div id="displayChainSound"></div>
 						<div id="displayChain"></div>
 						<div id="displayLoop"></div>
 
@@ -120,6 +123,7 @@
 						<div id="fpsp" class="fpsCursor"> › </div>
 					</div>
 				</div>
+				<div id="sounds"></div>
 				<div class="flexy1">
 					<button id="undoButton" class="controlBtns"><i class="fas fa-undo-alt" style="font-size: 20px;"></i><br> Undo
 					</button>
@@ -262,6 +266,8 @@
 })();
 	</script>
 
+<!-- <script src="components/soundComponent.js"></script> -->
+<!-- <script src="components/rotocomponent.js"></script> -->
 </body>
 
 </html>

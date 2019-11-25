@@ -1,31 +1,31 @@
-# MoBlitz
-a p5js pad to make animation together in realtime
+# MoBlitz Version 2
+a p5js pad to make traditional animation together in realtime
 
 ### Install
 `npm install`
 
 You need a firebase database to make MoBlitz work properly.
+As long as you get your Firebase credentials, add them to the .env file
 
-On the `./public/sketch.js`file, from line `59` to `66`,
-replace this
 ```
-var config = {
-    apiKey: key,
-    authDomain: "",
-    databaseURL: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: ""
-  };
+/*
+ * .env
+ */
+
+MY_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+DATABASE_URL=
+PROJECT_ID=
+STORAGE_BUCKET=
+MESSAGING_SENDER_ID=
+
 ```
-with your firebase credentials.
 
 ### Start
 
 `node server.js`
 
-MoBlitz runs on localhost:4000
-
+MoBlitz v2 runs on localhost:4000
 
 
 ### Real-Time

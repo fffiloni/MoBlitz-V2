@@ -1,6 +1,6 @@
 {
-  "name": "drawings-node-sockets",
-  "version": "1.0.0",
+  "name": "MoBlitz-AnimationPad",
+  "version": "2.0.0",
   "description": "animation collaborative",
   "engines": {
     "node": "10.14.2",

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "animation collaborative",
   "engines": {
-    "node": "12.13.0"
+    "node": "10.14.2",
+    "npm": "6.9.2"
   },
   "main": "server.js",
   "scripts": {

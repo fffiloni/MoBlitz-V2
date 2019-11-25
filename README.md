@@ -1,6 +1,8 @@
 # MoBlitz Version 2
 a p5js pad to make traditional animation together in realtime
 
+![interface](/exports/animation-pad.png)
+
 ### Install
 `npm install`
 

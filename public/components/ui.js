@@ -158,7 +158,7 @@ class UI{
     let fpsplus = select('#fpsp');
     fpsplus.touchStarted(function() {
       fps += 1;
-      if(videoFile){
+      if(rotoComponentIsActive && videoFile){
         videoTrimmer.frameRate += 1;
 
         atFrameRateFloatVideo = Math.round(map(getVideoFloat, 0, 999, 1, fps));
@@ -171,7 +171,7 @@ class UI{
     let fpsminus = select('#fpsm');
     fpsminus.touchStarted(function() {
       fps -= 1;
-      if(videoFile){
+      if(rotoComponentIsActive && videoFile){
         videoTrimmer.frameRate -= 1;
         atFrameRateFloatVideo = Math.round(map(getVideoFloat, 0, 999, 1, fps));
         totalVideoFrames = Math.floor(videoEl.duration) * fps + atFrameRateFloatVideo;

@@ -521,11 +521,15 @@ class HowToDraw{
       if (showRoughs == true) {
         graphicRough.clear();
         tracerClass.traceRoughs();
+      } else {
+        graphicRough.clear();
       }
 
       if (showDrawingLayer == true) {
         graphicFRONT.clear();
         tracerClass.traceDrawings();
+      } else {
+        graphicFRONT.clear();
       }
 
 

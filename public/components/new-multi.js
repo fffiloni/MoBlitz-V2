@@ -53,12 +53,12 @@ if ( isDrawing == true ){
     tracerClass.tracePainting();
   }
 
-  if (showRoughs == true) {
+  if (showRoughs) {
     graphicRough.clear();
     tracerClass.traceRoughs();
   }
 
-  if (showDrawingLayer == true) {
+  if (showDrawingLayer) {
     graphicFRONT.clear();
     tracerClass.traceDrawings();
   }

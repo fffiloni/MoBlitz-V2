@@ -78,8 +78,8 @@ function preload() {
   wlcm.parent('console');
 
   // socket = io.connect('https://magmanim.nanomenta.com/');
-  // socket = io.connect('http://localhost:4000');
-	socket = io.connect('https://mb-duo.herokuapp.com/');
+  socket = io.connect('http://localhost:4000');
+	// socket = io.connect('https://mb-duo.herokuapp.com/');
 	scktClass.initializeDB();
 
 } //END PRELOAD

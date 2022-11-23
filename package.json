@@ -17,6 +17,6 @@
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "firebase": "^5.8.3",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.5.0"
   }
 }
